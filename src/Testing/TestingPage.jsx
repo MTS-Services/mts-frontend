@@ -1,6 +1,6 @@
 import React from "react";
 
-const ErrropageTest = () => {
+const TestingPage = () => {
   return (
     <div>
       <title>errorpage</title>
@@ -26,4 +26,4 @@ const ErrropageTest = () => {
   );
 };
 
-export default ErrropageTest;
+export default TestingPage;
