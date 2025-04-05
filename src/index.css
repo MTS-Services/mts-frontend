@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-primary: "Rubik", serif;
+  --font-secondary: "Poppins", serif;
+  --color-primary: rgb(25, 179, 231);
+  --color-secondary: rgb(17, 40, 74);
+  --color-accent: rgb(255, 255, 255);
+  --color-background: rgb(15, 15, 15);
+  --color-border-color: rgb(133, 119, 0);
+  --shadow-box-style: 1px 1px 5px 2px rgb(0 0 0 / 0.1);
+  --shadow-btn-style: 2px 2px 0px 2px rgb(0 0 0 / 0.1);
+  --color-card: rgb(25, 25, 25);
+  --color-cta: rgb(0, 122, 255);
+  --color-cta-active: rgb(0, 102, 215);
+  --color-cta-text: rgb(255, 255, 255);
+  --color-cta-txt-active: rgb(255, 230, 9);
+}
+
+.light-mode {
+  --color-secondary: rgb(25, 179, 231);
+  --color-primary: rgb(17, 40, 74);
+  --color-accent: rgb(0, 0, 0);
+  --color-background: rgb(255, 255, 255);
+  --color-box-shadow-color: rgba(3, 185, 252, 0.904);
+  --color-btn-shadow-color: rgb(30, 77, 148);
+  --color-card: rgb(255, 255, 255);
+}
+
+.red-mode {
+  --color-primary: rgb(255, 255, 255);
+  --color-secondary: rgb(255, 255, 255);
+  --color-accent: rgb(255, 255, 255);
+  --color-background: rgb(78, 0, 0);
+  --color-box-shadow-color: rgba(211, 211, 211, 0.904);
+  --color-btn-shadow-color: rgba(51, 2, 2, 0.575);
+  --color-card: rgba(128, 3, 3, 0.623);
+  --color-cta-text: rgb(0, 0, 0);
+}
