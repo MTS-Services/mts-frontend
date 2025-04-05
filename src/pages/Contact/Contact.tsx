@@ -3,7 +3,7 @@ import { Link } from "react-router";
 function Contact() {
   return (
     
-<div className="min-h-screen flex items-center justify-center px-4 border-2 border-[] bg-[#DFF7FC]">
+<div className="min-h-screen flex items-center justify-center px-4 border-2 border-[] bg-[#1983E7]">
       <div className="bg-white p-8 sm:p-10 md:p-12 lg:p-16 xl:p-20 rounded-3xl shadow-2xl w-full max-w-2xl text-center border border-gray-200">
         <div className="mb-6">
           <div className="text-[88px] font-extrabold text-red-500 leading-none">404</div>

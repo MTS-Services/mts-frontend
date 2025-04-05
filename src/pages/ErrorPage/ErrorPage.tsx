@@ -1,24 +1,28 @@
+import { Link } from "react-router";
+
 function ErrorPage() {
   return (
-    <>
-     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="text-center bg-white p-10 rounded-lg shadow-lg max-w-lg w-full">
-        <h1 className="text-6xl font-bold text-red-500 mb-6">404</h1>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Oops! The page you're looking for doesn't exist.
-        </h2>
-        <p className="text-lg text-gray-600 mb-6">
-          We couldn't find the page you were looking for. It might have been moved or deleted.
+ <div className="min-h-screen flex items-center justify-center px-4 border-2 border-[] bg-[#1983E7]">
+      <div className="bg-white p-8 sm:p-10 md:p-12 lg:p-16 xl:p-20 rounded-3xl shadow-2xl w-full max-w-2xl text-center border border-gray-200">
+        <div className="mb-6">
+          <div className="text-[88px] font-extrabold text-red-500 leading-none">404</div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">
+            Page Not Found
+          </h2>
+        </div>
+
+        <p className="text-gray-600 text-base sm:text-lg mb-6">
+          The page you're looking for doesn't exist or has been moved.
         </p>
-        <a
-          href="/"
-          className="bg-[#19B2E7] text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-[#1598c6] transition duration-300"
-        >
-          Back to Home
-        </a>
+
+        <Link
+  to="/"
+  className="inline-block bg-primary text-white text-base sm:text-lg font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-[#1983E7] hover:scale-105 transform transition duration-300 ease-in-out"
+>
+  ⬅️ Back to Home
+</Link>
       </div>
     </div>
-    </>
   );
 }
 
