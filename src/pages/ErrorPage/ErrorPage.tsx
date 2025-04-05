@@ -1,37 +1,29 @@
 function ErrorPage() {
   return (
     <>
-      <section>Error page</section>
-
-      <table class="table-auto">
-  <thead>
-    <tr>
-      <th>Song</th>
-      <th>Artist</th>
-      <th>Year</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-      <td>Malcolm Lockyer</td>
-      <td>1961</td>
-    </tr>
-    <tr>
-      <td>Witchy Woman</td>
-      <td>The Eagles</td>
-      <td>1972</td>
-    </tr>
-    <tr>
-      <td>Shining Star</td>
-      <td>Earth, Wind, and Fire</td>
-      <td>1975</td>
-    </tr>
-  </tbody>
-</table>
-      <section>Error page</section>
+     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center bg-white p-10 rounded-lg shadow-lg max-w-lg w-full">
+        <h1 className="text-6xl font-bold text-red-500 mb-6">404</h1>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Oops! The page you're looking for doesn't exist.
+        </h2>
+        <p className="text-lg text-gray-600 mb-6">
+          We couldn't find the page you were looking for. It might have been moved or deleted.
+        </p>
+        <a
+          href="/"
+          className="bg-[#19B2E7] text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-[#1598c6] transition duration-300"
+        >
+          Back to Home
+        </a>
+      </div>
+    </div>
     </>
   );
 }
 
 export default ErrorPage;
+
+
+
+
