@@ -50,7 +50,7 @@ const UserDashBoard = () => {
               key={index}
               className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2 
                 ${location.pathname === item.path ? "bg-[#19B3E7]" : ""}
-                hover:bg-[#19B3E7] hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
+                hover:bg-primary hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
             >
               <div className="flex items-center space-x-2">
                 <span className="text-[18px]">{item.icon}</span>
