@@ -5,6 +5,41 @@ const Projects = () => {
   const toggleModal = () => setIsOpen(!isOpen);
   return (
     <div className="w-full overflow-x-auto">
+      <div className="flex justify-between items-center gap-2">
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Order After Fiverr</h2>
+          <h2 className="text-xl">$30000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total delivered After Fiverr</h2>
+          <h2 className="text-xl">$2500</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Targets</h2>
+          <h2 className="text-xl">$20000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Target After Fiverr</h2>
+          <h2 className="text-xl">$50000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total cancels Amount</h2>
+          <h2 className="text-xl">$1000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Required sales</h2>
+          <h2 className="text-xl">$20000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Required operation</h2>
+          <h2 className="text-xl">$25000</h2>
+        </div>
+        <div className=" bg-primary p-4  text-white rounded-sm">
+          <h2 className="text-xl">Total Cancele</h2>
+          <h2 className="text-xl">5</h2>
+        </div>
+      </div>
+
       <table className="w-full min-w-max border-separate border-spacing-y-2 text-left">
         <thead>
           <tr className="bg-secondary text-white text-sm rounded-2xl">
