@@ -19,10 +19,10 @@ const UserDashBoard = () => {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex ">
       {/* Sidebar */}
       <div
-        className={`h-screen bg-gray-900 text-white rounded-sm ${
+        className={`h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
@@ -50,7 +50,7 @@ const UserDashBoard = () => {
               key={index}
               className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2 
                 ${location.pathname === item.path ? "bg-[#19B3E7]" : ""}
-                hover:bg-[#19B3E7] hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
+                hover:bg-primary hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
             >
               <div className="flex items-center space-x-2">
                 <span className="text-[18px]">{item.icon}</span>
@@ -130,7 +130,7 @@ const UserDashBoard = () => {
       </div>
 
       {/* Content Area */}
-      <div className="px-4 py-6 w-full">
+      <div className=" w-full ">
         <Routes>
           <Route
             path="/dashboard"
