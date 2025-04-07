@@ -19,10 +19,10 @@ const UserDashBoard = () => {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex ">
       {/* Sidebar */}
       <div
-        className={`h-screen bg-gray-900 text-white rounded-sm ${
+        className={`h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
@@ -130,7 +130,7 @@ const UserDashBoard = () => {
       </div>
 
       {/* Content Area */}
-      <div className="px-4 py-6 w-full">
+      <div className=" w-full ">
         <Routes>
           <Route
             path="/dashboard"
