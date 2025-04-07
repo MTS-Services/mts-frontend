@@ -91,7 +91,7 @@ const UserDashBoard = () => {
           </div>
           <div
             className={`${
-              isOpen ? "flex items-center p-[4px] rounded-full" : ""
+              isOpen ? "flex items-center p-[4px] rounded-full" : "" 
             }`}
           >
             <FaMoon className="text-sm" />
