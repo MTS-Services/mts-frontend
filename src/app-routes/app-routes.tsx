@@ -6,7 +6,10 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 
-const Home = lazy(() => import("../pages/Home/Home"));
+// const Home = lazy(() => import("../pages/Home/Home"));
+
+const  Home =lazy (()=> import("../pages/Home/Home"))
+
 const Contact = lazy(() => import("../pages/Contact/Contact"));
 
 const AppRoutes = createBrowserRouter([
