@@ -3,9 +3,12 @@ import { createBrowserRouter } from "react-router";
 import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
 
 const Home = lazy(() => import("../pages/Home/Home"));
 const Contact = lazy(() => import("../pages/Contact/Contact"));
+
 
 const AppRoutes = createBrowserRouter([
   {
@@ -16,6 +19,14 @@ const AppRoutes = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <LoginForm  />,
+      },
+      {
+        path: "/register",
+        element: <RegisterForm />
       },
       {
         path: "/contact",
