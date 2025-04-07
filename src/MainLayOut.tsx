@@ -1,4 +1,5 @@
 import { Outlet } from "react-router";
+import { ScrollToTop } from "./components/ScrollToTop/ScrollToTop";
 import MainFooter from "./layouts/footers/MainFooter/MainFooter";
 import MainHeader from "./layouts/headers/MainHeader/MainHeader";
 
@@ -10,6 +11,7 @@ function MainLayOut() {
         <Outlet />
       </main>
       <MainFooter />
+      <ScrollToTop />
     </>
   );
 }

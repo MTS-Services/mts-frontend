@@ -1,37 +1,35 @@
+import { Link } from "react-router";
+
 function ErrorPage() {
   return (
-    <>
-      <section>Error page</section>
+    <div className="min-h-screen flex items-center justify-center mx-auto px-4 bg-center bg-background">
+      <div className="text-center">
+        {/* Image Section */}
+        <div className="mb-6">
+          <img
+            className="w-[900px] mx-auto" // Ensures the image is centered with specific width
+            src="/assits/404bg/404size.png" // Ensure the correct path for the image
+            alt="404 Error Image"
+          />
+        </div>
 
-      <table class="table-auto">
-  <thead>
-    <tr>
-      <th>Song</th>
-      <th>Artist</th>
-      <th>Year</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-      <td>Malcolm Lockyer</td>
-      <td>1961</td>
-    </tr>
-    <tr>
-      <td>Witchy Woman</td>
-      <td>The Eagles</td>
-      <td>1972</td>
-    </tr>
-    <tr>
-      <td>Shining Star</td>
-      <td>Earth, Wind, and Fire</td>
-      <td>1975</td>
-    </tr>
-  </tbody>
-</table>
-      <section>Error page</section>
-    </>
+        {/* Back to Home Button */}
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-block bg-cta text-cta-text text-base sm:text-lg font-semibold px-8 py-3 rounded-full shadow-md hover:bg-cta-active hover:text-cta-txt-active hover:scale-105 transform transition duration-300 ease-in-out"
+          >
+            ⬅️ Back to Home
+          </Link>
+        </div>
+      </div>
+    </div>
+
   );
 }
 
 export default ErrorPage;
+
+
+
+
