@@ -10,7 +10,7 @@
   --color-accent: rgb(255, 255, 255);
   --color-background: rgb(16,24,40);
   --color-border-color: rgb(133, 119, 0);
-  --shadow-box-style: 1px 1px 5px 2px rgb(0 0 0 / 0.1);
+  --shadow-box-style: 1px 1px 1px 2px rgb(0 0 0 / 0.1);
   --shadow-btn-style: 2px 2px 0px 2px rgb(0 0 0 / 0.1);
   --color-card: rgb(25, 25, 25);
   --color-cta: rgb(0, 122, 255);
