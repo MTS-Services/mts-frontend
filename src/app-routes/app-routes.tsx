@@ -3,6 +3,8 @@ import { createBrowserRouter } from "react-router";
 import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
 import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 
@@ -11,6 +13,7 @@ import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 const  Home =lazy (()=> import("../pages/Home/Home"))
 
 const Contact = lazy(() => import("../pages/Contact/Contact"));
+
 
 const AppRoutes = createBrowserRouter([
   {
@@ -21,6 +24,14 @@ const AppRoutes = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <LoginForm  />,
+      },
+      {
+        path: "/register",
+        element: <RegisterForm />
       },
       {
         path: "/contact",
