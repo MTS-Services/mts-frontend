@@ -22,12 +22,12 @@ const UserDashBoard = () => {
     <div className="flex ">
       {/* Sidebar */}
       <div
-        className={`h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
+        className={`min-h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
         {/* Logo & Toggle */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between p-2">
           <img
             className={`${!isOpen ? "hidden" : "lg:w-28 md:w-20 w-26"}`}
             src="../../../../public/mts_logo.png"
@@ -73,17 +73,17 @@ const UserDashBoard = () => {
 
         {/* Light/Dark Toggle */}
         <div
-          className={`${
+          className={`p-2${
             !isOpen
-              ? "pl-3"
-              : "w-40 bg-black flex items-center justify-around border-2 border-gray-500 p-[3px] rounded-full"
+              ? ""
+              : "w-40 bg-black flex items-center justify-around border-2 border-gray-500  rounded-full"
           }`}
         >
           <div
             className={`${
               isOpen
                 ? "flex items-center bg-sky-950 p-[4px] rounded-full"
-                : "my-2"
+                : "mb-5"
             }`}
           >
             <PiSunDimFill className="text-xl" />
