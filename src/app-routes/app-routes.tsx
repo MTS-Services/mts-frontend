@@ -4,7 +4,10 @@ import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
-const Home = lazy(() => import("../pages/Home/Home"));
+// const Home = lazy(() => import("../pages/Home/Home"));
+
+const  Home =lazy (()=> import("../pages/Home/Home"))
+
 const Contact = lazy(() => import("../pages/Contact/Contact"));
 
 const AppRoutes = createBrowserRouter([
