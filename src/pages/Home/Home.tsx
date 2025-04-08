@@ -1,3 +1,4 @@
+import CtaSection from "../../components/Home/CtaSection/CtaSection";
 import HeroSection from "../../components/Home/HeroSection/HeroSection";
 import ProjectsSlider from "../../components/Home/ProjectsSlider/ProjectsSlider";
 // import Services from "../../components/Home/Services/Services";
@@ -10,6 +11,7 @@ function Home() {
       <HeroSection></HeroSection>
       <ServicesCart></ServicesCart>
       {/* <Services></Services> */}
+      <CtaSection></CtaSection>
 
       <ProjectsSlider></ProjectsSlider>
     </div>
