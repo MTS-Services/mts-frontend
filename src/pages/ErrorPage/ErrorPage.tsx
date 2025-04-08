@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 function ErrorPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center mx-auto px-4 bg-center bg-background">
+      <div className="min-h-screen flex items-center justify-center mx-auto px-4 bg-center bg-background">
       <div className="text-center">
         {/* Image Section */}
         <div className="mb-6">
