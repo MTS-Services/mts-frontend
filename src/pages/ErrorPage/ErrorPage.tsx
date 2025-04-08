@@ -1,35 +1,29 @@
-import { Link } from "react-router";
-
 function ErrorPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center mx-auto px-4 bg-center bg-background">
-      <div className="text-center">
-        {/* Image Section */}
+    <div className="min-h-screen flex items-center justify-center px-4 border-2 border-[] bg-[#1983E7]">
+      <div className="bg-white p-8 sm:p-10 md:p-12 lg:p-16 xl:p-20 rounded-3xl shadow-2xl w-full max-w-2xl text-center border border-gray-200">
         <div className="mb-6">
-          <img
-            className="w-[900px] mx-auto" // Ensures the image is centered with specific width
-            src="/assits/404bg/404size.png" // Ensure the correct path for the image
-            alt="404 Error Image"
-          />
+          <div className="text-[88px] font-extrabold text-red-500 leading-none">
+            404
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">
+            Page Not Found
+          </h2>
         </div>
 
-        {/* Back to Home Button */}
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-block bg-cta text-cta-text text-base sm:text-lg font-semibold px-8 py-3 rounded-full shadow-md hover:bg-cta-active hover:text-cta-txt-active hover:scale-105 transform transition duration-300 ease-in-out"
-          >
-            ⬅️ Back to Home
-          </Link>
-        </div>
+        <p className="text-gray-600 text-base sm:text-lg mb-6">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+
+        <Link
+          to="/"
+          className="inline-block bg-primary text-white text-base sm:text-lg font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-[#1983E7] hover:scale-105 transform transition duration-300 ease-in-out"
+        >
+          ⬅️ Back to Home
+        </Link>
       </div>
     </div>
-
   );
 }
 
 export default ErrorPage;
-
-
-
-
