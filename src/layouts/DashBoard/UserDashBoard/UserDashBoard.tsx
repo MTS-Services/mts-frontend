@@ -9,7 +9,6 @@ import {
 } from "react-icons/io";
 import Projects from "./Projects";
 import TodayTask from "./TodayTask";
-import { FaDiagramProject } from "react-icons/fa6";
 
 const UserDashBoard = () => {
   const [isOpen, setIsOpen] = useState(true);
