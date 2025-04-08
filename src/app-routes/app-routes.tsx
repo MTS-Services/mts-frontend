@@ -7,6 +7,7 @@ import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
 import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -51,6 +52,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "projects",
         element: <Projects/>,
+      },
+      {
+        path: "todaytask",
+        element: <TodayTask/>,
       },
     ],
   },

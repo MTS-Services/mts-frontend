@@ -20,13 +20,13 @@ const services = [
     features: ["MERN Stack Apps", "REST APIs", "JWT Auth", "React Hooks"],
   },
 
-  //  {
-  //   id: 3,
-  //   image: "/assits/services/php.png",
-  //    title: "PHP",
-  //   description: "Custom WordPress plugin development tailored to your business needs.",
-  //   features: ["PHP OOP", "Custom Post Types", "Shortcodes", "WooCommerce Hooks"],
-  // },
+   {
+    id: 3,
+    image: "/assits/services/php.png",
+     title: "PHP",
+    description: "Custom WordPress plugin development tailored to your business needs.",
+    features: ["PHP OOP", "Custom Post Types", "Shortcodes", "WooCommerce Hooks"],
+  },
   {  
     id: 4,
     image: "/assits/services/Flutter.png",
@@ -35,13 +35,13 @@ const services = [
     features: ["Firebase Integration", "Responsive UI", "State Management", "API Integration"],
   },
 
-  // {
-  //   id: 5,
-  //   image: "assits/services/woocommerce.png",
-  //   title: "WooCommerce Stores",
-  //   description: "Create and manage your online store with WooCommerce & WordPress.",
-  //   features: ["Product Setup", "Payment Gateways", "Custom Checkout", "Responsive Design"],
-  // },
+  {
+    id: 5,
+    image: "assits/services/woocommerce.png",
+    title: "WooCommerce Stores",
+    description: "Create and manage your online store with WooCommerce & WordPress.",
+    features: ["Product Setup", "Payment Gateways", "Custom Checkout", "Responsive Design"],
+  },
   {
     id: 6,
     image: "assits/services/b2b.png",
@@ -114,13 +114,13 @@ const services = [
     description: "Robust backend systems and dynamic web apps using Laravel PHP framework.",
     features: ["Blade Templates", "REST APIs", "Admin Dashboards", "MySQL Integration"],
   },
-  // {
-  //   id: 16,
-  //   image: "/assits/services/logoDisgin.png",
-  //   title: "Logo Design",
-  //   description: "Unique and memorable logos that reflect your brand identity.",
-  //   features: ["Vector Logos", "Multiple Concepts", "Brand Guidelines", "Source Files"],
-  // },
+  {
+    id: 16,
+    image: "/assits/services/logoDisgin.png",
+    title: "Logo Design",
+    description: "Unique and memorable logos that reflect your brand identity.",
+    features: ["Vector Logos", "Multiple Concepts", "Brand Guidelines", "Source Files"],
+  },
 ];
  
 
