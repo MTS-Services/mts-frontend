@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
-import { FaHome, FaMoon, FaRProject } from "react-icons/fa";
+import { FaHome, FaMoon, FaProjectDiagram, FaTasks } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { PiSunDimFill } from "react-icons/pi";
 import {
@@ -8,6 +8,7 @@ import {
   IoMdArrowDropleftCircle,
 } from "react-icons/io";
 import Projects from "./Projects";
+import TodayTask from "./TodayTask";
 
 const UserDashBoard = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -15,19 +16,20 @@ const UserDashBoard = () => {
 
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/" },
-    { icon: <FaRProject />, label: "Projects", path: "projects" },
+    { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
+    { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
   ];
 
   return (
     <div className="flex ">
       {/* Sidebar */}
       <div
-        className={`h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
+        className={`min-h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
         {/* Logo & Toggle */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between p-2">
           <img
             className={`${!isOpen ? "hidden" : "lg:w-28 md:w-20 w-26"}`}
             src="../../../../public/mts_logo.png"
@@ -73,17 +75,17 @@ const UserDashBoard = () => {
 
         {/* Light/Dark Toggle */}
         <div
-          className={`${
+          className={`p-2${
             !isOpen
-              ? "pl-3"
-              : "w-40 bg-black flex items-center justify-around border-2 border-gray-500 p-[3px] rounded-full"
+              ? ""
+              : "w-40 bg-black flex items-center justify-around border-2 border-gray-500  rounded-full"
           }`}
         >
           <div
             className={`${
               isOpen
                 ? "flex items-center bg-sky-950 p-[4px] rounded-full"
-                : "my-2"
+                : "mb-5"
             }`}
           >
             <PiSunDimFill className="text-xl" />
@@ -91,7 +93,7 @@ const UserDashBoard = () => {
           </div>
           <div
             className={`${
-              isOpen ? "flex items-center p-[4px] rounded-full" : ""
+              isOpen ? "flex items-center p-[4px] rounded-full" : "" 
             }`}
           >
             <FaMoon className="text-sm" />
@@ -151,6 +153,14 @@ const UserDashBoard = () => {
             element={
               <h1 className="text-2xl font-semibold">
                 <Projects></Projects>
+              </h1>
+            }
+          />
+          <Route
+            path="todaytask"
+            element={
+              <h1 className="text-2xl font-semibold">
+                <TodayTask></TodayTask>
               </h1>
             }
           />
