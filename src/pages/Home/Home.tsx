@@ -12,6 +12,15 @@ function Home() {
       <ServicesCart></ServicesCart>
       {/* <Services></Services> */}
       <CtaSection></CtaSection>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
+      <h1>this is test</h1>
 
       <ProjectsSlider></ProjectsSlider>
     </div>
