@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
-import { FaHome, FaMoon, FaRProject } from "react-icons/fa";
+import { FaHome, FaMoon, FaProjectDiagram, FaTasks } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { PiSunDimFill } from "react-icons/pi";
 import {
@@ -8,6 +8,8 @@ import {
   IoMdArrowDropleftCircle,
 } from "react-icons/io";
 import Projects from "./Projects";
+import TodayTask from "./TodayTask";
+import { FaDiagramProject } from "react-icons/fa6";
 
 const UserDashBoard = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -15,7 +17,8 @@ const UserDashBoard = () => {
 
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/" },
-    { icon: <FaRProject />, label: "Projects", path: "projects" },
+    { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
+    { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
   ];
 
   return (
@@ -151,6 +154,14 @@ const UserDashBoard = () => {
             element={
               <h1 className="text-2xl font-semibold">
                 <Projects></Projects>
+              </h1>
+            }
+          />
+          <Route
+            path="todaytask"
+            element={
+              <h1 className="text-2xl font-semibold">
+                <TodayTask></TodayTask>
               </h1>
             }
           />
