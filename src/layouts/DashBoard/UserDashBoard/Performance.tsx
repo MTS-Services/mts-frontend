@@ -20,17 +20,16 @@ const Performance = () => {
 
   const tableHeaders = [
     "Client Name",
-    "Last Update",
-    "Assign",
-    "Expect Finish Time",
-    "Status",
-    "Delivery Last Date",
+    "Project Price",
+    "Achive price",
+    "Leader comment",
+    "Your comments",
   ];
 
   const tableData = [
-    ["Alex", "20.10.2025", "Masud", "10:30 AM", "Done", "30.10.2025"],
-    ["Jordan", "21.10.2025", "Rakib", "11:30 AM", "Pending", "31.10.2025"],
-    ["Rifat", "22.10.2025", "Salman", "9:00 AM", "Wip", "01.11.2025"],
+    ["Alex", "$200",  "$100", "good", "no"],
+    ["Jordan", "$100",  "$100", "good", "no"],
+    ["Rifat", "$170",  "$100", "good", "no"],
   ];
 
   const monthName = [
@@ -136,7 +135,7 @@ const Performance = () => {
       </div>
 
       <div>
-        <h2 className="text-white text-4xl mb-5 mt-14">Project Details</h2>
+        <h2 className="text-white text-4xl mb-5 mt-14">Monthly Destribution</h2>
 
         {/* Project Details Table */}
         <div className="overflow-x-auto mt-10">
