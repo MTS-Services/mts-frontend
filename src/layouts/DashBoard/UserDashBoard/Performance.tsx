@@ -27,9 +27,9 @@ const Performance = () => {
   ];
 
   const tableData = [
-    ["Alex", "$200",  "$100", "good", "no"],
-    ["Jordan", "$100",  "$100", "good", "no"],
-    ["Rifat", "$170",  "$100", "good", "no"],
+    ["Alex", "$200", "$100", "good", "no"],
+    ["Jordan", "$100", "$100", "good", "no"],
+    ["Rifat", "$170", "$100", "good", "no"],
   ];
 
   const monthName = [
@@ -135,7 +135,22 @@ const Performance = () => {
       </div>
 
       <div>
-        <h2 className="text-white text-4xl mb-5 mt-14">Monthly Destribution</h2>
+        <div className="flex items-center gap-4 mb-5 mt-14">
+          <h2 className="text-white text-4xl mb-5 ">
+            Monthly Destribution
+          </h2>
+          <select
+            className="bg-background text-white px-4 py-1  rounded outline-none"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+            {monthName.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Project Details Table */}
         <div className="overflow-x-auto mt-10">
