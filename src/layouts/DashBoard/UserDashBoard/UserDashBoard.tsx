@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
 import { FaHome, FaMoon, FaProjectDiagram, FaTasks } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
@@ -10,40 +10,11 @@ import {
 import Projects from "./Projects";
 import TodayTask from "./TodayTask";
 import Performance from "./Performance";
+import ToggleDarkAndLight from "../../../components/ToggleDarkAndLight/ToggleDarkAndLight";
 
 const UserDashBoard = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false); 
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
-
-  // Handle light/dark mode toggle
-  const toggleDarkMode = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-
-    // Persist the theme in localStorage
-    localStorage.setItem("theme", newTheme ? "dark" : "light");
-
-    // Reload the page to apply the theme
-    window.location.reload(); // Reload the page after switching theme
-  };
-
-  // Apply theme on initial load based on localStorage value
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === "dark");
-    }
-  }, []);
-
-  useEffect(() => {
-    // Apply the theme to the body element
-    if (isDarkMode) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/" },
@@ -56,7 +27,7 @@ const UserDashBoard = () => {
     <div className="flex ">
       {/* Sidebar */}
       <div
-        className={`min-h-screen bg-gray-900 text-white shadow-xl shadow-black z-1  ${
+        className={`min-h-screen bg-background text-white shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
@@ -89,7 +60,9 @@ const UserDashBoard = () => {
               <div className="flex items-center space-x-2">
                 <span className="text-[18px]">{item.icon}</span>
                 <h2
-                  className={`${isOpen ? "inline-block text-[16px]" : "hidden"}`}
+                  className={`${
+                    isOpen ? "inline-block text-[16px]" : "hidden"
+                  }`}
                 >
                   {item.label}
                 </h2>
@@ -104,31 +77,7 @@ const UserDashBoard = () => {
         </nav>
 
         {/* Light/Dark Toggle */}
-        <div
-          className={`p-2 ${
-            !isOpen
-              ? ""
-              : "w-40 bg-black flex items-center justify-around border-2 border-gray-500 rounded-full"
-          }`}
-        >
-          <div
-            className={`${
-              isOpen ? "flex items-center bg-sky-950 p-[4px] rounded-full" : "mb-5"
-            }`}
-          >
-            <PiSunDimFill className="text-xl" />
-            <h2 className={`${isOpen ? "text-sm" : "hidden"}`}>Light</h2>
-          </div>
-          <div
-            className={`${
-              isOpen ? "flex items-center p-[4px] rounded-full" : ""
-            }`}
-            onClick={toggleDarkMode} // Toggle dark mode and reload
-          >
-            <FaMoon className="text-sm" />
-            <h2 className={`${isOpen ? "text-sm" : "hidden"}`}>Dark</h2>
-          </div>
-        </div>
+        <ToggleDarkAndLight isOpen={isOpen}></ToggleDarkAndLight>
 
         {/* User Info */}
         <div className="flex items-center space-x-4 mt-auto">
@@ -167,6 +116,14 @@ const UserDashBoard = () => {
             path="/dashboard"
             element={
               <h1 className="text-2xl font-semibold">🏠 Welcome to Home!</h1>
+            }
+          />
+          <Route
+            path="projects"
+            element={
+              <h1 className="text-2xl font-semibold">
+                <Projects></Projects>
+              </h1>
             }
           />
           <Route
