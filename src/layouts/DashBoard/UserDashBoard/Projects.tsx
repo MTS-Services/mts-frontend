@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdInfoOutline } from "react-icons/md";
 
 const Projects = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [tableData, setTableData] = useState([]); // Ensure it's an empty array initially
   const [filter, setFilter] = useState({
     account: "",
     operationStatus: "",
     orderedBy: "",
-  }); // State for multiple dropdown filters
+  });
+
   const toggleModal = () => setIsOpen(!isOpen);
 
   const mtsTargets = [
@@ -33,104 +35,48 @@ const Projects = () => {
     "Rating",
   ];
 
-  // Sample data
-  const tableData = [
-    [
-      "20.10.2025",
-      "Web Insider",
-      "Darkanat08",
-      "Wip",
-      "google.com",
-      "Rakib",
-      "30.10.2025",
-      "Working",
-      "$160",
-      "0",
-      "5",
-    ],
-    [
-      "22.10.2025",
-      "wpPro7",
-      "Darkanat09",
-      "Completed",
-      "bing.com",
-      "Rifat",
-      "01.11.2025",
-      "Completed",
-      "$180",
-      "4",
-      "4",
-    ],
-    [
-      "23.10.2025",
-      "webArison",
-      "Darkanat10",
-      "Wip",
-      "yahoo.com",
-      "Salman",
-      "05.11.2025",
-      "Pending",
-      "$200",
-      "1",
-      "3",
-    ],
-    [
-      "23.10.2025",
-      "webArison",
-      "Darkanat10",
-      "Wip",
-      "yahoo.com",
-      "Salman",
-      "05.11.2025",
-      "Pending",
-      "$200",
-      "1",
-      "3",
-    ],
-    [
-      "23.10.2025",
-      "webArison",
-      "Darkanat10",
-      "Wip",
-      "yahoo.com",
-      "Salman",
-      "05.11.2025",
-      "Pending",
-      "$200",
-      "1",
-      "3",
-    ],
-    [
-      "23.10.2025",
-      "webArison",
-      "Darkanat10",
-      "Wip",
-      "yahoo.com",
-      "Salman",
-      "05.11.2025",
-      "Pending",
-      "$200",
-      "1",
-      "3",
-    ],
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://192.168.10.40:3000/api/project", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            page: "1",
+            limit: "10"
+          })
+        });
 
-  // Filter rows based on selected filters
+        const data = await response.json();
+        console.log("API response:", data);
+
+        // Access data.projects if it exists
+        if (data?.projects && Array.isArray(data.projects)) {
+          setTableData(data.projects);
+        } else {
+          console.error("API response is not in the expected format:", data);
+          setTableData([]); // Fallback to empty array if response is not in the expected format
+        }
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const filteredData = tableData.filter((row) => {
-    const accountMatch = filter.account ? row[1] === filter.account : true;
-    const statusMatch = filter.operationStatus
-      ? row[3] === filter.operationStatus
-      : true;
-    const orderedByMatch = filter.orderedBy
-      ? row[5] === filter.orderedBy
-      : true;
+    const accountMatch = filter.account ? row.account === filter.account : true;
+    const statusMatch = filter.operationStatus ? row.operationStatus === filter.operationStatus : true;
+    const orderedByMatch = filter.orderedBy ? row.orderedBy === filter.orderedBy : true;
     return accountMatch && statusMatch && orderedByMatch;
   });
 
-  // Get unique values for dropdowns
-  const uniqueAccounts = [...new Set(tableData.map((row) => row[1]))];
+  const uniqueAccounts = [...new Set(tableData.map((row) => row.account))];
   const operationStatuses = ["Wip", "Completed", "Pending"];
-  const orderedByOptions = ["Rakib", "Rifat", "Salman"];
+  const orderedByOptions = [...new Set(tableData.map((row) => row.orderedBy))];
 
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
@@ -139,15 +85,17 @@ const Projects = () => {
         {mtsTargets.map(({ title, amount, note }, idx) => (
           <div
             key={idx}
-            className="relative bg-primary p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] w-[10%] lg:h-28 "
+            className="relative bg-primary p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] lg:h-28"
           >
             <h2 className="text-sm md:text-xl">{title}</h2>
             <h2 className="text-sm md:text-xl">{amount}</h2>
             <div className="absolute top-2 right-2 group">
               <MdInfoOutline className="text-xl" />
-              <div className="absolute top-6 right-0 bg-black text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 w-40 pointer-events-none">
-                {note}
-              </div>
+              {note && (
+                <div className="absolute top-6 right-0 bg-black text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 w-40 pointer-events-none">
+                  {note}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -155,7 +103,6 @@ const Projects = () => {
 
       {/* Filter Dropdowns */}
       <div className="my-4 flex gap-4 mt-10">
-        {/* Account Filter */}
         <select
           value={filter.account}
           onChange={(e) => setFilter({ ...filter, account: e.target.value })}
@@ -169,12 +116,9 @@ const Projects = () => {
           ))}
         </select>
 
-        {/* Operation-Status Filter */}
         <select
           value={filter.operationStatus}
-          onChange={(e) =>
-            setFilter({ ...filter, operationStatus: e.target.value })
-          }
+          onChange={(e) => setFilter({ ...filter, operationStatus: e.target.value })}
           className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
         >
           <option value="">Filter by Operation Status</option>
@@ -185,7 +129,6 @@ const Projects = () => {
           ))}
         </select>
 
-        {/* Ordered by Filter */}
         <select
           value={filter.orderedBy}
           onChange={(e) => setFilter({ ...filter, orderedBy: e.target.value })}
@@ -200,40 +143,39 @@ const Projects = () => {
         </select>
       </div>
 
-      {/* Project Details Table */}
+      {/* Project Table */}
       <div className="overflow-x-auto mt-10">
-        <table className="w-full min-w-[1000px] text-left ">
+        <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className="bg-secondary text-white text-[16px] border border-white ">
+            <tr className="bg-secondary text-white text-[16px] border border-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-3 border border-white ${
-                    i === 0 ? "border-x" : ""
-                  } `}
+                  className={`px-2 py-3 border border-white ${i === 0 ? "border-x" : ""}`}
                 >
                   {head}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className=" border-2 border-white">
+          <tbody className="border-2 border-white">
             {filteredData.length > 0 ? (
               filteredData.map((row, i) => (
                 <tr
                   key={i}
-                  className="odd:bg-primary even:bg-primary/70 text-white text-sm  hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
+                  className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                 >
-                  {row.map((text, idx) => (
-                    <td
-                      key={idx}
-                      className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
-                        idx === 0 ? "border-x" : ""
-                      } `}
-                    >
-                      {text}
-                    </td>
-                  ))}
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.date}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.account}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.clientName}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.operationStatus}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.sheetLink}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.orderedBy}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.deliveryLastDate}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.profileStatus}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.afterFiverr}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.tips}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.rating}</td>
                 </tr>
               ))
             ) : (
@@ -251,7 +193,7 @@ const Projects = () => {
       <div className="mb-4 mt-6">
         <button
           onClick={toggleModal}
-          className=" bg-primary hover:bg-secondary text-accent font-normal px-4 py-2 rounded text-xl transition duration-300"
+          className="bg-primary hover:bg-secondary text-accent font-normal px-4 py-2 rounded text-xl transition duration-300"
         >
           Add New Projects
         </button>
@@ -271,7 +213,7 @@ const Projects = () => {
 
             <form className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
+                {[ 
                   { label: "Date", type: "date" },
                   { label: "Account" },
                   { label: "Client Name" },
