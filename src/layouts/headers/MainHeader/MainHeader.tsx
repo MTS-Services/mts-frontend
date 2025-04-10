@@ -24,7 +24,11 @@ const Header: React.FC = () => {
   };
 
   return (
+<<<<<<< HEAD
     <header className='w-full bg-background text-white border-b border-gray-200'>
+=======
+    <header className='w-full bg-background text-accent shadow-md'>
+>>>>>>> 5c1f4e13d190922b8dbf15e96c9806ff2d2b2ec8
       <div className='max-w-[1400px] mx-auto flex items-center justify-between p-4 font-rubik'>
         {/* Logo */}
         <Link to='/' className='flex items-center'>
