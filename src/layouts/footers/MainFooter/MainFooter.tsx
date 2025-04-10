@@ -122,7 +122,7 @@ const Contact = () => (
     <h3 className='text-lg font-semibold mb-3 leading-normal text-white'>
       Contact Us
     </h3>
-    <ul className='text-center md:text-left'>
+    <ul className='text-center md:text-left '>
       <li className='flex items-center gap-2 justify-center md:justify-start'>
         <FaEnvelope size={16} className='text-primary' />
         contact@maktechsolution.com

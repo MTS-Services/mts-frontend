@@ -12,7 +12,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-background font-[Rubik]'>
+    <div className='flex relative items-center justify-center min-h-screen bg-background font-[Rubik]'>
       <div
         className='absolute top-0 left-0 w-full h-full bg-cover bg-center opacity-50'
         style={{ backgroundImage: 'url(/images/background.jpg)' }}
