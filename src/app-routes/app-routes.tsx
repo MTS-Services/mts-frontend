@@ -9,6 +9,7 @@ import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import BestContributors from "../pages/bestContributor/BestContributors";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
+import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -62,6 +63,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "todaytask",
         element: <TodayTask/>,
+      },
+      {
+        path: "performance",
+        element: <Performance/>,
       },
     ],
   },
