@@ -139,10 +139,10 @@ const ServicesCart = () => {
           <div className="text-4xl text-[#FFF] mb-4">
             <FontAwesomeIcon icon={service.icon} />
           </div>
-          <h3 className="text-[24px] font-semibold text-primary mb-2">
+          <h3 className="text-[24px] font-semibold text-primary mb-2 font-primary">
             {service.title}
           </h3>
-          <p className="text-[#FFF]">{service.description}</p>
+          <p className="text-[#FFF] font-secondary">{service.description}</p>
         </div>
       ))}
     </div>
