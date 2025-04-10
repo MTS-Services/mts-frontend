@@ -127,7 +127,6 @@ const Contact = () => (
         <FaEnvelope size={16} className='text-primary' />
         contact@maktechsolution.com
       </li>
-      <li>hello test </li>
       <li className='flex items-center gap-2 justify-center md:justify-start'>
         <FaPhoneAlt size={16} className='text-primary' />
         Phone: 01886-159495
