@@ -24,9 +24,9 @@ const RisingTalent = () => {
 
 
    <div className="md:mb-4 mb-4 lg:mb-6">
-  <h4 className="lg:text-4xl overflow-y-auto leading-[67px] xl:text-4xl font-primary text-4xl font-extrabold  text-accent">
+  <h3 className="lg:text-4xl overflow-y-auto leading-[67px] xl:text-4xl font-primary text-4xl font-extrabold  text-accent">
     Rising Talent
-  </h4>
+  </h3>
 
   <div className="flex items-center  gap-2 w-[200px]">
     <div className="flex-grow border-t-2 border-primary w-4"></div> {/* Left side of the divider */}
