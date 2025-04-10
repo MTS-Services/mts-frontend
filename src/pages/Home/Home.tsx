@@ -1,6 +1,5 @@
 import CtaSection from "../../components/Home/CtaSection/CtaSection";
 import HeroSection from "../../components/Home/HeroSection/HeroSection";
-import ProjectsSlider from "../../components/Home/ProjectsSlider/ProjectsSlider";
 // import Services from "../../components/Home/Services/Services";
 import ServicesCart from "../../components/Home/ServicesCart/ServicesCart";
 
@@ -12,17 +11,6 @@ function Home() {
       <ServicesCart></ServicesCart>
       {/* <Services></Services> */}
       <CtaSection></CtaSection>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-      <h1>this is test</h1>
-
-      <ProjectsSlider></ProjectsSlider>
     </div>
   );
 }
