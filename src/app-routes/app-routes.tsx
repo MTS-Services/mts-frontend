@@ -7,6 +7,7 @@ import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
 import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import BestContributors from "../pages/bestContributor/BestContributors";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 
@@ -43,6 +44,11 @@ const AppRoutes = createBrowserRouter([
       {
         path: "*",
         element: <NotFoundPage />,
+      },
+
+      {
+        path: "/bestContributor",
+        element:<BestContributors></BestContributors>,
       },
     ],
   },

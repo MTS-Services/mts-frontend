@@ -59,9 +59,8 @@ const Performance = () => {
       <div>
         <div className="flex items-center gap-4 mb-5 mt-14">
           <h2 className="text-white text-4xl my-5">Last Quarter</h2>
-
           <select
-            className="bg-background text-white px-4 py-1  rounded outline-none"
+            className="bg-background text-white px-4 py-1 rounded outline-none"
             value={selectedQuater}
             onChange={(e) => setSelectedQuater(e.target.value)}
           >
@@ -73,7 +72,6 @@ const Performance = () => {
           </select>
         </div>
 
-        {/* Dashboard Summary Cards */}
         <div className="flex flex-wrap items-start gap-2">
           {lastQuarter.map(({ title, amount, note }, idx) => (
             <div
@@ -96,11 +94,10 @@ const Performance = () => {
       </div>
 
       <div>
-        {/* Header with Month Select */}
         <div className="flex items-center gap-4 mb-5 mt-14">
           <h2 className="text-white text-4xl">Current Month</h2>
           <select
-            className="bg-background text-white px-4 py-1  rounded outline-none"
+            className="bg-background text-white px-4 py-1 rounded outline-none"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
           >
@@ -112,7 +109,6 @@ const Performance = () => {
           </select>
         </div>
 
-        {/* Dashboard Summary Cards */}
         <div className="flex flex-wrap items-start gap-2">
           {currentMonth.map(({ title, amount, note }, idx) => (
             <div
@@ -136,11 +132,9 @@ const Performance = () => {
 
       <div>
         <div className="flex items-center gap-4 mb-5 mt-14">
-          <h2 className="text-white text-4xl mb-5 ">
-            Monthly Destribution
-          </h2>
+          <h2 className="text-white text-4xl mb-5">Monthly Destribution</h2>
           <select
-            className="bg-background text-white px-4 py-1  rounded outline-none"
+            className="bg-background text-white px-4 py-1 rounded outline-none"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
           >
@@ -152,7 +146,6 @@ const Performance = () => {
           </select>
         </div>
 
-        {/* Project Details Table */}
         <div className="overflow-x-auto mt-10">
           <table className="w-full min-w-[1000px] text-left">
             <thead>
@@ -170,31 +163,47 @@ const Performance = () => {
               </tr>
             </thead>
 
-            <tbody className=" border-2 border-white">
+            <tbody className="border-2 border-white">
               {tableData.length > 0 ? (
                 tableData.map((row, i) => (
                   <tr
                     key={i}
-                    className="odd:bg-primary even:bg-primary/70 text-white text-sm  hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
+                    className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                   >
-                    {row.map((text, idx) => (
-                      <td
-                        key={idx}
-                        className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
-                          idx === 0 ? "border-x" : ""
-                        } `}
-                      >    
-                        {text}
-                      </td>
-                    ))}
+                    {row.map((text, idx) => {
+                      if (idx === 3 || idx === 4) {
+                        return (
+                          <td
+                            key={idx}
+                            className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
+                              idx === 0 ? "border-x" : ""
+                            }`}
+                          >
+                            <input
+                              type="text"
+                              defaultValue={text}
+                              className="bg-transparent  border-white text-white outline-none w-full"
+                            />
+                          </td>
+                        );
+                      }
+
+                      return (
+                        <td
+                          key={idx}
+                          className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
+                            idx === 0 ? "border-x" : ""
+                          }`}
+                        >
+                          {text}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan={tableHeaders.length}
-                    className="text-center py-4"
-                  >
+                  <td colSpan={tableHeaders.length} className="text-center py-4">
                     No projects found.
                   </td>
                 </tr>
