@@ -1,34 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-// Types
-type FormField = {
-  value: string;
-  required?: boolean;
-  type?: 'text' | 'email' | 'tel' | 'password' | 'select';
-  options?: string[];
-};
-
-type FormData = {
-  firstName: FormField;
-  lastName: FormField;
-  email: FormField;
-  phoneNumber: FormField;
-  permanentAddress: FormField;
-  presentAddress: FormField;
-  gender: FormField;
-  bloodGroup: FormField;
-  relationship: FormField;
-  guardianRelation: FormField;
-  guardianNumber: FormField;
-  guardianAddress: FormField;
-  department: FormField;
-  religion: FormField;
-  password: FormField;
-  confirmPassword: FormField;
-  education: FormField;
-};
+import { FaUserCircle } from 'react-icons/fa'; // React icon for profile picture
 
 // Constants
 const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
@@ -42,54 +15,94 @@ const RELIGION_OPTIONS = [
   'Other',
 ];
 
+// Reusable FormField Component for rendering form inputs
+const FormField: React.FC<{
+  id: string;
+  label: string;
+  type?: string;
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
+  options?: string[];
+  fullWidth?: boolean;
+}> = ({
+  id,
+  label,
+  type = 'text',
+  value,
+  onChange,
+  options,
+  fullWidth = false,
+}) => {
+  return (
+    <div className={`relative ${fullWidth ? 'col-span-2' : ''}`}>
+      {type === 'select' ? (
+        <select
+          id={id}
+          name={id}
+          className='peer w-full border-b-2 border-gray-300 text-gray-500 bg-transparent focus:outline-none focus:border-primary placeholder-transparent'
+          value={value}
+          onChange={onChange}
+          required
+        >
+          <option value=''>Select {label}</option>
+          {options?.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          id={id}
+          name={id}
+          type={type}
+          placeholder={label}
+          className='peer h-14 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
+          value={value}
+          onChange={onChange}
+          required
+        />
+      )}
+      <label
+        htmlFor={id}
+        className='absolute left-0 -top-4 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
+      >
+        {label}
+      </label>
+    </div>
+  );
+};
+
 const RegisterForm: React.FC = () => {
-  // State
-  const [formData, setFormData] = useState<FormData>({
-    firstName: { value: '', required: true },
-    lastName: { value: '', required: true },
-    email: { value: '', required: true, type: 'email' },
-    phoneNumber: { value: '', required: true, type: 'tel' },
-    permanentAddress: { value: '', required: true },
-    presentAddress: { value: '', required: true },
-    gender: {
-      value: '',
-      required: true,
-      type: 'select',
-      options: GENDER_OPTIONS,
-    },
-    bloodGroup: {
-      value: '',
-      required: true,
-      type: 'select',
-      options: BLOOD_GROUP_OPTIONS,
-    },
-    relationship: { value: '' },
-    guardianRelation: { value: '' },
-    guardianNumber: { value: '', type: 'tel' },
-    guardianAddress: { value: '' },
-    department: {
-      value: '',
-      required: true,
-      type: 'select',
-      options: DEPARTMENT_OPTIONS,
-    },
-    religion: { value: '', type: 'select', options: RELIGION_OPTIONS },
-    password: { value: '', required: true, type: 'password' },
-    confirmPassword: { value: '', required: true, type: 'password' },
-    education: { value: '' },
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    gender: '',
+    bloodGroup: '',
+    permanentAddress: '',
+    presentAddress: '',
+    relationship: '',
+    guardianRelation: '',
+    guardianNumber: '',
+    guardianAddress: '',
+    department: '',
+    religion: '',
+    confirmPassword: '',
+    education: '',
   });
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [rememberMe, setRememberMe] = useState(false);
 
-  // Handlers
-  const handleChange = (
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: { ...prev[name as keyof FormData], value },
+      [name]: value,
     }));
   };
 
@@ -101,219 +114,202 @@ const RegisterForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ formData, profileImage, rememberMe });
-    // Handle form submission
-  };
-
-  // Form field groups for better organization
-  const fieldGroups = [
-    [
-      { id: 'firstName', label: 'First Name' },
-      { id: 'lastName', label: 'Last Name' },
-    ],
-    [
-      { id: 'email', label: 'E-mail' },
-      { id: 'phoneNumber', label: 'Phone Number' },
-    ],
-    [
-      { id: 'permanentAddress', label: 'Permanent Address' },
-      { id: 'presentAddress', label: 'Present Address' },
-    ],
-    [
-      { id: 'gender', label: 'Gender' },
-      { id: 'bloodGroup', label: 'Blood Group' },
-    ],
-    [
-      { id: 'relationship', label: 'Relationship' },
-      { id: 'guardianRelation', label: 'Guardian Relation' },
-    ],
-    [
-      { id: 'guardianNumber', label: 'Guardian Number' },
-      { id: 'guardianAddress', label: 'Guardian Address' },
-    ],
-    [
-      { id: 'department', label: 'Department' },
-      { id: 'religion', label: 'Religion' },
-    ],
-    [
-      { id: 'password', label: 'Password' },
-      { id: 'confirmPassword', label: 'Confirm Password' },
-    ],
-    [{ id: 'education', label: 'Education', fullWidth: true }],
-  ];
-
-  // Component for rendering form fields
-  const FormField = ({
-    id,
-    label,
-    fullWidth = false,
-  }: {
-    id: keyof FormData;
-    label: string;
-    fullWidth?: boolean;
-  }) => {
-    const field = formData[id];
-
-    return (
-      <div className={`relative ${fullWidth ? 'col-span-2' : ''}`}>
-        {field.type === 'select' ? (
-          <>
-            <select
-              id={id}
-              name={id}
-              className='peer w-full border-b-2 border-gray-300 text-background bg-transparent focus:outline-none focus:border-primary placeholder-transparent'
-              required={field.required}
-              value={field.value}
-              onChange={handleChange}
-            >
-              <option value=''>Select {label}</option>
-              {field.options?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <label className='absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-focus:-top-3.5 peer-focus:text-primary peer-focus:text-sm'>
-              {label}
-              {field.required && '*'}
-            </label>
-          </>
-        ) : (
-          <>
-            <input
-              id={id}
-              name={id}
-              type={field.type || 'text'}
-              placeholder={label}
-              className={`peer h-10 w-full border-b-2 border-gray-300 text-background bg-transparent placeholder-transparent focus:outline-none focus:border-primary font-poppins placeholder:font-poppins`}
-              required={field.required}
-              value={field.value}
-              onChange={handleChange}
-            />
-            <label className='absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-primary peer-focus:text-sm'>
-              {label}
-              {field.required && '*'}
-            </label>
-          </>
-        )}
-      </div>
-    );
+    console.log(formData);
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen  bg-gray-100 p-4 font-rubik'>
-      <div className='w-full max-w-[800px] rounded-xl shadow-2xl p-6 md:p-8 space-y-6 bg-white'>
-        <header className='text-center space-y-2'>
-          <h1 className='text-2xl md:text-3xl font-extrabold text-gray-900'>
-            Register
-          </h1>
-          <p className='text-gray-600'>Create your account to get started</p>
-        </header>
+    <section className='flex justify-center items-center min-h-screen bg-background p-4 font-primary'>
+      <div className='flex items-center justify-center'>
+        <div
+          className='w-full h-full bg-cover bg-center opacity-50'
+          style={{ backgroundImage: 'url(/images/background.jpg)' }}
+        ></div>
 
-        <form onSubmit={handleSubmit} className='space-y-6'>
-          {/* Dynamic form fields */}
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
-            {fieldGroups.map((group, groupIndex) => (
-              <React.Fragment key={`group-${groupIndex}`}>
-                {group.map(
-                  ({
-                    id,
-                    label,
-                    fullWidth,
-                  }: {
-                    id: string;
-                    label: string;
-                    fullWidth?: boolean;
-                  }) => (
-                    <FormField
-                      key={id}
-                      id={id as keyof FormData}
-                      label={label}
-                      fullWidth={fullWidth}
-                    />
-                  )
-                )}
-              </React.Fragment>
-            ))}
+        <div className='w-full max-w-[1400px] p-24 space-y-8 bg-background border-2 border-gray-400 shadow-xl rounded-xl flex flex-col md:flex-row space-x-12'>
+          <div className='flex flex-col items-center justify-center w-full md:w-100 text-center md:text-left space-y-6'>
+            <h2 className='text-5xl font-extrabold text-white'>Register</h2>
+            <p className='text-lg text-gray-500'>Register to your account</p>
           </div>
 
-          {/* Profile Picture Upload */}
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium text-gray-700'>
-              Profile Picture (DP)
-            </label>
-            <div className='flex items-center'>
-              <div className='flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200'>
-                {profileImage ? (
-                  <img
-                    src={URL.createObjectURL(profileImage)}
-                    alt='Profile preview'
-                    className='h-full w-full object-cover'
-                  />
-                ) : (
-                  <svg
-                    className='h-full w-full text-gray-400'
-                    fill='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
-                  </svg>
-                )}
-              </div>
-              <label className='ml-4'>
-                <span className='py-2 px-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors'>
-                  Upload Photo
-                </span>
-                <input
-                  type='file'
-                  className='sr-only'
-                  accept='image/*'
-                  onChange={handleFileChange}
+          <div className='w-full md:w-150 space-y-6'>
+            <form onSubmit={handleSubmit} className='space-y-8'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+                <FormField
+                  id='firstName'
+                  label='First Name'
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                 />
-              </label>
-            </div>
-          </div>
+                <FormField
+                  id='lastName'
+                  label='Last Name'
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='email'
+                  label='E-mail'
+                  type='email'
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='phoneNumber'
+                  label='Phone Number'
+                  type='tel'
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='permanentAddress'
+                  label='Permanent Address'
+                  value={formData.permanentAddress}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='presentAddress'
+                  label='Present Address'
+                  value={formData.presentAddress}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='gender'
+                  label='Gender'
+                  type='select'
+                  options={GENDER_OPTIONS}
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='bloodGroup'
+                  label='Blood Group'
+                  type='select'
+                  options={BLOOD_GROUP_OPTIONS}
+                  value={formData.bloodGroup}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='relationship'
+                  label='Relationship'
+                  value={formData.relationship}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='guardianRelation'
+                  label='Guardian Relation'
+                  value={formData.guardianRelation}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='guardianNumber'
+                  label='Guardian Number'
+                  type='tel'
+                  value={formData.guardianNumber}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='guardianAddress'
+                  label='Guardian Address'
+                  value={formData.guardianAddress}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='department'
+                  label='Department'
+                  type='select'
+                  options={DEPARTMENT_OPTIONS}
+                  value={formData.department}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='religion'
+                  label='Religion'
+                  type='select'
+                  options={RELIGION_OPTIONS}
+                  value={formData.religion}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='password'
+                  label='Password'
+                  type='password'
+                  value={formData.password}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='confirmPassword'
+                  label='Confirm Password'
+                  type='password'
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+                <FormField
+                  id='education'
+                  label='Education'
+                  value={formData.education}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+              </div>
 
-          {/* Remember Me */}
-          <div className='flex items-center'>
-            <input
-              id='remember-me'
-              type='checkbox'
-              className='h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded'
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
-            />
-            <label
-              htmlFor='remember-me'
-              className='ml-2 block text-sm text-gray-500'
-            >
-              Remember me
-            </label>
-          </div>
+              {/* Profile Picture Upload */}
+              <div className='space-y-2'>
+                <label className='block text-sm font-medium text-gray-500'>
+                  Profile Picture (DP)
+                </label>
+                <div className='flex items-center'>
+                  <div className='flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-gray-200'>
+                    {profileImage ? (
+                      <img
+                        src={URL.createObjectURL(profileImage)} // Image preview
+                        alt='Profile preview'
+                        className='h-full w-full object-cover'
+                      />
+                    ) : (
+                      <FaUserCircle className='h-full w-full text-gray-400' />
+                    )}
+                  </div>
+                  <label
+                    htmlFor='file-upload' // This links the label to the file input
+                    className='ml-4 cursor-pointer py-2 px-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors'
+                  >
+                    Upload Photo
+                  </label>
+                  <input
+                    id='file-upload' // Make sure the file input ID matches the label htmlFor
+                    type='file'
+                    className='sr-only' // Make the file input visually hidden
+                    accept='image/*'
+                    onChange={handleFileChange} // This will handle the file selection
+                  />
+                </div>
+              </div>
 
-          {/* Submit Button */}
-          {/* Submit Button */}
-          <div className='flex justify-center'>
-            <button
-              className='relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
-              type='submit'
-            >
-              Register
-            </button>
-          </div>
-        </form>
+              {/* Submit Button */}
+              <div className='flex justify-center'>
+                <button
+                  className='relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
+                  type='submit'
+                >
+                  Register
+                </button>
+              </div>
 
-        <footer className='text-center text-sm text-gray-500'>
-          Already have an account?{' '}
-          <Link
-            to='/login'
-            className='text-primary hover:text-primary hover:underline transition-colors'
-          >
-            Sign in
-          </Link>
-        </footer>
+              {/* Footer - Already have an account? Sign in */}
+              <footer className='flex justify-center text-sm text-gray-500'>
+                Already have an account?{' '}
+                <Link
+                  to='/login'
+                  className='text-primary hover:text-primary hover:underline transition-colors'
+                >
+                  Sign In
+                </Link>
+              </footer>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
