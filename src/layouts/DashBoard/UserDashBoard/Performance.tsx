@@ -183,7 +183,7 @@ const Performance = () => {
                         className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
                           idx === 0 ? "border-x" : ""
                         } `}
-                      >
+                      >    
                         {text}
                       </td>
                     ))}
