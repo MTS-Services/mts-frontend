@@ -24,7 +24,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className='w-full bg-background text-white shadow-md'>
+    <header className='w-full bg-background text-accent shadow-md'>
       <div className='max-w-[1400px] mx-auto flex items-center justify-between p-4 font-rubik'>
         {/* Logo */}
         <Link to='/' className='flex items-center'>
