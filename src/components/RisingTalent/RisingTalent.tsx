@@ -1,4 +1,3 @@
-import React from "react";
 
 // Static member data
 const risingtelent = [

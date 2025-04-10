@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy,  faGift,  faLaptopCode, faUsers, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy,  faGift,  faLaptopCode} from '@fortawesome/free-solid-svg-icons';
 import { GiAchievement } from "react-icons/gi";  // Importing GiAchievement icon
 import { FcDepartment } from "react-icons/fc";
 import { FaUsers } from 'react-icons/fa';
