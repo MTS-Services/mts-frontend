@@ -5,15 +5,15 @@ import RisingTalent from "../../components/RisingTalent/RisingTalent"
 function BestContributors  ()  {
   return (
    <div>
-     <div className="bg-background">
+     <div className="bg-background border-b-1 border-accent/30 border-dashed ">
       <BestContributor></BestContributor>
     </div>
 
-     <div className="bg-secondary">
+     <div className="bg-background border-b-1 border-accent/30 border-dashed ">
       <RisingTalent></RisingTalent>
     </div>
 
-     <div className="bg-background">
+     <div className="bg-background border-b-1 border-accent/30 ">
       <PunctualityAwards></PunctualityAwards>
      </div>
 
