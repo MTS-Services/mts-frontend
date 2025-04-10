@@ -57,24 +57,24 @@ const Footer: React.FC = () => {
 
   return (
     <footer className='w-full bg-background text-white font-[Rubik]'>
-      <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-5 gap-10'>
+      <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-4 md:grid-cols-6 gap-8  font-size-sm'>
         {/* Logo Section */}
-        <div className='text-center md:text-left'>
+        <div className='text-center md:text-left col-start-1 col-end-3'>
           <Link to='/' className='flex items-center'>
             <img className='w-48' src='/images/logo.png' alt='Logo' />
           </Link>
-          <p className='text-gray-400 text-sm leading-normal'>
+          <p className='text-gray-400 text-base leading-normal pt-4'>
             MAK Tech Solution offers IT services, specializing in WordPress &
             development with 60+ experts, turning visions into reality.
           </p>
         </div>
 
         {/* Branches */}
-        <div className='text-center md:text-left'>
+        <div className='text-center md:text-left col-start-3 col-end-5'>
           <h3 className='text-lg font-semibold mb-3 leading-normal'>
             Branches
           </h3>
-          <ul className='space-y-2 text-gray-400 text-sm leading-normal'>
+          <ul className='space-y-2 text-gray-400 leading-normal text-base'>
             <li className='flex items-start gap-2 justify-center md:justify-start'>
               <SiGooglemaps size={50} className='text-primary' />
               MAK Tech Solution (Jamuna): 6th Floor, A Majid Tower, Ka-24
@@ -82,8 +82,8 @@ const Footer: React.FC = () => {
             </li>
             <li className='flex items-center gap-2 mt-4 justify-center md:justify-start'>
               <SiGooglemaps size={50} className='text-primary' />
-              MAK Tech Solution (Banasree): Abdullah Park,House 180/6/23/CAD
-              Avenue Road 14, Block-C. Dhaka 1219
+              MAK Tech Solution (Banasree): Abdullah Park, House 180/6/23/CAD,
+              Road-14, Block-C, Banasree, Dhaka 1219 (above PizzaBurg).
             </li>
           </ul>
         </div>
@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
           <h3 className='text-lg font-semibold mb-3 leading-normal'>
             Market Places
           </h3>
-          <ul className='space-y-2 text-gray-400 text-sm leading-normal'>
+          <ul className='space-y-2 text-gray-400 text-base leading-normal'>
             {marketplaces.map((marketplace, idx) => (
               <li key={idx}>
                 <a
@@ -115,35 +115,34 @@ const Footer: React.FC = () => {
           <h3 className='text-lg font-semibold mb-3 leading-normal'>
             Contact Us
           </h3>
-          <ul className='space-y-2 text-gray-400 text-sm leading-normal'>
+          <ul className='space-y-2 text-gray-400 text-base leading-normal'>
             <li className='flex items-center gap-2 justify-center md:justify-start'>
-              <FaEnvelope size={16} className='text-primary' />
+              <FaEnvelope size={2} className='text-primary' />
               contact@maktechsolution.com
             </li>
             <li className='flex items-center gap-2 justify-center md:justify-start'>
-              <FaPhoneAlt size={16} className='text-primary' />
+              <FaPhoneAlt size={14} className='text-primary' />
               Phone: 01886-159495
             </li>
           </ul>
-        </div>
-
-        {/* Follow Us */}
-        <div className='flex flex-col items-center md:items-start'>
-          <h3 className='text-lg font-semibold mb-3 leading-normal'>
-            Follow Us
-          </h3>
-          <div className='flex gap-5'>
-            {socialLinks.map((social, idx) => (
-              <a
-                key={idx}
-                href={social.href}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-gray-300 hover:text-primary transition-colors'
-              >
-                {social.icon}
-              </a>
-            ))}
+          {/* Follow us on: */}
+          <div className='flex flex-col items-center md:items-start mt-1.5'>
+            <h3 className='text-lg font-light mb-3 leading-normal'>
+              Follow Us
+            </h3>
+            <div className='flex gap-5'>
+              {socialLinks.map((social, idx) => (
+                <a
+                  key={idx}
+                  href={social.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-gray-300 hover:text-primary transition-colors'
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
