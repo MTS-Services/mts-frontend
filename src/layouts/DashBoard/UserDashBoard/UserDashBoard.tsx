@@ -9,6 +9,7 @@ import {
 } from "react-icons/io";
 import Projects from "./Projects";
 import TodayTask from "./TodayTask";
+import Performance from "./Performance";
 
 const UserDashBoard = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,6 +19,7 @@ const UserDashBoard = () => {
     { icon: <FaHome />, label: "Home", path: "/" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
+    { icon: <FaTasks />, label: "Performance", path: "performance" },
   ];
 
   return (
@@ -161,6 +163,14 @@ const UserDashBoard = () => {
             element={
               <h1 className="text-2xl font-semibold">
                 <TodayTask></TodayTask>
+              </h1>
+            }
+          />
+          <Route
+            path="performance"
+            element={
+              <h1 className="text-2xl font-semibold">
+                <Performance></Performance>
               </h1>
             }
           />
