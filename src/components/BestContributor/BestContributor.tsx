@@ -24,22 +24,22 @@ function BestContributor  ()  {
       <h4 className="text-2xl font-primary font-extrabold  text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent text-shadow-md transform transition-all duration-300">
         Md. Shakil Munshi
       </h4>
-      <p className="text-sm text-white  mb-2 font-primary "> Full Stack Developer </p>
+      <p className="text-sm text-accent  mb-2 font-primary "> Full Stack Developer </p>
       {/* Team Name with two icons */}
-      <p className="text-lg text-white font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
+      <p className="text-lg text-accent font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
         <FaUsers className='mr-2 text-primary' />
 
         Team Name : Joni Team
       </p>
       {/* <p className="text-lg text-white font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20">Team Name : Joni Team </p> */}
 
-  <p className="text-lg text-white font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
+  <p className="text-lg text-accent font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
         <FcDepartment className='mr-2 text-primary'/>
         Department : Full Stack
       </p>
 
 
-        <p className="text-xl text-white font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
+        <p className="text-xl  text-accent font-medium mb-2 font-primary border-b-1 pb-1 border-accent/20 flex items-center">
         <GiAchievement className="mr-2 text-primary" /> {/* Achievement icon */}
         Achieve Amount : <strong className="text-primary font-primary px-1"> $4800</strong>
       </p>
