@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { Link, Routes, Route, useLocation } from "react-router-dom";
-import { FaHome, FaMoon, FaProjectDiagram, FaTasks } from "react-icons/fa";
+import { FaHome, FaProjectDiagram, FaTasks } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { PiSunDimFill } from "react-icons/pi";
 import {
-  IoMdArrowDroprightCircle,
   IoMdArrowDropleftCircle,
+  IoMdArrowDroprightCircle,
 } from "react-icons/io";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
+import ToggleDarkAndLight from "../../../components/ToggleDarkAndLight/ToggleDarkAndLight";
+import { useTheme } from "../../../context/ThemeContext";
+import Performance from "./Performance";
 import Projects from "./Projects";
 import TodayTask from "./TodayTask";
-import Performance from "./Performance";
-import ToggleDarkAndLight from "../../../components/ToggleDarkAndLight/ToggleDarkAndLight";
 
 const UserDashBoard = () => {
+  const { toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
@@ -24,7 +25,7 @@ const UserDashBoard = () => {
   ];
 
   return (
-    <div className="flex ">
+    <div className={`flex`}>
       {/* Sidebar */}
       <div
         className={`min-h-screen bg-background text-white shadow-xl shadow-black z-1  ${
@@ -111,6 +112,7 @@ const UserDashBoard = () => {
 
       {/* Content Area */}
       <div className=" w-full ">
+        <button onClick={toggleTheme}>okk</button>
         <Routes>
           <Route
             path="/dashboard"
