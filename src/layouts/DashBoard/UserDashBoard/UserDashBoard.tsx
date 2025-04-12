@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks } from "react-icons/fa";
+import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import {
   IoMdArrowDropleftCircle,
@@ -11,6 +11,7 @@ import { useTheme } from "../../../context/ThemeContext";
 import Performance from "./Performance";
 import Projects from "./Projects";
 import TodayTask from "./TodayTask";
+import UserListPage from "../../../pages/userListpage/UserListPage";
 
 const UserDashBoard = () => {
   const { toggleTheme } = useTheme();
@@ -22,6 +23,7 @@ const UserDashBoard = () => {
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    { icon: <FaUser />, label: "User List", path: "userlist" },
   ];
 
   return (
@@ -149,6 +151,16 @@ const UserDashBoard = () => {
             element={
               <h1 className="text-2xl font-semibold">
                 <Performance></Performance>
+              </h1>
+            }
+          />
+          <Route
+            path="userlist"
+            element={
+              <h1 className="text-2xl font-semibold">
+                <UserListPage></UserListPage>
+                {/* User List ta import korben */}
+                
               </h1>
             }
           />
