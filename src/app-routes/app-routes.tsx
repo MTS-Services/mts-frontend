@@ -10,6 +10,7 @@ import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import BestContributors from "../pages/bestContributor/BestContributors";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import UserListPage from "../pages/userListpage/UserListPage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -48,7 +49,11 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "/bestContributor",
-        element:<BestContributors></BestContributors>,
+        element:<BestContributors/>,
+      },
+       {
+        path: "userlist",
+        element:<UserListPage/>,
       },
     ],
   },
@@ -68,6 +73,13 @@ const AppRoutes = createBrowserRouter([
         path: "performance",
         element: <Performance/>,
       },
+      
+      {
+        path: "userlist",
+        element:<UserListPage/>,
+      },
+      
+     
     ],
   },
 ]);

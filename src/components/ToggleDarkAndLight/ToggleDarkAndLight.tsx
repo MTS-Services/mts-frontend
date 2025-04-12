@@ -5,15 +5,18 @@ import { useTheme } from "../../context/ThemeContext";
 
 const ToggleDarkAndLight = ({ isOpen }) => {
   const [isChecked, setIsChecked] = useState(false);
-const {theme, toggleTheme} =useTheme()
- 
+  const { toggleTheme } = useTheme();
+
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
 
   return (
     <div>
-      <label onClick={toggleTheme} className="themeSwitcherThree relative inline-flex cursor-pointer select-none items-center">
+      <button
+        onClick={toggleTheme}
+        className="themeSwitcherThree relative inline-flex cursor-pointer select-none items-center"
+      >
         <input
           type="checkbox"
           checked={isChecked}
@@ -62,7 +65,7 @@ const {theme, toggleTheme} =useTheme()
             </div>
           </div>
         </div>
-      </label>
+      </button>
     </div>
   );
 };
