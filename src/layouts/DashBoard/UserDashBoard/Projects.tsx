@@ -165,17 +165,17 @@ const Projects = () => {
                   key={i}
                   className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                 >
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.date}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.date}</td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.account}</td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.clientName}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.operationStatus}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.sheetLink}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.orderedBy}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.deliveryLastDate}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.profileStatus}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.afterFiverr}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.tips}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.rating}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.ops_status}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.sheet_link}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.ordered_by}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.deli_last_date}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.status}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">${row?.after_fiverr_amount}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">${row?.bonus}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.rating}</td>
                 </tr>
               ))
             ) : (
