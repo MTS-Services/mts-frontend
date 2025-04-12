@@ -68,6 +68,7 @@ const Projects = () => {
   }, []);
 
   const filteredData = tableData.filter((row) => {
+
     const accountMatch = filter.account ? row.account === filter.account : true;
     const statusMatch = filter.operationStatus
       ? row.operationStatus === filter.operationStatus
@@ -199,11 +200,14 @@ const Projects = () => {
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
                     {row?.date
-                      ? new Date(row?.deli_last_date).toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })
+                      ? new Date(row?.deli_last_date).toLocaleDateString(
+                          "en-US",
+                          {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )
                       : ""}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
@@ -213,7 +217,7 @@ const Projects = () => {
                     ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                  ${Number(row?.bonus || 0).toFixed(2)}
+                    ${Number(row?.bonus || 0).toFixed(2)}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
                     {row?.rating}
