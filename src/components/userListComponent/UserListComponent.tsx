@@ -112,11 +112,11 @@ const UserListComponent = () => {
       <div className="overflow-x-auto mt-10">
         <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className=" text-accent text-xs">
+            <tr className=" text-accent text-lg">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-1 text-xs	  ${
+                  className={`px-2 py-1 text-lg	  ${
                     i === 0 ? "py-3" : ""
                   }`}
                 >
@@ -134,7 +134,7 @@ const UserListComponent = () => {
                   className="border-b-1 border-accent/40 border-dashed  text-accent  hover:text-accent text-sm hover:bg-primary/80 "
                 >
                   <td className="px-2 py-1 flex items-center justify-center">
-                    <div className="w-8 h-8 overflow-hidden rounded-full">
+                    <div className="w-12 h-12 overflow-hidden rounded-full">
                       <img
                         className="w-full h-full object-cover"
                         src={user.image}
@@ -142,25 +142,25 @@ const UserListComponent = () => {
                       />
                     </div>
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px]">
+                  <td className="px-1 font-thin	 py-2 text-sm">
                     {user.name}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px]">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.email}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px] ">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.phone}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px]">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.address}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px]">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.altPhone}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px]">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.job}
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-[10px] ">
+                  <td className="px-1 font-light py-2 text-base">
                     {user.education}
                   </td>
                 </tr>
