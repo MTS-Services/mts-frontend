@@ -6,7 +6,7 @@ import MainHeader from "./layouts/headers/MainHeader/MainHeader";
 import CtaSection from "./components/Home/CtaSection/CtaSection";
 
 function MainLayOut() {
-  const { theme } = useTheme();
+  const {theme} = useTheme();
   return (
     <>
       <MainHeader />

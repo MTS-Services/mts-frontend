@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks } from "react-icons/fa";
+import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import {
   IoMdArrowDropleftCircle,
@@ -22,6 +22,7 @@ const UserDashBoard = () => {
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    { icon: <FaUser />, label: "Performance", path: "userlist" },
   ];
 
   return (
@@ -149,6 +150,14 @@ const UserDashBoard = () => {
             element={
               <h1 className="text-2xl font-semibold">
                 <Performance></Performance>
+              </h1>
+            }
+          />
+          <Route
+            path="userlist"
+            element={
+              <h1 className="text-2xl font-semibold">
+                {/* User List ta import korben */}
               </h1>
             }
           />
