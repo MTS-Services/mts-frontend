@@ -38,15 +38,15 @@ const Projects = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.10.40:3000/api/project", {
+        const response = await fetch("http://192.168.10.47:3000/api/project", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             page: "1",
-            limit: "10"
-          })
+            limit: "10",
+          }),
         });
 
         const data = await response.json();
@@ -69,8 +69,12 @@ const Projects = () => {
 
   const filteredData = tableData.filter((row) => {
     const accountMatch = filter.account ? row.account === filter.account : true;
-    const statusMatch = filter.operationStatus ? row.operationStatus === filter.operationStatus : true;
-    const orderedByMatch = filter.orderedBy ? row.orderedBy === filter.orderedBy : true;
+    const statusMatch = filter.operationStatus
+      ? row.operationStatus === filter.operationStatus
+      : true;
+    const orderedByMatch = filter.orderedBy
+      ? row.orderedBy === filter.orderedBy
+      : true;
     return accountMatch && statusMatch && orderedByMatch;
   });
 
@@ -118,7 +122,9 @@ const Projects = () => {
 
         <select
           value={filter.operationStatus}
-          onChange={(e) => setFilter({ ...filter, operationStatus: e.target.value })}
+          onChange={(e) =>
+            setFilter({ ...filter, operationStatus: e.target.value })
+          }
           className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
         >
           <option value="">Filter by Operation Status</option>
@@ -151,7 +157,9 @@ const Projects = () => {
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-3 border border-white ${i === 0 ? "border-x" : ""}`}
+                  className={`px-2 py-3 border border-white ${
+                    i === 0 ? "border-x" : ""
+                  }`}
                 >
                   {head}
                 </th>
@@ -165,17 +173,51 @@ const Projects = () => {
                   key={i}
                   className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                 >
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.date}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.account}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row.clientName}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.ops_status}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.sheet_link}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.ordered_by}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.deli_last_date}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.status}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">${row?.after_fiverr_amount}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">${row?.bonus}</td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">{row?.rating}</td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.date
+                      ? new Date(row.date).toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : ""}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row.account}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row.clientName}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.ops_status}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.sheet_link}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.ordered_by}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.date
+                      ? new Date(row?.deli_last_date).toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : ""}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.status}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                  ${Number(row?.bonus || 0).toFixed(2)}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                    {row?.rating}
+                  </td>
                 </tr>
               ))
             ) : (
@@ -213,7 +255,7 @@ const Projects = () => {
 
             <form className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[ 
+                {[
                   { label: "Date", type: "date" },
                   { label: "Account" },
                   { label: "Client Name" },
