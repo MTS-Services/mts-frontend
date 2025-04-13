@@ -1,9 +1,11 @@
+import axios from "axios";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "../../components/Loading/Loading";
 import { AuthContext } from "../../context/AuthProvider";
 
 const GENDER_OPTIONS = ["Male", "Female", "Other"];
@@ -69,67 +71,78 @@ const RegisterForm: React.FC = () => {
   const { register, handleSubmit } = useForm();
   const [profileImage, setProfileImage] = React.useState<File | null>(null);
 
+  const navigate = useNavigate();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setProfileImage(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      const maxSizeMB = 2;
+      const isImage = file.type.startsWith("image/");
+      const isTooLarge = file.size > maxSizeMB * 1024 * 1024;
+
+      if (!isImage) {
+        toast.error("Only image files are allowed.");
+        return;
+      }
+      if (isTooLarge) {
+        toast.error("File size should be under 2MB.");
+        return;
+      }
+      setProfileImage(file);
     }
   };
 
   const onSubmit = async (data: any) => {
-    const { email, password, ...rest } = data;
-
     try {
-      const userCredential = await createUser(email, password); // loading = true already
+      const { email, password, ...rest } = data;
+
+      const userCredential = await createUser(email, password);
       const user = userCredential.user;
 
       if (user) {
         const formData = new FormData();
         formData.append("email", email);
-        formData.append("uid", user.uid);
-        Object.entries(rest).forEach(([key, value]) =>
-          formData.append(key, value)
-        );
+
+        Object.entries(rest).forEach(([key, value]) => {
+          if (key != "confirmPassword") {
+            formData.append(key, value);
+          }
+        });
+
         if (profileImage) {
-          formData.append("profileImage", profileImage);
+          formData.append("dp", profileImage);
         }
-        toast.success("Congratulation, Registration Successful.");
-        // database data sent
 
-        // try {
-        //   const res = await axios.post("/api/register", formData);
+        const res = await axios.post(
+          "http://192.168.10.47:3000/api/teamMember/create",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-        //   if (res.data.success) {
-        //     toast.success("Registration successful!");
-        //   } else {
-        //     throw new Error("Database save failed");
-        //   }
-        // } catch (error) {
-        //   if (axios.isAxiosError(error)) {
-        //     console.error("Axios error:", error.response?.data);
-        //     toast.error(
-        //       error.response?.data?.message || "Something went wrong"
-        //     );
-        //   } else {
-        //     console.error("Unexpected error:", error);
-        //     toast.error("Unexpected error occurred");
-        //   }
-        // }
-
-        // database data sent end
+        if (res.status === 200 || res.status === 201) {
+          toast.success(
+            "Congratulation, Registration successful! Please Login to continue"
+          );
+          navigate("/login");
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
       }
     } catch (err) {
       console.error(err);
-
-      // const currentUser = auth.currentUser;
-      // if (currentUser) {
-      //   await currentUser.delete();
-      // }
-
       toast.error("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-background p-4 font-primary">
@@ -149,12 +162,12 @@ const RegisterForm: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <FormField
-                  id="firstName"
+                  id="first_name"
                   label="First Name"
                   register={register}
                 />
                 <FormField
-                  id="lastName"
+                  id="last_name"
                   label="Last Name"
                   register={register}
                 />
@@ -165,18 +178,18 @@ const RegisterForm: React.FC = () => {
                   register={register}
                 />
                 <FormField
-                  id="phoneNumber"
+                  id="number"
                   label="Phone Number"
                   type="tel"
                   register={register}
                 />
                 <FormField
-                  id="permanentAddress"
+                  id="permanent_address"
                   label="Permanent Address"
                   register={register}
                 />
                 <FormField
-                  id="presentAddress"
+                  id="present_address"
                   label="Present Address"
                   register={register}
                 />
@@ -188,7 +201,7 @@ const RegisterForm: React.FC = () => {
                   register={register}
                 />
                 <FormField
-                  id="bloodGroup"
+                  id="blood_group"
                   label="Blood Group"
                   type="select"
                   options={BLOOD_GROUP_OPTIONS}
@@ -200,21 +213,22 @@ const RegisterForm: React.FC = () => {
                   register={register}
                 />
                 <FormField
-                  id="guardianRelation"
+                  id="guardian_relation"
                   label="Guardian Relation"
                   register={register}
                 />
                 <FormField
-                  id="guardianNumber"
+                  id="guardian_number"
                   label="Guardian Number"
                   type="tel"
                   register={register}
                 />
                 <FormField
-                  id="guardianAddress"
+                  id="guardian_address"
                   label="Guardian Address"
                   register={register}
                 />
+
                 <FormField
                   id="department"
                   label="Department"
@@ -222,6 +236,7 @@ const RegisterForm: React.FC = () => {
                   options={DEPARTMENT_OPTIONS}
                   register={register}
                 />
+
                 <FormField
                   id="religion"
                   label="Religion"
@@ -267,13 +282,13 @@ const RegisterForm: React.FC = () => {
                     )}
                   </div>
                   <label
-                    htmlFor="file-upload"
+                    htmlFor="dp"
                     className="ml-4 cursor-pointer py-2 px-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     Upload Photo
                   </label>
                   <input
-                    id="file-upload"
+                    id="dp"
                     type="file"
                     className="sr-only"
                     accept="image/*"
@@ -283,6 +298,7 @@ const RegisterForm: React.FC = () => {
               </div>
 
               {/* Submit Button */}
+
               <div className="flex justify-center">
                 <button
                   className="relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
@@ -308,7 +324,6 @@ const RegisterForm: React.FC = () => {
           </div>
         </div>
       </div>
-      <ToastContainer position="top-right" autoClose={3000} />
     </section>
   );
 };
