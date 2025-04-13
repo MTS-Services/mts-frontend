@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 
 const Projects = () => {
@@ -43,6 +43,7 @@ const Projects = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             page: "1",
             limit: "10",
