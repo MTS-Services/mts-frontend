@@ -68,7 +68,6 @@ const Projects = () => {
   }, []);
 
   const filteredData = tableData.filter((row) => {
-
     const accountMatch = filter.account ? row.account === filter.account : true;
     const statusMatch = filter.operationStatus
       ? row.operationStatus === filter.operationStatus
