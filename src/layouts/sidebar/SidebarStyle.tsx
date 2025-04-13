@@ -16,7 +16,7 @@ const SidebarStyle = () => {
   const location = useLocation();
 
   const sidebarItems = [
-    { icon: <FaHome />, label: 'Home', path: '/dashboard' },
+    { icon: <FaHome />, label: 'Home', path: 'dashboard' },
     { icon: <FaProjectDiagram />, label: 'Projects', path: 'projects' },
     { icon: <FaTasks />, label: 'TodayTask', path: 'todaytask' },
     { icon: <FaTasks />, label: 'Performance', path: 'performance' },
@@ -83,7 +83,7 @@ const SidebarStyle = () => {
       <div className='flex items-center space-x-4 mt-auto'>
         <div className='group relative flex items-center'>
           <img
-            src='../../../../public/user_profile.png'
+            src='/user_profile.png'
             className={`${
               isOpen ? 'w-11' : 'w-11'
             } rounded-full border-1 border-primary`}

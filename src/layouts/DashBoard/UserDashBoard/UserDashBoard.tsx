@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-import { Outlet } from 'react-router';
-import SidebarStyle from '../../sidebar/SidebarStyle';
-
-const UserDashBoard = () => {
-  return (
-    <div className={`flex`}>
-      {/* Sidebar */}
-      <SidebarStyle />
-
-      {/* Content Area*/}
-      <div className='w-full'>
-        <Outlet />
-      </div>
-    </div>
-  );
-};
-=======
 // import { useState } from "react";
 // import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 // import { FiLogOut } from "react-icons/fi";
@@ -31,7 +13,6 @@ const UserDashBoard = () => {
 // import TodayTask from "./TodayTask";
 // import UserListPage from "./userListpage/UserListPage";
 // import UserDetails from "../userDetails/UserDetails";
-
 
 // const UserDashBoard = () => {
 //   const { toggleTheme } = useTheme();
@@ -76,7 +57,7 @@ const UserDashBoard = () => {
 //             <Link
 //               to={item.path}
 //               key={index}
-//               className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2 
+//               className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2
 //                 ${location.pathname === item.path ? "bg-primary" : "bg-background"}
 //                 hover:bg-primary hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
 //             >
@@ -98,7 +79,6 @@ const UserDashBoard = () => {
 //             </Link>
 //           ))}
 //         </nav>
-
 
 //         {/* Light/Dark Toggle */}
 //         <ToggleDarkAndLight isOpen={isOpen}></ToggleDarkAndLight>
@@ -180,7 +160,7 @@ const UserDashBoard = () => {
 //               <h1 className="text-2xl font-semibold">
 //                 <UserListPage/>
 //                 {/* User List ta import korben */}
-                
+
 //               </h1>
 //             }
 //           />
@@ -188,16 +168,15 @@ const UserDashBoard = () => {
 //             path="userdetails"
 //             element={
 //               <h1 className="text-2xl font-semibold">
-//                 <UserDetails/>                
+//                 <UserDetails/>
 //               </h1>
 //             }
 //           />
-          
+
 //         </Routes>
 //       </div>
 //     </div>
 //   );
 // };
->>>>>>> 893cae1c828a94806b234c8ad1a23636d38e3ef7
 
 // export default UserDashBoard;
