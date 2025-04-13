@@ -40,7 +40,7 @@ const ChartView = () => {
         </div>
       </div>
 
-      <div className='p-10 flex gap-6'>
+      <div className='p-6 flex gap-6'>
         <div className='w-1/2'>
           <BarChart
             data={userData}
