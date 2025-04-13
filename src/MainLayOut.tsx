@@ -7,7 +7,7 @@ import MainFooter from "./layouts/footers/MainFooter/MainFooter";
 import MainHeader from "./layouts/headers/MainHeader/MainHeader";
 
 function MainLayOut() {
-  const { theme } = useTheme();
+  const {theme} = useTheme();
   return (
     <>
       <MainHeader />

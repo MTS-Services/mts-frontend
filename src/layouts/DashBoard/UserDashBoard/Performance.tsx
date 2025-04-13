@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 
 const Performance = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedQuater, setSelectedQuater] = useState("");
+  const [tableData, setTableData] = useState([]);
 
   const lastQuarter = [
     { title: "Individual target", amount: "$3000", note: "mr" },
@@ -24,12 +25,6 @@ const Performance = () => {
     "Achive price",
     "Leader comment",
     "Your comments",
-  ];
-
-  const tableData = [
-    ["Alex", "$200", "$100", "good", "no"],
-    ["Jordan", "$100", "$100", "good", "no"],
-    ["Rifat", "$170", "$100", "good", "no"],
   ];
 
   const monthName = [
@@ -53,6 +48,38 @@ const Performance = () => {
     "1st July to 30th September",
     "1st October to 31st December",
   ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://192.168.10.47:3000/api/project", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            page: "1",
+            limit: "10",
+          }),
+        });
+
+        const data = await response.json();
+        console.log("API response:", data);
+
+        // Access data.projects if it exists
+        if (data?.projects && Array.isArray(data.projects)) {
+          setTableData(data.projects);
+        } else {
+          console.error("API response is not in the expected format:", data);
+          setTableData([]); // Fallback to empty array if response is not in the expected format
+        }
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
@@ -170,40 +197,31 @@ const Performance = () => {
                     key={i}
                     className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                   >
-                    {row.map((text, idx) => {
-                      if (idx === 3 || idx === 4) {
-                        return (
-                          <td
-                            key={idx}
-                            className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
-                              idx === 0 ? "border-x" : ""
-                            }`}
-                          >
-                            <input
-                              type="text"
-                              defaultValue={text}
-                              className="bg-transparent  border-white text-white outline-none w-full"
-                            />
-                          </td>
-                        );
-                      }
+                    <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                      {row.clientName}
+                    </td>
 
-                      return (
-                        <td
-                          key={idx}
-                          className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
-                            idx === 0 ? "border-x" : ""
-                          }`}
-                        >
-                          {text}
-                        </td>
-                      );
-                    })}
+                    <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                      {row?.after_fiverr_amount}
+                    </td>
+
+                    <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                      {row?.status}
+                    </td>
+                    <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                      ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
+                    </td>
+                    <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                      ${Number(row?.bonus || 0).toFixed(2)}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={tableHeaders.length} className="text-center py-4">
+                  <td
+                    colSpan={tableHeaders.length}
+                    className="text-center py-4"
+                  >
                     No projects found.
                   </td>
                 </tr>

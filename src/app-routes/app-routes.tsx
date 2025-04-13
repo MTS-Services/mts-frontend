@@ -1,15 +1,19 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import MainLayOut from "../MainLayOut";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+
+import DashboardLayout from "../DashboardLayout";
+import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
-import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
-import MainLayOut from "../MainLayOut";
-import LoginForm from "../pages/Auth/LoginForm";
-import RegisterForm from "../pages/Auth/RegisterForm";
+import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import LoginForm from "../pages/auth/LoginForm";
+import RegisterForm from "../pages/auth/RegisterForm";
 import BestContributors from "../pages/bestContributor/BestContributors";
-import ErrorPage from "../pages/ErrorPage/ErrorPage";
-import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -47,14 +51,25 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "/bestContributor",
-        element: <BestContributors></BestContributors>,
+        element: <BestContributors />,
+      },
+
+      {
+        path: "userdetails",
+        element: <UserDetails />,
       },
     ],
   },
+
+  // DashBoard Route
   {
     path: "dashboard",
-    element: <UserDashBoard></UserDashBoard>,
+    element: <DashboardLayout />,
     children: [
+      {
+        path: "/dashboard",
+        element: <ChartView />,
+      },
       {
         path: "projects",
         element: <Projects />,
@@ -66,6 +81,16 @@ const AppRoutes = createBrowserRouter([
       {
         path: "performance",
         element: <Performance />,
+      },
+
+      {
+        path: "userlist",
+        element: <UserListPage />,
+      },
+
+      {
+        path: "userdetails",
+        element: <UserDetails />,
       },
     ],
   },

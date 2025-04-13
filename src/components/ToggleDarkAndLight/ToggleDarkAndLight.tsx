@@ -28,7 +28,7 @@ const ToggleDarkAndLight = ({ isOpen }) => {
           className={`${
             !isOpen
               ? ""
-              : "w-40 bg-black flex items-center justify-around border border-gray-500  rounded-full"
+              : "w-40 bg-background flex items-center justify-around border border-gray-500  rounded-full"
           }`}
         >
           <div
