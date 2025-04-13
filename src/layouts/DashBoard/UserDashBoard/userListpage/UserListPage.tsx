@@ -1,12 +1,11 @@
-import UserListComponent from "../../../../components/userListComponent/UserListComponent"
+import UserListComponent from '../../../../components/userListComponent/UserListComponent';
 
 const UserListPage = () => {
   return (
     <div>
-    <UserListComponent></UserListComponent>
-     
+      <UserListComponent />
     </div>
-  )
-}
+  );
+};
 
-export default UserListPage
+export default UserListPage;
