@@ -122,7 +122,7 @@ const ServicesCart = () => {
  <section className="py-16 bg-background mx-auto">
   <div className="w-full lg:w-[1480px] mx-auto text-center px-4 sm:px-8 ">
     <h2
-      className="text-3xl sm:text-4xl font-bold text-[#FFF] mb-12"
+      className="text-3xl sm:text-4xl font-bold text-accent mb-12"
       data-aos="fade-down"
     >
       Our Services
@@ -136,13 +136,13 @@ const ServicesCart = () => {
           data-aos="fade-up"
           data-aos-delay={idx * 150}
         >
-          <div className="text-4xl text-[#FFF] mb-4">
+          <div className="text-4xl text-accent mb-4">
             <FontAwesomeIcon icon={service.icon} />
           </div>
           <h3 className="text-[24px] font-semibold text-primary mb-2 font-primary">
             {service.title}
           </h3>
-          <p className="text-[#FFF] font-secondary">{service.description}</p>
+          <p className="text-accent font-secondary">{service.description}</p>
         </div>
       ))}
     </div>

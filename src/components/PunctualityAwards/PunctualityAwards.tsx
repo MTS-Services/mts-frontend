@@ -60,8 +60,7 @@ const PunctualityAwards = () => {
 
                 <p className="text-lg font-medium text-accent mb-2 font-primary">{member.position}</p>
                 {/* <p className="text-[20px] font-medium text-accent  font-primary">{member.award}</p> */}
-                {/* <p className="text-sm text-accent mb-1 font-secondary">{member.bio}</p>
-                <p className="text-sm text-accent font-secondary">{member.experience} of Experience</p> */}
+
               </div>
             </div>
           ))}
