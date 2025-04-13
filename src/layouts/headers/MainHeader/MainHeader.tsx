@@ -23,6 +23,7 @@ const Header: React.FC = () => {
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
+  
 
   return (
     <header className="w-full bg-background text-accent shadow-md border-b border-gray-400">
