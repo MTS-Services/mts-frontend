@@ -38,7 +38,7 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "/register",
-        element: <RegisterForm />,
+        element: <RegisterForm/>,
       },
       {
         path: "/contact",
