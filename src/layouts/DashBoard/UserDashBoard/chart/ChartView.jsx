@@ -15,12 +15,29 @@ const userData = [
 
 const ChartView = () => {
   return (
-    <section>
-      <div className='grid grid-cols-4 '>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
+    <section className='bg-gray-100 min-h-screen'>
+      <div className='grid grid-cols-4 gap-6 p-6 '>
+        <div className='bg-white rounded-2xl shadow-md p-6'>
+          <h2 className='text-xl font-semibold mb-2'>👤 Total Users</h2>
+          <p className='text-3xl font-bold text-blue-600'>1,245</p>
+        </div>
+
+        <div className='bg-white rounded-2xl shadow-md p-6'>
+          <h2 className='text-xl font-semibold mb-2'>
+            📦 Active Subscriptions
+          </h2>
+          <p className='text-3xl font-bold text-green-600'>327</p>
+        </div>
+
+        <div className='bg-white rounded-2xl shadow-md p-6'>
+          <h2 className='text-xl font-semibold mb-2'>💰 Monthly Revenue</h2>
+          <p className='text-3xl font-bold text-yellow-500'>$8,760</p>
+        </div>
+
+        <div className='bg-white rounded-2xl shadow-md p-6'>
+          <h2 className='text-xl font-semibold mb-2'>📈 Growth Rate</h2>
+          <p className='text-3xl font-bold text-purple-600'>+12.4%</p>
+        </div>
       </div>
 
       <div className='p-10 flex gap-6'>
