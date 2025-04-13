@@ -1,29 +1,30 @@
-import { lazy } from 'react';
-import { createBrowserRouter } from 'react-router';
-import MainLayOut from '../MainLayOut';
-import ErrorPage from '../pages/ErrorPage/ErrorPage';
-import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
-import UserDashBoard from '../layouts/DashBoard/UserDashBoard/UserDashBoard';
-import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
-import BestContributors from '../pages/bestContributor/BestContributors';
-import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
-import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
-import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
-import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
-import RegisterForm from '../pages/Auth/RegisterForm';
-import LoginForm from '../pages/Auth/LoginForm';
+import { lazy } from "react";
+import { createBrowserRouter } from "react-router-dom";
+import MainLayOut from "../MainLayOut";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+
+import DashboardLayout from "../DashboardLayout";
+import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
+import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import BestContributors from "../pages/bestContributor/BestContributors";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
 import ChartView from './../layouts/DashBoard/UserDashBoard/chart/ChartView';
+
+
 // const Home = lazy(() => import("../pages/Home/Home"));
 
-const  Home =lazy (()=> import("../pages/Home/Home"))
+const Home = lazy(() => import("../pages/Home/Home"));
+
 const Contact = lazy(() => import("../pages/Contact/Contact"));
-
-
-
 
 const AppRoutes = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <MainLayOut />,
     errorElement: <ErrorPage />,
     children: [
@@ -32,62 +33,64 @@ const AppRoutes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/login',
+        path: "/login",
         element: <LoginForm />,
       },
       {
-        path: '/register',
+        path: "/register",
         element: <RegisterForm />,
       },
       {
-        path: '/contact',
+        path: "/contact",
         element: <Contact />,
       },
 
       {
-        path: '*',
+        path: "*",
         element: <NotFoundPage />,
       },
 
       {
-        path: '/bestContributor',
+        path: "/bestContributor",
         element: <BestContributors />,
       },
 
       {
-        path: 'userdetails',
+        path: "userdetails",
         element: <UserDetails />,
       },
     ],
   },
+
+  // DashBoard Route
   {
-    path: 'dashboard',
-    element: <UserDashBoard></UserDashBoard>,
+    path: "dashboard",
+    element: <DashboardLayout />,
     children: [
       {
-        path: 'projects',
-        element: <Projects />,
-      },
-      {
-        path: 'chart',
+        path: "/dashboard",
         element: <ChartView />,
       },
       {
-        path: 'todaytask',
+        path: "projects",
+        element: <Projects />,
+      },
+      {
+        path: "todaytask",
         element: <TodayTask />,
       },
       {
-        path: 'performance',
+        path: "performance",
         element: <Performance />,
       },
 
       {
-        path: 'userlist',
+        path: "userlist",
         element: <UserListPage />,
       },
 
       {
-        path: 'userdetails',
+        path: "userdetails",
         element: <UserDetails />,
       },
     ],

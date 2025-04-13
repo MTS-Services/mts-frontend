@@ -1,11 +1,11 @@
-import UserInformation from "../../../components/userListComponent/UserDetailsComponent/UserInformation"
+import UserInformation from '../../../components/userListComponent/UserDetailsComponent/UserInformation';
 
-function UserDetails  () {
+function UserDetails() {
   return (
     <div>
-      <UserInformation/>
+      <UserInformation />
     </div>
-  )
+  );
 }
 
-export default UserDetails
+export default UserDetails;

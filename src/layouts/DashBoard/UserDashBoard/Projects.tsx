@@ -38,7 +38,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.10.47:3000/api/project", {
+        const response = await fetch("http://192.168.10.40:3000/api/project", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -68,7 +68,6 @@ const Projects = () => {
   }, []);
 
   const filteredData = tableData.filter((row) => {
-
     const accountMatch = filter.account ? row.account === filter.account : true;
     const statusMatch = filter.operationStatus
       ? row.operationStatus === filter.operationStatus
@@ -184,10 +183,15 @@ const Projects = () => {
                       : ""}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row.account}
+                    {row?.team_member?.profile?.map((profile, index) => (
+                      <span key={index}>
+                        {profile.profile_name}
+                        {index < row.team_member.profile.length - 1 && ", "}
+                      </span>
+                    ))}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row.clientName}
+                    {row?.clientName}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
                     {row?.ops_status}
@@ -195,8 +199,10 @@ const Projects = () => {
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
                     {row?.sheet_link}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.ordered_by}
+                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal capitalize">
+                    {`${row?.team_member?.first_name || ""} ${
+                      row?.team_member?.last_name || ""
+                    }`.trim()}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
                     {row?.date
