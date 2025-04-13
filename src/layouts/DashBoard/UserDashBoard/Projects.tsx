@@ -231,7 +231,7 @@ const Projects = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={tableHeaders.length} className="text-center py-4">
+                <td colSpan={tableHeaders.length} className="text-center py-4 text-accent">
                   No projects found.
                 </td>
               </tr>
