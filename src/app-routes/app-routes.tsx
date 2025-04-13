@@ -14,8 +14,8 @@ import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 // const Home = lazy(() => import("../pages/Home/Home"));
 
 const  Home =lazy (()=> import("../pages/Home/Home"))
-
 const Contact = lazy(() => import("../pages/Contact/Contact"));
+
 
 
 const AppRoutes = createBrowserRouter([
