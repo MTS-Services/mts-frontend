@@ -31,7 +31,7 @@ const UserDashBoard = () => {
     <div className={`flex`}>
       {/* Sidebar */}
       <div
-        className={`min-h-screen bg-background text-white shadow-xl shadow-black z-1  ${
+        className={`min-h-screen bg-background text-accent hover:text-accent shadow-xl shadow-black z-1  ${
           isOpen ? "w-56 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
         } transition-all duration-700 ease-in-out flex flex-col justify-between`}
       >
@@ -58,7 +58,7 @@ const UserDashBoard = () => {
               to={item.path}
               key={index}
               className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2 
-                ${location.pathname === item.path ? "bg-[#19B3E7]" : ""}
+                ${location.pathname === item.path ? "bg-primary" : "bg-background"}
                 hover:bg-primary hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
             >
               <div className="flex items-center space-x-2">
@@ -71,7 +71,7 @@ const UserDashBoard = () => {
                   {item.label}
                 </h2>
                 {!isOpen && (
-                  <span className="absolute left-12 bg-[#19B3E7] text-white text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
+                  <span className="absolute left-12 bg-primary text-accent text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
                     {item.label}
                   </span>
                 )}
@@ -90,11 +90,11 @@ const UserDashBoard = () => {
               src="../../../../public/user_profile.png"
               className={`${
                 isOpen ? "w-11" : "w-11"
-              } rounded-full border-1 border-sky-500`}
+              } rounded-full border-1 border-primary`}
               alt="user"
             />
             {!isOpen && (
-              <span className="absolute left-14 bg-[#19B3E7] text-white text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
+              <span className="absolute left-14 bg-primary text-accent text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
                 User Profile
               </span>
             )}
@@ -115,7 +115,7 @@ const UserDashBoard = () => {
 
       {/* Content Area */}
       <div className=" w-full ">
-        <button onClick={toggleTheme}>okk</button>
+        {/* <button onClick={toggleTheme}>okk</button> */}
         <Routes>
           <Route
             path="/dashboard"
