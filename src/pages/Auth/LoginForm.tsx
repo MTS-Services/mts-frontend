@@ -1,23 +1,29 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, password });
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    if (data.email && data.password) {
+      navigate('/dashboard');
+    }
   };
 
   return (
-    <div className='flex relative items-center justify-center min-h-screen bg-background font-[Rubik]'>
-      <div
-        className='absolute top-0 left-0 w-full h-full bg-cover bg-center opacity-50'
-        style={{ backgroundImage: 'url(/images/background.jpg)' }}
-      ></div>
-
+    <div className='flex items-center justify-center min-h-screen bg-background font-primary relative'>
       {/* Main Form Container */}
       <div className='w-full max-w-4xl p-16 space-y-8 bg-background border-2 border-gray-400 shadow-xl rounded-xl flex flex-col md:flex-row space-x-12'>
         {/* Left Column: Welcome Text */}
@@ -28,7 +34,7 @@ const LoginForm: React.FC = () => {
 
         {/* Right Column: Login Form */}
         <div className='w-full md:w-1/2 space-y-6'>
-          <form onSubmit={handleSubmit} className='space-y-8'>
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
             {/* Email Address Field */}
             <div className='relative'>
               <input
@@ -37,9 +43,16 @@ const LoginForm: React.FC = () => {
                 className='peer h-14 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
                 required
                 type='email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register('email', {
+                  required: true,
+                  pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/i,
+                })}
               />
+              {errors.email && (
+                <span className='text-red-500 text-xs mt-1'>
+                  Email is required or invalid.
+                </span>
+              )}
               <label
                 htmlFor='email'
                 className='absolute left-0 -top-4 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
@@ -56,9 +69,13 @@ const LoginForm: React.FC = () => {
                 className='peer h-14 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
                 required
                 type='password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register('password', { required: true })}
               />
+              {errors.password && (
+                <span className='text-red-500 text-xs mt-1'>
+                  Password is required.
+                </span>
+              )}
               <label
                 htmlFor='password'
                 className='absolute left-0 -top-4 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
@@ -77,7 +94,7 @@ const LoginForm: React.FC = () => {
             {/* Sign In Button */}
             <div className='flex justify-center'>
               <button
-                className='flex items-center relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
+                className='flex items-center relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                 type='submit'
               >
                 Sign In
@@ -88,9 +105,12 @@ const LoginForm: React.FC = () => {
           {/* Sign up Link */}
           <div className='text-center text-gray-500'>
             Don’t have an account?{' '}
-            <Link className='text-primary hover:underline' to='/register'>
+            <a
+              href='/register'
+              className='text-primary hover:text-primary hover:underline transition-colors ml-1'
+            >
               Sign up
-            </Link>
+            </a>
           </div>
         </div>
       </div>

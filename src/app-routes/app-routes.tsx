@@ -5,15 +5,16 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 import DashboardLayout from "../DashboardLayout";
-import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
-import LoginForm from "../pages/auth/LoginForm";
-import RegisterForm from "../pages/auth/RegisterForm";
 import BestContributors from "../pages/bestContributor/BestContributors";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
+import ChartView from './../layouts/DashBoard/UserDashBoard/chart/ChartView';
+
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
