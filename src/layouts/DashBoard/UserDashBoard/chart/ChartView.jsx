@@ -15,27 +15,33 @@ const userData = [
 
 const ChartView = () => {
   return (
-    <section className="bg-gray-100 min-h-screen">
+    <section className="bg-gray-900 min-h-screen">
       <div className="grid grid-cols-4 gap-6 p-6 ">
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">👤 Total Users</h2>
+        <div className="bg-black rounded-2xl shadow-md p-6 border border-blue-900">
+          <h2 className="text-xl font-semibold mb-2 text-white">
+            👤 Total Users
+          </h2>
           <p className="text-3xl font-bold text-blue-600">1,245</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">
+        <div className="bg-black rounded-2xl shadow-md p-6 border border-blue-900">
+          <h2 className="text-xl font-semibold mb-2 text-white">
             📦 Active Subscriptions
           </h2>
           <p className="text-3xl font-bold text-green-600">327</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">💰 Monthly Revenue</h2>
+        <div className="bg-black rounded-2xl shadow-md p-6 border border-blue-900">
+          <h2 className="text-xl font-semibold mb-2 text-white">
+            💰 Monthly Revenue
+          </h2>
           <p className="text-3xl font-bold text-yellow-500">$8,760</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">📈 Growth Rate</h2>
+        <div className="bg-black rounded-2xl shadow-md p-6 border border-blue-900">
+          <h2 className="text-xl font-semibold mb-2 text-white">
+            📈 Growth Rate
+          </h2>
           <p className="text-3xl font-bold text-purple-600">+12.4%</p>
         </div>
       </div>
@@ -44,7 +50,9 @@ const ChartView = () => {
         <div className="w-1/2">
           <BarChart
             data={userData}
-            className={"bg-white shadow-sm rounded-lg p-6"}
+            className={
+              "bg-black shadow-sm rounded-lg p-6 border border-blue-900"
+            }
             title="Sales Profile Visualization"
             label="User Amounts"
             yAxisTitle="Amount (USD)"
@@ -55,7 +63,9 @@ const ChartView = () => {
         <div className="w-1/2">
           <BarChart
             data={userData}
-            className={"bg-white shadow-sm rounded-lg p-6"}
+            className={
+              "bg-black shadow-sm rounded-lg p-6 border border-blue-900"
+            }
             title="Sales Profile Visualization"
             label="User Amounts"
             yAxisTitle="Amount (USD)"

@@ -15,12 +15,13 @@ const DashboardSideber = () => {
   const location = useLocation();
 
   const sidebarItems = [
-    { icon: <FaHome />, label: 'Home', path: '/dashborad' },
+    { icon: <FaHome />, label: 'Home', path: '/dashboard' },
     { icon: <FaProjectDiagram />, label: 'Projects', path: 'projects' },
     { icon: <FaTasks />, label: 'TodayTask', path: 'todaytask' },
     { icon: <FaTasks />, label: 'Performance', path: 'performance' },
     { icon: <FaUser />, label: 'User List', path: 'userlist' },
   ];
+
   return (
     <>
       <div className={`flex`}>
@@ -34,7 +35,7 @@ const DashboardSideber = () => {
           <div className='flex items-center justify-between p-2'>
             <img
               className={`${!isOpen ? 'hidden' : 'lg:w-28 md:w-20 w-26'}`}
-              src='../../../../public/mts_logo.png'
+              src='/mts_logo.png'
               alt='logo'
             />
             <button onClick={() => setIsOpen(!isOpen)}>
@@ -84,7 +85,7 @@ const DashboardSideber = () => {
           <div className='flex items-center space-x-4 mt-auto'>
             <div className='group relative flex items-center'>
               <img
-                src='../../../../public/user_profile.png'
+                src='/user_profile.png'
                 className={`${
                   isOpen ? 'w-11' : 'w-11'
                 } rounded-full border-1 border-primary`}
