@@ -1,24 +1,26 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-import LoginForm from "../pages/Auth/LoginForm";
-import RegisterForm from "../pages/Auth/RegisterForm";
-import UserDashBoard from "../layouts/DashBoard/UserDashBoard/UserDashBoard";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
-import BestContributors from "../pages/bestContributor/BestContributors";
-import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
+
+import DashboardLayout from "../DashboardLayout";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+
+import BestContributors from "../pages/bestContributor/BestContributors";
+import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView"
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import RegisterForm from "../pages/Auth/RegisterForm";
+import LoginForm from "../pages/Auth/LoginForm";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
-const  Home =lazy (()=> import("../pages/Home/Home"))
+const Home = lazy(() => import("../pages/Home/Home"));
 
 const Contact = lazy(() => import("../pages/Contact/Contact"));
-
 
 const AppRoutes = createBrowserRouter([
   {
@@ -32,11 +34,11 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <LoginForm  />,
+        element: <LoginForm />,
       },
       {
         path: "/register",
-        element: <RegisterForm />
+        element: <RegisterForm/>,
       },
       {
         path: "/contact",
@@ -50,44 +52,47 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "/bestContributor",
-        element:<BestContributors/>,
+        element: <BestContributors />,
       },
 
       {
         path: "userdetails",
-        element:<UserDetails/>,
+        element: <UserDetails />,
       },
-     
     ],
   },
+
+  // DashBoard Route
   {
     path: "dashboard",
-    element: <UserDashBoard></UserDashBoard>,
+    element: <DashboardLayout />,
     children: [
       {
+        path: "/dashboard",
+        element: <ChartView />,
+      },
+      {
         path: "projects",
-        element: <Projects/>,
+        element: <Projects />,
       },
       {
         path: "todaytask",
-        element: <TodayTask/>,
+        element: <TodayTask />,
       },
       {
         path: "performance",
-        element: <Performance/>,
+        element: <Performance />,
       },
-      
+
       {
         path: "userlist",
-        element:<UserListPage/>,
+        element: <UserListPage />,
       },
 
       {
         path: "userdetails",
-        element:<UserDetails/>,
+        element: <UserDetails />,
       },
-      
-     
     ],
   },
 ]);
