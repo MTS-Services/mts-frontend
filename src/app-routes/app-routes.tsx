@@ -17,7 +17,6 @@ import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
 // const Home = lazy(() => import("../pages/Home/Home"));
 
 const Home = lazy(() => import('../pages/Home/Home'));
-
 const Contact = lazy(() => import('../pages/Contact/Contact'));
 
 const AppRoutes = createBrowserRouter([
@@ -59,9 +58,10 @@ const AppRoutes = createBrowserRouter([
       },
     ],
   },
+
   {
     path: 'dashboard',
-    element: <UserDashBoard></UserDashBoard>,
+    element: <UserDashBoard />,
     children: [
       {
         path: 'projects',
