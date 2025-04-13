@@ -21,7 +21,7 @@ const Contact = lazy(() => import("../pages/Contact/Contact"));
 
 const AppRoutes = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <MainLayOut />,
     errorElement: <ErrorPage />,
     children: [
@@ -30,30 +30,30 @@ const AppRoutes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/login",
+        path: '/login',
         element: <LoginForm />,
       },
       {
-        path: "/register",
+        path: '/register',
         element: <RegisterForm />,
       },
       {
-        path: "/contact",
+        path: '/contact',
         element: <Contact />,
       },
 
       {
-        path: "*",
+        path: '*',
         element: <NotFoundPage />,
       },
 
       {
-        path: "/bestContributor",
+        path: '/bestContributor',
         element: <BestContributors />,
       },
 
       {
-        path: "userdetails",
+        path: 'userdetails',
         element: <UserDetails />,
       },
     ],
