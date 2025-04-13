@@ -68,7 +68,11 @@ const AppRoutes = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
+<<<<<<< HEAD
+        index: true,
+=======
         path: "/dashboard",
+>>>>>>> 4e37ed697302fb75a6909cac591cc20838e52cf0
         element: <ChartView />,
       },
       {
