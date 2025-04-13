@@ -1,24 +1,23 @@
-import { lazy } from 'react';
-import { createBrowserRouter } from 'react-router';
-import MainLayOut from '../MainLayOut';
-import ErrorPage from '../pages/ErrorPage/ErrorPage';
-import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
-import LoginForm from '../pages/auth/LoginForm';
-import RegisterForm from '../pages/auth/RegisterForm';
-import UserDashBoard from '../layouts/DashBoard/UserDashBoard/UserDashBoard';
-import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
-import BestContributors from '../pages/bestContributor/BestContributors';
-import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
-import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
-import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
-import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
-import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
+import { lazy } from "react";
+import { createBrowserRouter } from "react-router";
+import MainLayOut from "../MainLayOut";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import BestContributors from "../pages/bestContributor/BestContributors";
+import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
+import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import DashboardLayout from "../DashboardLayout";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
-const Home = lazy(() => import('../pages/Home/Home'));
+const Home = lazy(() => import("../pages/Home/Home"));
 
-const Contact = lazy(() => import('../pages/Contact/Contact'));
+const Contact = lazy(() => import("../pages/Contact/Contact"));
 
 const AppRoutes = createBrowserRouter([
   {
@@ -59,34 +58,36 @@ const AppRoutes = createBrowserRouter([
       },
     ],
   },
+
+  // DashBoard Route
   {
-    path: 'dashboard',
-    element: <UserDashBoard></UserDashBoard>,
+    path: "dashboard",
+    element: <DashboardLayout />,
     children: [
       {
-        path: 'projects',
+        path: "/dashboard",
+        element: <></>,
+      },
+      {
+        path: "projects",
         element: <Projects />,
       },
       {
-        path: 'chart',
-        element: <ChartView />,
-      },
-      {
-        path: 'todaytask',
+        path: "todaytask",
         element: <TodayTask />,
       },
       {
-        path: 'performance',
+        path: "performance",
         element: <Performance />,
       },
 
       {
-        path: 'userlist',
+        path: "userlist",
         element: <UserListPage />,
       },
 
       {
-        path: 'userdetails',
+        path: "userdetails",
         element: <UserDetails />,
       },
     ],
