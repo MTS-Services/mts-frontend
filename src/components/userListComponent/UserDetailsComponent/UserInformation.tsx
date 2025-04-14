@@ -1,6 +1,12 @@
+import { useState } from "react";
 import EmployeeSummary from "../EmployeeSummary/EmployeeSummary";
 
 const UserInformation = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+  const openPopup = () => setIsOpen(true);
+  const closePopup = () => setIsOpen(false)
   const user = {
     avatar: '/assits/Rewardspage/profileImg.jpg',
     name: 'Liam Smith',
@@ -42,6 +48,8 @@ const UserInformation = () => {
     </p>
   );
 
+
+
   return (
     <section className="min-h-screen p-10">
     <div className="max-w-6xl mx-auto  bg-card p-8 rounded-xl shadow-md  shadow-primary ">
@@ -66,13 +74,51 @@ const UserInformation = () => {
         {/* ----------------Edit password section------------------- */}
         
      <div className="flex justify-center">
-  <button
-    type="submit"
-    className="flex items-center relative py-2 px-20 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
-  >
-    <span className="relative z-10 font-primary">Edit your password & info</span>
-    <span className="absolute inset-0 w-full font-primary h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
-  </button>
+            <div className="relative">
+      {/* Trigger Button */}
+      <button
+        onClick={openPopup}
+        className="flex items-center relative py-2 px-20 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0">
+        Edit your password
+      </button>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          {/* Popup Box */}
+          <div className="bg-accent rounded-xl p-6 w-[350px] shadow-2xl relative">
+            {/* Close Button */}
+           <button
+  onClick={closePopup}
+  aria-label="Close"
+  className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center text-primary text-3xl font-bold  hover:accent-white hover:bg-red-500 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-110 active:scale-95"
+>
+  &times;
+</button>
+
+
+            <h2 className="text-xl font-semibold mb-4 font-primary">Your Info</h2>
+            <p className="text-gray-800 mb-2 font-secondary">
+              <strong>Email:</strong> yourmail@example.com
+            </p>
+            <p className="text-gray-800 mb-4 font-secondary">
+              <strong>Password:</strong> ********
+            </p>
+
+            {/* Your Custom Button */}
+            <button
+              type="submit"
+              className="flex text-sm font-secondary items-center relative py-2 px-8 text-background  font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
+            >
+              <span className="relative z-10 font-primary">
+                Edit your password
+              </span>
+              <span className="absolute inset-0 w-full font-primary h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
 </div>
 
      
