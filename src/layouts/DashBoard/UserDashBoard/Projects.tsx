@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 
 const Projects = () => {
@@ -40,8 +40,14 @@ const Projects = () => {
       try {
         const response = await fetch("http://192.168.10.40:3000/api/project", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ page: "1", limit: "10" }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            page: "1",
+            limit: "10",
+          }),
         });
 
         const data = await response.json();
@@ -59,13 +65,17 @@ const Projects = () => {
   }, []);
 
   const filteredData = tableData.filter((row) => {
-    const accountNames = row?.team_member?.profile?.map((p) => p.profile_name) || [];
-    const accountMatch = filter.account ? accountNames.includes(filter.account) : true;
+    const accountNames =
+      row?.team_member?.profile?.map((p) => p.profile_name) || [];
+    const accountMatch = filter.account
+      ? accountNames.includes(filter.account)
+      : true;
     const statusMatch = filter.operationStatus
       ? row.ops_status === filter.operationStatus
       : true;
     const orderedByMatch = filter.orderedBy
-      ? `${row?.team_member?.first_name} ${row?.team_member?.last_name}`.trim() === filter.orderedBy
+      ? `${row?.team_member?.first_name} ${row?.team_member?.last_name}`.trim() ===
+        filter.orderedBy
       : true;
     return accountMatch && statusMatch && orderedByMatch;
   });
@@ -76,17 +86,18 @@ const Projects = () => {
 
   const uniqueAccounts = [
     ...new Set(
-      tableData.flatMap((row) =>
-        row?.team_member?.profile?.map((p) => p.profile_name) || []
+      tableData.flatMap(
+        (row) => row?.team_member?.profile?.map((p) => p.profile_name) || []
       )
     ),
   ];
   const operationStatuses = ["Wip", "Completed", "Pending"];
   const orderedByOptions = [
     ...new Set(
-      tableData.map(
-        (row) =>
-          `${row?.team_member?.first_name || ""} ${row?.team_member?.last_name || ""}`.trim()
+      tableData.map((row) =>
+        `${row?.team_member?.first_name || ""} ${
+          row?.team_member?.last_name || ""
+        }`.trim()
       )
     ),
   ];
@@ -131,7 +142,9 @@ const Projects = () => {
 
         <select
           value={filter.operationStatus}
-          onChange={(e) => setFilter({ ...filter, operationStatus: e.target.value })}
+          onChange={(e) =>
+            setFilter({ ...filter, operationStatus: e.target.value })
+          }
           className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
         >
           <option value="">Filter by Operation Status</option>
@@ -171,7 +184,9 @@ const Projects = () => {
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-3 border border-white ${i === 0 ? "border-x" : ""}`}
+                  className={`px-2 py-3 border border-white ${
+                    i === 0 ? "border-x" : ""
+                  }`}
                 >
                   {head}
                 </th>
@@ -202,9 +217,15 @@ const Projects = () => {
                       </span>
                     ))}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary">{row?.clientName}</td>
-                  <td className="px-2 py-3 border-r border-secondary">{row?.ops_status}</td>
-                  <td className="px-2 py-3 border-r border-secondary">{row?.sheet_link}</td>
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.clientName}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.ops_status}
+                  </td>
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.sheet_link}
+                  </td>
                   <td className="px-2 py-3 border-r border-secondary capitalize">
                     {`${row?.team_member?.first_name || ""} ${
                       row?.team_member?.last_name || ""
@@ -212,21 +233,28 @@ const Projects = () => {
                   </td>
                   <td className="px-2 py-3 border-r border-secondary">
                     {row?.deli_last_date
-                      ? new Date(row?.deli_last_date).toLocaleDateString("en-US", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })
+                      ? new Date(row?.deli_last_date).toLocaleDateString(
+                          "en-US",
+                          {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )
                       : ""}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary">{row?.status}</td>
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.status}
+                  </td>
                   <td className="px-2 py-3 border-r border-secondary">
                     ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
                   </td>
                   <td className="px-2 py-3 border-r border-secondary">
                     ${Number(row?.bonus || 0).toFixed(2)}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary">{row?.rating}</td>
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.rating}
+                  </td>
                 </tr>
               ))
             ) : (
