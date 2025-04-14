@@ -102,6 +102,7 @@ const RegisterForm: React.FC = () => {
       if (user) {
         const formData = new FormData();
         formData.append("email", email);
+        formData.append("uid", user.uid);
 
         Object.entries(rest).forEach(([key, value]) => {
           if (key != "confirmPassword") {
@@ -127,7 +128,7 @@ const RegisterForm: React.FC = () => {
           toast.success(
             "Congratulation, Registration successful! Please Login to continue"
           );
-          navigate("/login");
+          navigate("/dashboard/projects");
         } else {
           toast.error("Something went wrong. Please try again.");
         }
