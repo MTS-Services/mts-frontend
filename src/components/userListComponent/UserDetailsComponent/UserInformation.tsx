@@ -23,6 +23,8 @@ const UserInformation = () => {
     religion: 'Islam',
 
     // Work Details
+    // Work Details
+    // Work Details
     department: 'Development',
     role: 'Senior Engineer',
     location: 'Dhaka, Bangladesh',
