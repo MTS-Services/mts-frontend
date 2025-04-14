@@ -166,7 +166,7 @@ const UserListComponent = () => {
               filteredUsers.map((user, i) => (
                 <tr
                   key={i}
-                  className="border-b-1 border-accent/40 border-dashed  font-secondary text-accent  hover:text-accent text-sm hover:bg-primary/80 "
+                  className="border-b-1 border-accent/40 border-dashed  font-secondary text-accent  hover:text-white text-sm hover:bg-primary "
                 >
                   <td className="px-2 py-1 flex items-center justify-center">
                     <div className="w-12 h-12 overflow-hidden rounded-full">
