@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { MdInfoOutline } from "react-icons/md";
+import { io } from "socket.io-client";
 
 const Projects = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +41,22 @@ const Projects = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const socket = io("http://192.168.10.47:3000");
+
+      socket.on("projectUpdated", (project) => {
+        console.log("Project updated:", project);
+
+        // Update the tableData to only modify the updated project, leaving the others intact
+        setTableData((prevData) =>
+          prevData.map(
+            (row) =>
+              row.id === project.id
+                ? { ...row, ...project } // Merge the updated project data into the existing row
+                : row // Keep other rows unchanged
+          )
+        );
+      });
+
       try {
         const response = await fetch("http://192.168.10.47:3000/api/project", {
           method: "POST",
@@ -50,7 +67,6 @@ const Projects = () => {
         const data = await response.json();
         if (Array.isArray(data?.projects)) {
           setTableData(data.projects);
-          console.log(data);
         } else {
           setTableData([]);
         }
