@@ -3,7 +3,7 @@ import { MdInfoOutline } from "react-icons/md";
 
 const Projects = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableData, setTableData] = useState([]); // Ensure it's an empty array initially
+  const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
     operationStatus: "",
@@ -40,27 +40,18 @@ const Projects = () => {
       try {
         const response = await fetch("http://192.168.10.40:3000/api/project", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            page: "1",
-            limit: "10",
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ page: "1", limit: "10" }),
         });
 
         const data = await response.json();
-        console.log("API response:", data);
-
-        // Access data.projects if it exists
-        if (data?.projects && Array.isArray(data.projects)) {
+        if (Array.isArray(data?.projects)) {
           setTableData(data.projects);
         } else {
-          console.error("API response is not in the expected format:", data);
-          setTableData([]); // Fallback to empty array if response is not in the expected format
+          setTableData([]);
         }
       } catch (error) {
-        console.error("Failed to fetch data", error);
+        console.error("Fetch failed", error);
       }
     };
 
@@ -68,19 +59,37 @@ const Projects = () => {
   }, []);
 
   const filteredData = tableData.filter((row) => {
-    const accountMatch = filter.account ? row.account === filter.account : true;
+    const accountNames = row?.team_member?.profile?.map((p) => p.profile_name) || [];
+    const accountMatch = filter.account ? accountNames.includes(filter.account) : true;
     const statusMatch = filter.operationStatus
-      ? row.operationStatus === filter.operationStatus
+      ? row.ops_status === filter.operationStatus
       : true;
     const orderedByMatch = filter.orderedBy
-      ? row.orderedBy === filter.orderedBy
+      ? `${row?.team_member?.first_name} ${row?.team_member?.last_name}`.trim() === filter.orderedBy
       : true;
     return accountMatch && statusMatch && orderedByMatch;
   });
 
-  const uniqueAccounts = [...new Set(tableData.map((row) => row.account))];
+  const resetFilters = () => {
+    setFilter({ account: "", operationStatus: "", orderedBy: "" });
+  };
+
+  const uniqueAccounts = [
+    ...new Set(
+      tableData.flatMap((row) =>
+        row?.team_member?.profile?.map((p) => p.profile_name) || []
+      )
+    ),
+  ];
   const operationStatuses = ["Wip", "Completed", "Pending"];
-  const orderedByOptions = [...new Set(tableData.map((row) => row.orderedBy))];
+  const orderedByOptions = [
+    ...new Set(
+      tableData.map(
+        (row) =>
+          `${row?.team_member?.first_name || ""} ${row?.team_member?.last_name || ""}`.trim()
+      )
+    ),
+  ];
 
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
@@ -106,7 +115,7 @@ const Projects = () => {
       </div>
 
       {/* Filter Dropdowns */}
-      <div className="my-4 flex gap-4 mt-10">
+      <div className="my-4 flex flex-wrap items-center gap-4 mt-10">
         <select
           value={filter.account}
           onChange={(e) => setFilter({ ...filter, account: e.target.value })}
@@ -122,9 +131,7 @@ const Projects = () => {
 
         <select
           value={filter.operationStatus}
-          onChange={(e) =>
-            setFilter({ ...filter, operationStatus: e.target.value })
-          }
+          onChange={(e) => setFilter({ ...filter, operationStatus: e.target.value })}
           className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
         >
           <option value="">Filter by Operation Status</option>
@@ -147,6 +154,13 @@ const Projects = () => {
             </option>
           ))}
         </select>
+
+        <button
+          onClick={resetFilters}
+          className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition duration-300"
+        >
+          Reset Filters
+        </button>
       </div>
 
       {/* Project Table */}
@@ -157,9 +171,7 @@ const Projects = () => {
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-3 border border-white ${
-                    i === 0 ? "border-x" : ""
-                  }`}
+                  className={`px-2 py-3 border border-white ${i === 0 ? "border-x" : ""}`}
                 >
                   {head}
                 </th>
@@ -173,7 +185,7 @@ const Projects = () => {
                   key={i}
                   className="odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform"
                 >
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                  <td className="px-2 py-3 border-r border-secondary">
                     {row?.date
                       ? new Date(row.date).toLocaleDateString("en-US", {
                           day: "2-digit",
@@ -182,52 +194,39 @@ const Projects = () => {
                         })
                       : ""}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                  <td className="px-2 py-3 border-r border-secondary">
                     {row?.team_member?.profile?.map((profile, index) => (
                       <span key={index}>
                         {profile.profile_name}
-                        {index < row.team_member.profile.length - 1 && ", "}
+                        {index < row?.team_member?.profile?.length - 1 && ", "}
                       </span>
                     ))}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.clientName}
-                  </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.ops_status}
-                  </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.sheet_link}
-                  </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal capitalize">
+                  <td className="px-2 py-3 border-r border-secondary">{row?.clientName}</td>
+                  <td className="px-2 py-3 border-r border-secondary">{row?.ops_status}</td>
+                  <td className="px-2 py-3 border-r border-secondary">{row?.sheet_link}</td>
+                  <td className="px-2 py-3 border-r border-secondary capitalize">
                     {`${row?.team_member?.first_name || ""} ${
                       row?.team_member?.last_name || ""
                     }`.trim()}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.date
-                      ? new Date(row?.deli_last_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )
+                  <td className="px-2 py-3 border-r border-secondary">
+                    {row?.deli_last_date
+                      ? new Date(row?.deli_last_date).toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
                       : ""}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.status}
-                  </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                  <td className="px-2 py-3 border-r border-secondary">{row?.status}</td>
+                  <td className="px-2 py-3 border-r border-secondary">
                     ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
+                  <td className="px-2 py-3 border-r border-secondary">
                     ${Number(row?.bonus || 0).toFixed(2)}
                   </td>
-                  <td className="px-2 py-3 border-r border-secondary font-primary font-normal">
-                    {row?.rating}
-                  </td>
+                  <td className="px-2 py-3 border-r border-secondary">{row?.rating}</td>
                 </tr>
               ))
             ) : (
@@ -241,7 +240,7 @@ const Projects = () => {
         </table>
       </div>
 
-      {/* Add New Project Button and Modal */}
+      {/* Add New Project Button */}
       <div className="mb-4 mt-6">
         <button
           onClick={toggleModal}
@@ -251,6 +250,7 @@ const Projects = () => {
         </button>
       </div>
 
+      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg relative">
@@ -260,9 +260,7 @@ const Projects = () => {
             >
               ✕
             </button>
-
             <h2 className="text-xl font-semibold mb-4">Add New Project</h2>
-
             <form className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[

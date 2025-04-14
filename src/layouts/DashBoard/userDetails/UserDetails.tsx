@@ -2,8 +2,8 @@ import UserInformation from '../../../components/userListComponent/UserDetailsCo
 
 function UserDetails() {
   return (
-    <div>
-      <UserInformation />
+    <div className="bg-background">
+      <UserInformation/>
     </div>
   );
 }
