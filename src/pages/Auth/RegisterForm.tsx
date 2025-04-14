@@ -114,7 +114,7 @@ const RegisterForm: React.FC = () => {
         }
 
         const res = await axios.post(
-          "http://192.168.10.47:3000/api/teamMember/create",
+          "http://192.168.10.40:3000/api/teamMember/create",
           formData,
           {
             headers: {

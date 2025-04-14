@@ -155,7 +155,7 @@ const ContactPage: React.FC = () => {
                   control={control}
                   rules={{
                     pattern: {
-                      value: /^[0-9]{8,20}$/, 
+                      value: /^[0-9]{8,20}$/,
                       message: 'Phone number must be between 10 to 15 digits',
                     },
                   }}
@@ -191,8 +191,8 @@ const ContactPage: React.FC = () => {
                 {/* Submit */}
                 <div className='flex justify-center'>
                   <button
+                    className='flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                     type='submit'
-                    className='relative py-2 px-32 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                   >
                     Send Message
                   </button>
