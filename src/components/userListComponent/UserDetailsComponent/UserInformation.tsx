@@ -35,8 +35,8 @@ const UserInformation = () => {
 
   // === Reusable Info Line Component ===
   const Info = ({ label, value }) => (
-    <p className=" text-lg  font-light text-accent felx   mb-2 pr-1 font-primary border-b pb-1 border-accent/20 flex items-center">
-      <strong className="pr-1 text-lg  font-light font-primary"> {label} : </strong> {value}
+    <p className="text-base	 font-light text-accent felx   mb-2 pr-1 font-secondary border-b pb-1 border-accent/20 flex items-center">
+      <strong className="pr-1 text-base	  font-light font-secondary"> {label} : </strong> {value}
     </p>
   );
 
@@ -54,21 +54,22 @@ const UserInformation = () => {
   className="w-20 h-20 shadow-primary rounded-full shadow-md"
 />
             <div>
-              <h2 className="text-3xl font-primary  text-primary text-shadow-md ">
+              <h2 className="text-2xl font-bold font-primary  text-primary text-shadow-md ">
                 {user.name}
               </h2>
-              <p className="text-accent font-bold text-sm capitalize">{user.role}</p>
+              <p className="text-accent  text-sm capitalize font-secondary">{user.role}</p>
             </div>
           </div>
         </div>
         {/* ----------------Edit password section------------------- */}
+        
      <div className="flex justify-center">
   <button
     type="submit"
-    className="group relative flex items-center justify-center px-8 py-2 text-base font-bold text-background rounded-full bg-primary shadow-md overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:text-white hover:shadow-lg active:scale-95"
+    className="flex items-center relative py-2 px-20 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
   >
-    <span className="relative z-10">Edit your password & info</span>
-    <span className="absolute inset-0 w-full h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
+    <span className="relative z-10 font-primary">Edit your password & info</span>
+    <span className="absolute inset-0 w-full font-primary h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
   </button>
 </div>
 
@@ -81,7 +82,7 @@ const UserInformation = () => {
 
           {/* === Personal Info === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Personal Info
             </h3>
             <Info label="Username" value={user.username} />
@@ -97,7 +98,7 @@ const UserInformation = () => {
 
           {/* === Work Details === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Work Details
             </h3>
             <Info label="Department" value={user.department} />
@@ -112,7 +113,7 @@ const UserInformation = () => {
 
           {/* === Guardian Info === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Guardian Info
             </h3>
             <Info label="Relation" value={user.guardian_relation} />
@@ -123,6 +124,7 @@ const UserInformation = () => {
 
         </div>
        </div>
+
 {/* --------------User works details-------------------- */}
       <div className="">
 <EmployeeSummary></EmployeeSummary>

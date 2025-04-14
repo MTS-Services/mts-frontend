@@ -94,25 +94,60 @@ const UserListComponent = () => {
 
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
-      {/* Search Bar */}
-      <div className="flex justify-center items-center px-4">
-        <div className="relative w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Search by user,.."
-            className="w-full pl-12 pr-4 py-1 text-xs rounded-full shadow-lg border border-accent hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-300 ease-in-out text-secendary  sm:text-base bg-accent"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary text-xl" />
-        </div>
-      </div>
+
+<div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between w-full">
+  {/* 🔍 Search Bar */}
+  <div className="w-full md:w-1/2">
+    <div className="relative w-full max-w-md mx-auto md:mx-0 font-secondary ">
+      <input
+        type="text"
+        placeholder="Search by user..."
+        className="w-full pl-11 pr-4 py-2 text-sm sm:text-base rounded-full shadow-md border border-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary 
+        transition duration-300   text-accent bg-background  "
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-primary text-lg sm:text-xl" />
+    </div>
+  </div>
+
+  {/* 🟦 Dropdown Filters */}
+  <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
+    <select 
+      defaultValue=""
+      className="w-full sm:w-44 font-secondary px-4 py-2 text-sm border border-accent rounded-md  text-accent bg-background max-w-48  shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary  transition"
+    >
+      <option disabled value="" className="font-secondary ">
+       Select male Or Famale
+      </option>
+      <option className=" ">Male</option>
+      <option className=" ">Female</option>
+      
+    </select>
+
+   <select
+      defaultValue=""
+      className="w-full sm:w-44 font-secondary px-4 py-2 text-sm border border-accent rounded-md  text-accent bg-background max-w-48  shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary  transition"
+    >
+      <option disabled value=""  className="font-secondary">
+       Select Department
+      </option>
+      <option >Full Stack</option>
+      <option >Fontend Developer</option>
+      <option >UI/UX Designer</option>
+      
+    </select>
+  </div>
+</div>
+
+
+
 
       {/* Table */}
       <div className="overflow-x-auto mt-10">
         <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className=" text-accent text-lg">
+            <tr className=" text-accent text-lg font-primary">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
@@ -126,12 +161,12 @@ const UserListComponent = () => {
             </tr>
           </thead>
 
-          <tbody className="border-t-2  border-accent">
+          <tbody className="border-t-2  border-accent font-secondary">
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user, i) => (
                 <tr
                   key={i}
-                  className="border-b-1 border-accent/40 border-dashed  text-accent  hover:text-accent text-sm hover:bg-primary/80 "
+                  className="border-b-1 border-accent/40 border-dashed  font-secondary text-accent  hover:text-accent text-sm hover:bg-primary/80 "
                 >
                   <td className="px-2 py-1 flex items-center justify-center">
                     <div className="w-12 h-12 overflow-hidden rounded-full">
@@ -142,7 +177,7 @@ const UserListComponent = () => {
                       />
                     </div>
                   </td>
-                  <td className="px-1 font-thin	 py-2 text-sm">
+                  <td className="px-1 font-light	 py-2 text-sm">
                     {user.name}
                   </td>
                   <td className="px-1 font-light py-2 text-base">
