@@ -96,7 +96,7 @@ const ContactPage: React.FC = () => {
         <div className='border-2 border-gray-400 rounded-xl shadow-lg p-8'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
             <div className='flex flex-col justify-center text-center lg:text-left'>
-              <h1 className='text-4xl font-extrabold text-white mb-4 mt-4'>
+              <h1 className='text-4xl font-extrabold text-accent mb-4 mt-4  justify-center'>
                 Contact Us
               </h1>
               <p className='text-lg text-gray-300'>

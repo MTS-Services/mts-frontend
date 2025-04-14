@@ -1,7 +1,8 @@
-import * as React from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import ToggleDarkAndLight from "../../../components/ToggleDarkAndLight/ToggleDarkAndLight";
+import * as React from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import ToggleDarkAndLight from '../../../components/ToggleDarkAndLight/ToggleDarkAndLight';
+import { useTheme } from '../../../context/ThemeContext';
 
 // Define the nav item type
 type NavItem = {
@@ -11,26 +12,32 @@ type NavItem = {
 
 // Nav items array
 const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Login", href: "/login" },
-  { label: "Register", href: "/register" },
-  { label: "Contact", href: "/contact" },
+  { label: 'Home', href: '/' },
+  { label: 'Login', href: '/login' },
+  { label: 'Register', href: '/register' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const { theme } = useTheme();
+
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
-  
+
+  const imagePath =
+    theme === 'light-mode'
+      ? '/images/black_logo.png'
+      : '/images/white_logo.png';
 
   return (
     <header className='w-full bg-background text-accent shadow-md border-b border-gray-400'>
       <div className='max-w-[1400px] mx-auto flex items-center justify-between p-4 font-primary'>
         {/* Logo */}
         <Link to='/' className='flex items-center'>
-          <img className='w-32' src='/images/logo.png' alt='Logo' />
+          <img src={imagePath} alt='Theme Image' className='w-32' />
         </Link>
 
         {/* Desktop Menu */}
