@@ -299,7 +299,7 @@ const Projects = () => {
                       row?.team_member?.last_name || ""
                     }`}
                   </td>
-
+                  {/* last date */}
                   <td className="px-2 py-3 border-r border-secondary">
                     {editRowId === row.id ? (
                       <input
@@ -311,7 +311,11 @@ const Projects = () => {
                         className="text-black px-2 py-1 rounded"
                       />
                     ) : row?.deli_last_date ? (
-                      new Date(row.deli_last_date).toLocaleTimeString("en-US")
+                      new Date(row.deli_last_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
                     ) : (
                       ""
                     )}
