@@ -19,7 +19,7 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = (props) => {
+const ProjectsChart = (props) => {
   const {
     data,
     title = '',
@@ -88,4 +88,4 @@ const BarChart = (props) => {
   );
 };
 
-export default BarChart;
+export default ProjectsChart;
