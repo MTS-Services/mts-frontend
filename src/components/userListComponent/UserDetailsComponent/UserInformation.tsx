@@ -2,7 +2,7 @@ import EmployeeSummary from "../EmployeeSummary/EmployeeSummary";
 
 const UserInformation = () => {
   const user = {
-    avatar: 'https://i.pravatar.cc/100',
+    avatar: '/assits/Rewardspage/profileImg.jpg',
     name: 'Liam Smith',
     username: 'liams',
     email: 'liam@example.com',
@@ -42,15 +42,17 @@ const UserInformation = () => {
 
   return (
     <section className="min-h-screen p-10">
-    <div className="max-w-6xl mx-auto rounded-xl bg-card shadow-md p-8">
+    <div className="max-w-6xl mx-auto  bg-card p-8 rounded-xl shadow-md  shadow-primary ">
          {/* === Header === */}
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <img
-              src={user.avatar}
-              alt="User Avatar"
-              className="w-20 h-20 rounded-full shadow-box-style"
-            />
+       
+<div className="flex items-center justify-between flex-wrap md:py-0 py-1">
+   <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+          <div className="flex items-center gap-4 ">
+         <img
+  src={user.avatar}
+  alt="User Avatar"
+  className="w-20 h-20 shadow-primary rounded-full shadow-md"
+/>
             <div>
               <h2 className="text-3xl font-primary  text-primary text-shadow-md ">
                 {user.name}
@@ -59,7 +61,21 @@ const UserInformation = () => {
             </div>
           </div>
         </div>
+        {/* ----------------Edit password section------------------- */}
+     <div className="flex justify-center">
+  <button
+    type="submit"
+    className="group relative flex items-center justify-center px-8 py-2 text-base font-bold text-background rounded-full bg-primary shadow-md overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:text-white hover:shadow-lg active:scale-95"
+  >
+    <span className="relative z-10">Edit your password & info</span>
+    <span className="absolute inset-0 w-full h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
+  </button>
+</div>
 
+     
+
+
+</div>
         {/* === Grid Sections === */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
