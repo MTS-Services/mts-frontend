@@ -101,7 +101,12 @@ const RegisterForm: React.FC = () => {
 
       if (user) {
         const formData = new FormData();
+<<<<<<< HEAD
         formData.append('email', email);
+=======
+        formData.append("email", email);
+        formData.append("uid", user.uid);
+>>>>>>> 34b3c78358299afa9132064c1339e157a4b9a46b
 
         Object.entries(rest).forEach(([key, value]) => {
           if (key != 'confirmPassword') {
@@ -114,7 +119,11 @@ const RegisterForm: React.FC = () => {
         }
 
         const res = await axios.post(
+<<<<<<< HEAD
           'http://192.168.10.40:3000/api/teamMember/create',
+=======
+          "http://192.168.10.40:3000/api/teamMember/create",
+>>>>>>> 34b3c78358299afa9132064c1339e157a4b9a46b
           formData,
           {
             headers: {
@@ -127,7 +136,11 @@ const RegisterForm: React.FC = () => {
           toast.success(
             'Congratulation, Registration successful! Please Login to continue'
           );
+<<<<<<< HEAD
           navigate('/login');
+=======
+          navigate("/dashboard/projects");
+>>>>>>> 34b3c78358299afa9132064c1339e157a4b9a46b
         } else {
           toast.error('Something went wrong. Please try again.');
         }
