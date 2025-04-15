@@ -62,12 +62,13 @@ const Projects = () => {
         const response = await fetch("http://192.168.10.47:3000/api/project", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ page: "1", limit: "10" }),
+          body: JSON.stringify({ page: "1", limit: "100" }),
         });
 
         const data = await response.json();
         if (Array.isArray(data?.projects)) {
           setTableData(data.projects);
+          console.log(data);
         } else {
           setTableData([]);
         }
@@ -108,6 +109,7 @@ const Projects = () => {
   ];
 
   const operationStatuses = ["Wip", "Completed", "Pending"];
+  const profileStatuses = ["Active", "Inactive", "Revision", "Pending"];
 
   const orderedByOptions = [
     ...new Set(
@@ -122,7 +124,6 @@ const Projects = () => {
   const handleEditClick = (row) => {
     if (editRowId === row.id) {
       console.log(row.id);
-      
 
       return; // already editing this row
     }
@@ -139,7 +140,6 @@ const Projects = () => {
 
   const handleInputChange = (field, value) => {
     setEditedRow((prev) => ({ ...prev, [field]: value }));
-
   };
 
   const handleSave = async (id) => {
@@ -164,7 +164,7 @@ const Projects = () => {
         const updatedData = tableData.map((item) =>
           item.id === id ? { ...item, ...payload } : item
         );
-        toast.success("Update Successfuly")
+        toast.success("Update Successfuly");
         setTableData(updatedData);
         setEditRowId(null);
         setEditedRow({});
@@ -173,11 +173,8 @@ const Projects = () => {
       }
     } catch (error) {
       console.error("Save error", error);
-      toast.warning("Update Failed")
-
+      toast.warning("Update Failed");
     }
-
-
   };
 
   return (
@@ -285,19 +282,29 @@ const Projects = () => {
                     {row?.clientName}
                   </td>
 
+                  {/* test selects*********************************  */}
                   <td className="px-2 py-3 border-r border-secondary">
                     {editRowId === row.id ? (
-                      <input
+                      <select
                         value={editedRow.ops_status}
                         onChange={(e) =>
                           handleInputChange("ops_status", e.target.value)
                         }
-                        className="text-black px-2 py-1 rounded"
-                      />
+                        className="text-black px-2 py-1 rounded w-full"
+                      >
+                        <option value="">Select status</option>
+                        {operationStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
                     ) : (
                       row?.ops_status
                     )}
                   </td>
+
+                  {/* test selectes************************* */}
 
                   <td className="px-2 py-3 border-r border-secondary">
                     {row?.sheet_link}
@@ -332,13 +339,20 @@ const Projects = () => {
 
                   <td className="px-2 py-3 border-r border-secondary">
                     {editRowId === row.id ? (
-                      <input
+                      <select
                         value={editedRow.status}
                         onChange={(e) =>
                           handleInputChange("status", e.target.value)
                         }
-                        className="text-black px-2 py-1 rounded"
-                      />
+                        className="text-black px-2 py-1 rounded w-full"
+                      >
+                        <option value="">Select status</option>
+                        {profileStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
                     ) : (
                       row?.status
                     )}
