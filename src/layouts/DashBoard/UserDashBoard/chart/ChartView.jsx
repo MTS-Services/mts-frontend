@@ -9,46 +9,38 @@ import LineChart from '../../../../components/common/LineChart';
 const socket = io('http://192.168.10.47:3000'); // Replace with your server URL
 
 const ChartView = () => {
-  // sales each profile
   const [profileData, setProfileData] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
-  // project data
   const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
     //✅FETCH DATA
     const fetchProjects = async () => {
       try {
-        // ------1️⃣ FETCH DATA
-        // ** Fetch Sales Profile data
-        const resSalesProfile = await axios.get(
-          'http://192.168.10.47:3000/api/profile'
-        );
-        // ** Fetch Project data
-        const resSalesProjects = await axios.post(
-          'http://192.168.10.47:3000/api/project',
-          {
+        const [resSalesProfile, resSalesProjects] = await Promise.all([
+          axios.get('http://192.168.10.47:3000/api/profile'),
+          axios.post('http://192.168.10.47:3000/api/project', {
             page: 1,
             limit: 10,
-          }
-        );
+            search: '',
+          }),
+        ]);
 
-        // -----2️⃣ FORMATE DATA
-        // ** Format sales profile
+        //1️⃣ Format data
         const formattedSalesProfile = resSalesProfile.data.salesData.map(
           (item) => ({
             name: item.profile_name,
-            amount: Number(item.total_sales),
+            amount: Number(item.total_sales.toFixed(0)),
           })
         );
 
-        // Total sales profile amount
+        //2️⃣ Calculate total sales
         const totalSalesProfile = formattedSalesProfile.reduce(
           (acc, item) => acc + item.amount,
           0
         );
 
-        // ** Format project data
+        //3️⃣ Format project data
         const formattedProject = resSalesProjects.data.projects.map(
           (project) => ({
             name: project.project_name,
@@ -58,38 +50,54 @@ const ChartView = () => {
           })
         );
 
-        // -----3️⃣ UPDATE STATE
-        // ** Update sales profile data state
+        //4️⃣ Update state
         setProfileData(formattedSalesProfile);
         setTotalSales(totalSalesProfile);
-
-        // ** Update project data state
         setProjectData(formattedProject);
-
-        // -----4️⃣ LOG DATA
-        // console.log(formattedProject);
-        // console.log(formattedSalesProfile);
       } catch (err) {
-        console.error('Error fetching project data:', err);
+        console.error('Error fetching data:', err);
       }
     };
-
+    //
     fetchProjects();
 
-    // ✅ CONNECT SOCKET.IO SETUP
-    // 🔌 Listen for updates
-
-    socket.on('salesData', (data) => {
-      console.log('📦 [Socket] salesData event fired');
-      console.log('➡️ Raw data:', data);
-
-      if (Array.isArray(data)) {
-        console.table(data);
-      } else {
-        console.log('✅ Parsed Data:', data.name, data.amount);
+    // ✅ Socket event handlers
+    const handleSalesData = (newProfileData) => {
+      if (!Array.isArray(newProfileData)) {
+        console.warn('Expected an array but got:', newProfileData);
+        return;
       }
-    });
-  }, []);
+      // 1️⃣ Filter out invalid data
+      const validProfiles = newProfileData.filter(
+        (item) => item?.profile_name && item?.total_sales
+      );
+      // 2️⃣ Update profile data
+      const updatedProfiles = validProfiles.map((item) => ({
+        name: item.profile_name,
+        amount: Number(item.total_sales),
+      }));
+      // 3️⃣ Update profile data
+      setProfileData((prev) => {
+        const filtered = prev.filter(
+          (item) => !updatedProfiles.some((upd) => upd.name === item.name)
+        );
+        const newState = [...updatedProfiles, ...filtered];
+
+        //4️⃣ Update total sales whenever profile data changes
+        const newTotal = newState.reduce((sum, item) => sum + item.amount, 0);
+        setTotalSales(newTotal);
+
+        return newState;
+      });
+    };
+    // ✅ Socket event handlers
+    socket.emit('salesData');
+    socket.on('salesData', handleSalesData);
+
+    return () => {
+      socket.off('salesData', handleSalesData);
+    };
+  }, [socket]); // Add socket to dependencies if it's not static
 
   return (
     <section className=''>
