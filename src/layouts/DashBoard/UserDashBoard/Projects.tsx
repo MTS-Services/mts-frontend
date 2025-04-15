@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { MdInfoOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 
 const Projects = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
@@ -13,7 +14,7 @@ const Projects = () => {
   const [editRowId, setEditRowId] = useState(null);
   const [editedRow, setEditedRow] = useState({});
 
-  const toggleModal = () => setIsOpen(!isOpen);
+  // const toggleModal = () => setIsOpen(!isOpen);
 
   const mtsTargets = [
     { title: "Total Order", amount: "$30000" },
@@ -61,12 +62,13 @@ const Projects = () => {
         const response = await fetch("http://192.168.10.47:3000/api/project", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ page: "1", limit: "10" }),
+          body: JSON.stringify({ page: "1", limit: "100" }),
         });
 
         const data = await response.json();
         if (Array.isArray(data?.projects)) {
           setTableData(data.projects);
+          console.log(data);
         } else {
           setTableData([]);
         }
@@ -107,6 +109,7 @@ const Projects = () => {
   ];
 
   const operationStatuses = ["Wip", "Completed", "Pending"];
+  const profileStatuses = ["Active", "Inactive", "Revision", "Pending"];
 
   const orderedByOptions = [
     ...new Set(
@@ -161,6 +164,7 @@ const Projects = () => {
         const updatedData = tableData.map((item) =>
           item.id === id ? { ...item, ...payload } : item
         );
+        toast.success("Update Successfuly");
         setTableData(updatedData);
         setEditRowId(null);
         setEditedRow({});
@@ -169,8 +173,10 @@ const Projects = () => {
       }
     } catch (error) {
       console.error("Save error", error);
+      toast.warning("Update Failed");
     }
   };
+
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
       {/* Summary Cards */}
@@ -178,7 +184,7 @@ const Projects = () => {
         {mtsTargets.map(({ title, amount, note }, idx) => (
           <div
             key={idx}
-            className="relative bg-primary p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] lg:h-28"
+            className="relative bg-primary border-2 border-border-color p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] lg:h-28"
           >
             <h2 className="text-sm md:text-xl">{title}</h2>
             <h2 className="text-sm md:text-xl">{amount}</h2>
@@ -276,19 +282,29 @@ const Projects = () => {
                     {row?.clientName}
                   </td>
 
+                  {/* test selects*********************************  */}
                   <td className="px-2 py-3 border-r border-secondary">
                     {editRowId === row.id ? (
-                      <input
+                      <select
                         value={editedRow.ops_status}
                         onChange={(e) =>
                           handleInputChange("ops_status", e.target.value)
                         }
-                        className="text-black px-2 py-1 rounded"
-                      />
+                        className="text-black px-2 py-1 rounded w-full"
+                      >
+                        <option value="">Select status</option>
+                        {operationStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
                     ) : (
                       row?.ops_status
                     )}
                   </td>
+
+                  {/* test selectes************************* */}
 
                   <td className="px-2 py-3 border-r border-secondary">
                     {row?.sheet_link}
@@ -323,13 +339,20 @@ const Projects = () => {
 
                   <td className="px-2 py-3 border-r border-secondary">
                     {editRowId === row.id ? (
-                      <input
+                      <select
                         value={editedRow.status}
                         onChange={(e) =>
                           handleInputChange("status", e.target.value)
                         }
-                        className="text-black px-2 py-1 rounded"
-                      />
+                        className="text-black px-2 py-1 rounded w-full"
+                      >
+                        <option value="">Select status</option>
+                        {profileStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
                     ) : (
                       row?.status
                     )}

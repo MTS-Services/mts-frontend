@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import SidebarStyle from './SidebarStyle'; // Sidebar component
 
-const DashboardLayout = () => {
+const  DashboardLayout = () => {
   return (
     <div className='flex min-h-screen bg-gray-900 text-white'>
       {/* Sidebar */}
@@ -12,7 +12,7 @@ const DashboardLayout = () => {
         {/* Topbar */}
 
         {/* Content Outlet */}
-        <main className='flex-1 overflow-y-auto p-6'>
+        <main className='flex-1 overflow-y-auto p-6 bg-background'>
           <Outlet />
         </main>
       </div>
