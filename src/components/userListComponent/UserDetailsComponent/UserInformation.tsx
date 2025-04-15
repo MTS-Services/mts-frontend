@@ -64,7 +64,7 @@ const UserInformation = () => {
   className="w-20 h-20 shadow-box-style rounded-full shodow"
 />
             <div>
-              <h2 className="text-2xl font-bold font-primary  text-primary text-shadow-md ">
+              <h2 className="text-2xl font-primary  text-primary text-shadow-md ">
                 {user.name}
               </h2>
               <p className="text-accent  text-sm capitalize font-secondary">{user.role}</p>
@@ -132,7 +132,7 @@ const UserInformation = () => {
 
           {/* === Personal Info === */}
           <div>
-            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Personal Info
             </h3>
             <Info label="Username" value={user.username} />
@@ -148,7 +148,7 @@ const UserInformation = () => {
 
           {/* === Work Details === */}
           <div>
-            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Work Details
             </h3>
             <Info label="Department" value={user.department} />
@@ -163,7 +163,7 @@ const UserInformation = () => {
 
           {/* === Guardian Info === */}
           <div>
-            <h3 className="text-2xl font-bold font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Guardian Info
             </h3>
             <Info label="Relation" value={user.guardian_relation} />
