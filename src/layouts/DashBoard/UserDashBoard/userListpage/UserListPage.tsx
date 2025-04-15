@@ -2,7 +2,7 @@ import UserListComponent from '../../../../components/userListComponent/UserList
 
 const UserListPage = () => {
   return (
-    <div>
+    <div className='border-none'>
       <UserListComponent />
     </div>
   );

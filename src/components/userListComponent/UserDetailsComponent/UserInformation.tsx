@@ -1,7 +1,10 @@
 import { useState } from "react";
 import EmployeeSummary from "../EmployeeSummary/EmployeeSummary";
 
-const UserInformation = () => {
+const 
+
+
+UserInformation = () => {
 
     const [isOpen, setIsOpen] = useState(false);
 

@@ -8,6 +8,7 @@ const UserListComponent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [departments, setDepartments] = useState([]); // 👈 New state
 
   // Fetching users on component mount
   useEffect(() => {
@@ -19,8 +20,20 @@ const UserListComponent = () => {
             limit: "50",
           }
         );
-        console.log("Data received:", res.data); // Debugging the API response
-        setUserData(res.data.teamMembers); // Adjust if response structure is different
+
+        const members = res.data.teamMembers;
+        setUserData(members);
+
+        // Extract unique department names dynamically
+        const departmentSet = new Set();
+        members.forEach((user) => {
+          const departmentName = user.team?.department?.department_name;
+          if (departmentName) {
+            departmentSet.add(departmentName);
+          }
+        });
+
+        setDepartments([...departmentSet]);
       } catch (error) {
         console.error("Error fetching team members:", error);
       } finally {
@@ -39,13 +52,15 @@ const UserListComponent = () => {
       user.gender?.toLowerCase() === selectedGender.toLowerCase();
     const departmentMatch =
       selectedDepartment === "" ||
-      user.team.department.department_name?.toLowerCase().includes(selectedDepartment.toLowerCase());
+      user.team.department.department_name
+        ?.toLowerCase()
+        .includes(selectedDepartment.toLowerCase());
 
     return (
-
       genderMatch &&
       departmentMatch &&
-      (user.first_name?.toLowerCase().includes(term) ||
+      (user.dp?.toLowerCase().includes(term) ||
+        user.first_name?.toLowerCase().includes(term) ||
         user.email?.toLowerCase().includes(term) ||
         user.number?.toLowerCase().includes(term) ||
         user.permanent_address?.toLowerCase().includes(term) ||
@@ -95,20 +110,18 @@ const UserListComponent = () => {
             <option value="Female">Female</option>
           </select>
 
-
-
-          
-
+          {/* 🔁 Dynamic Department Dropdown */}
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="w-full sm:w-44 font-secondary px-4 py-2 text-sm border border-accent rounded-md text-accent bg-background max-w-48 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
           >
             <option value="">Select Department</option>
-            <option value="mern">	mern</option>
-            <option value="laravel">sales</option>
-            <option value="plugin">plugin</option>
-            <option value="wordpress">wordpress	</option>
+            {departments.map((dept, index) => (
+              <option key={index} value={dept.toLowerCase()}>
+                {dept}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -140,21 +153,43 @@ const UserListComponent = () => {
                     className="border-b-1 border-accent/40 border-dashed font-secondary text-accent hover:text-white text-sm hover:bg-primary"
                   >
                     <td className="px-2 py-1 flex items-center justify-center">
-                      <div className="w-12 h-12 overflow-hidden rounded-full">
+                          <div className="w-12 h-12 overflow-hidden rounded-full">
                         <img
                           className="w-full h-full object-cover"
-                          src={user.image}
+                          src={
+                            user.dp && user.dp.trim() !== ""
+                              ? user.dp
+                              : "/assits/Rewardspage/profileImg.jpg"
+                          }
                           alt="avatar"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/assits/Rewardspage/profileImg.jpg";
+                          }}
                         />
                       </div>
                     </td>
-                    <td className="px-1 font-light py-2 text-sm">{user.first_name|| "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.email || "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.number || "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.permanent_address || "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.guardian_number || "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.team.department.department_name || "N/A"}</td>
-                    <td className="px-1 font-light py-2 text-base">{user.education || "N/A"}</td>
+                    <td className="px-1 font-light py-2 text-sm">
+                      {user.first_name || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.email || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.number || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.permanent_address || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.guardian_number || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.team.department.department_name || "N/A"}
+                    </td>
+                    <td className="px-1 font-light py-2 text-base">
+                      {user.education || "N/A"}
+                    </td>
                   </tr>
                 ))
               ) : (
