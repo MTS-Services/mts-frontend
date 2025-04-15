@@ -15,7 +15,7 @@ function BestContributor  ()  {
       <img
         src="/assits/Rewardspage/profileImg.jpg"
         alt="Profile"
-        className="max-w-[250px] h-[300px] shadow-box-style shadow-primary rounded-full border-4 border-gray-300 object-cover"
+        className="max-w-[250px] h-[300px] shadow-box-style shadow-primary rounded-full border-4 border-accent/400 object-cover"
       />
     </div>
 
