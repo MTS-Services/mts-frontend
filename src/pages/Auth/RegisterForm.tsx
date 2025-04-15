@@ -10,6 +10,7 @@ import { AuthContext } from '../../context/AuthProvider';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
 const BLOOD_GROUP_OPTIONS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const RELATIONSHIP_OPTIONS = ['Single', 'Married', 'Divorced', 'Widowed'];
 const DEPARTMENT_OPTIONS = ['IT', 'HR', 'Finance', 'Marketing'];
 const RELIGION_OPTIONS = [
   'Christianity',
@@ -115,7 +116,7 @@ const RegisterForm: React.FC = () => {
         }
 
         const res = await axios.post(
-          'http://192.168.10.40:3000/api/teamMember/create',
+          'http://192.168.10.47:3000/api/teamMember/create',
           formData,
           {
             headers: {
@@ -147,19 +148,19 @@ const RegisterForm: React.FC = () => {
 
   return (
     <section className='flex justify-center items-center min-h-screen bg-background p-4 font-primary'>
-      <div className='flex items-center justify-center'>
+      <div className='w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div
           className='w-full h-full bg-cover bg-center opacity-50'
           style={{ backgroundImage: 'url(/images/background.jpg)' }}
         ></div>
 
-        <div className='w-full max-w-[1400px] p-24 space-y-8 bg-background border-2 border-gray-400 shadow-xl rounded-xl flex flex-col md:flex-row space-x-12'>
-          <div className='flex flex-col items-center justify-center w-full md:w-100 text-center md:text-left space-y-6'>
-            <h2 className='text-5xl font-extrabold text-white'>Register</h2>
+        <div className='w-full max-w-7xl p-6 sm:p-12 lg:p-16 space-y-8 bg-background border-2 border-gray-400 shadow-xl rounded-xl flex flex-col md:flex-row gap-6 md:gap-12'>
+          <div className='flex flex-col items-center justify-center w-full md:w-1/2 text-center md:text-left space-y-6'>
+            <h2 className='text-5xl font-extrabold text-accent'>Register</h2>
             <p className='text-lg text-gray-500'>Register to your account</p>
           </div>
 
-          <div className='w-full md:w-150 space-y-6'>
+          <div className='w-full md:w-1/2 space-y-6'>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
                 <FormField
@@ -211,6 +212,8 @@ const RegisterForm: React.FC = () => {
                 <FormField
                   id='relationship'
                   label='Relationship'
+                  type='select'
+                  options={RELATIONSHIP_OPTIONS}
                   register={register}
                 />
                 <FormField
@@ -302,7 +305,7 @@ const RegisterForm: React.FC = () => {
 
               <div className='flex justify-center'>
                 <button
-                  className='relative py-2 px-30 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
+                  className='relative py-2 px-10 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                   type='submit'
                 >
                   Register
