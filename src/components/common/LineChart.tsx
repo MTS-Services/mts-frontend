@@ -1,33 +1,33 @@
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 
-// Register ChartJS components
+// Register ChartJS components for line chart
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
 );
 
-const BarChart = (props) => {
+const LineChart = (props) => {
   const {
     data,
     title = '',
-    label = 'Dataset lebel',
-    // backgroundColor,
-    // borderColor,
-    borderWidth = 1,
-    borderRadius = 4,
+    label = 'Dataset label',
+    borderWidth = 2,
+    tension = 0.4,
     yAxisTitle = '',
     xAxisTitle = '',
     chartWidth = '',
@@ -35,21 +35,20 @@ const BarChart = (props) => {
     formatter = (val) => val,
   } = props;
 
-  // Format data for ChartJS
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
       {
-        label: label,
+        label,
         data: data.map((item) => item.amount),
-        backgroundColor: '#aaaaaaaa',
-        borderColor: '#a5f3eb',
-        borderWidth: borderWidth,
-        borderRadius: borderRadius,
+        fill: false,
+        borderColor: '#38bdf8',
+        backgroundColor: '#38bdf8',
+        borderWidth,
+        tension, // makes the line smooth
+        pointRadius: 4,
+        pointHoverRadius: 6,
       },
-
-      // Other datasets can be added here if needed
-      // ...
     ],
   };
 
@@ -60,7 +59,7 @@ const BarChart = (props) => {
         position: 'top',
       },
       title: {
-        display: true,
+        display: !!title,
         text: title,
       },
       tooltip: {
@@ -76,7 +75,7 @@ const BarChart = (props) => {
       y: {
         beginAtZero: true,
         title: {
-          display: true,
+          display: !!yAxisTitle,
           text: yAxisTitle,
         },
         ticks: {
@@ -86,9 +85,8 @@ const BarChart = (props) => {
         },
       },
       x: {
-        beginAtZero: true,
         title: {
-          display: true,
+          display: !!xAxisTitle,
           text: xAxisTitle,
         },
       },
@@ -97,9 +95,9 @@ const BarChart = (props) => {
 
   return (
     <div style={{ width: chartWidth }} className={className}>
-      <Bar data={chartData} options={options} />
+      <Line data={chartData} options={options} />
     </div>
   );
 };
 
-export default BarChart;
+export default LineChart;
