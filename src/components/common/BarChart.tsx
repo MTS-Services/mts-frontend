@@ -42,8 +42,8 @@ const BarChart = (props) => {
       {
         label: label,
         data: data.map((item) => item.amount),
-        backgroundColor: '#aaaaaaaa',
-        borderColor: '#a5f3eb',
+        backgroundColor: '#008bc7',
+        borderColor: '#aaa',
         borderWidth: borderWidth,
         borderRadius: borderRadius,
       },

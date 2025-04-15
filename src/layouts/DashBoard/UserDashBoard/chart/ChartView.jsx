@@ -98,7 +98,7 @@ const ChartView = () => {
           <h2 className='text-2xl font-semibold mb-2 text-white'>
             👤 Sales Each Profile
           </h2>
-          <p className='text-3xl font-bold text-purple-500'>
+          <p className='text-3xl font-bold text-[#01aaf3]'>
             ${totalSales.toLocaleString()}
           </p>
         </div>
@@ -179,7 +179,7 @@ const ChartView = () => {
           <PieChart
             data={projectData}
             title='Project Distributions'
-            cutout={50} // Pure pie chart
+            cutout={150} // Pure pie chart
             className={
               'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
             }
