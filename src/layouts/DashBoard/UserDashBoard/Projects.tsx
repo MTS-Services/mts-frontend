@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { MdInfoOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 
 const Projects = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
@@ -13,7 +14,7 @@ const Projects = () => {
   const [editRowId, setEditRowId] = useState(null);
   const [editedRow, setEditedRow] = useState({});
 
-  const toggleModal = () => setIsOpen(!isOpen);
+  // const toggleModal = () => setIsOpen(!isOpen);
 
   const mtsTargets = [
     { title: "Total Order", amount: "$30000" },
@@ -121,6 +122,7 @@ const Projects = () => {
   const handleEditClick = (row) => {
     if (editRowId === row.id) {
       console.log(row.id);
+      
 
       return; // already editing this row
     }
@@ -137,6 +139,7 @@ const Projects = () => {
 
   const handleInputChange = (field, value) => {
     setEditedRow((prev) => ({ ...prev, [field]: value }));
+
   };
 
   const handleSave = async (id) => {
@@ -161,6 +164,7 @@ const Projects = () => {
         const updatedData = tableData.map((item) =>
           item.id === id ? { ...item, ...payload } : item
         );
+        toast.success("Update Successfuly")
         setTableData(updatedData);
         setEditRowId(null);
         setEditedRow({});
@@ -169,8 +173,13 @@ const Projects = () => {
       }
     } catch (error) {
       console.error("Save error", error);
+      toast.warning("Update Failed")
+
     }
+
+
   };
+
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
       {/* Summary Cards */}
@@ -178,7 +187,7 @@ const Projects = () => {
         {mtsTargets.map(({ title, amount, note }, idx) => (
           <div
             key={idx}
-            className="relative bg-primary p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] lg:h-28"
+            className="relative bg-primary border-2 border-border-color p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] lg:h-28"
           >
             <h2 className="text-sm md:text-xl">{title}</h2>
             <h2 className="text-sm md:text-xl">{amount}</h2>
