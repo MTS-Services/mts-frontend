@@ -1,6 +1,12 @@
+import { useState } from "react";
 import EmployeeSummary from "../EmployeeSummary/EmployeeSummary";
 
 const UserInformation = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+  const openPopup = () => setIsOpen(true);
+  const closePopup = () => setIsOpen(false)
   const user = {
     avatar: '/assits/Rewardspage/profileImg.jpg',
     name: 'Liam Smith',
@@ -23,6 +29,8 @@ const UserInformation = () => {
     religion: 'Islam',
 
     // Work Details
+    // Work Details
+    // Work Details
     department: 'Development',
     role: 'Senior Engineer',
     location: 'Dhaka, Bangladesh',
@@ -35,10 +43,12 @@ const UserInformation = () => {
 
   // === Reusable Info Line Component ===
   const Info = ({ label, value }) => (
-    <p className=" text-lg  font-light text-accent felx   mb-2 pr-1 font-primary border-b pb-1 border-accent/20 flex items-center">
-      <strong className="pr-1 text-lg  font-light font-primary"> {label} : </strong> {value}
+    <p className="text-base	 font-light text-accent felx   mb-2 pr-1 font-secondary border-b pb-1 border-accent/20 flex items-center">
+      <strong className="pr-1 text-base	  font-light font-secondary"> {label} : </strong> {value}
     </p>
   );
+
+
 
   return (
     <section className="min-h-screen p-10">
@@ -51,25 +61,66 @@ const UserInformation = () => {
          <img
   src={user.avatar}
   alt="User Avatar"
-  className="w-20 h-20 shadow-primary rounded-full shadow-md"
+  className="w-20 h-20 shadow-box-style rounded-full shodow"
 />
             <div>
-              <h2 className="text-3xl font-primary  text-primary text-shadow-md ">
+              <h2 className="text-2xl font-primary  text-primary text-shadow-md ">
                 {user.name}
               </h2>
-              <p className="text-accent font-bold text-sm capitalize">{user.role}</p>
+              <p className="text-accent  text-sm capitalize font-secondary">{user.role}</p>
             </div>
           </div>
         </div>
         {/* ----------------Edit password section------------------- */}
-     <div className="flex justify-center">
-  <button
-    type="submit"
-    className="group relative flex items-center justify-center px-8 py-2 text-base font-bold text-background rounded-full bg-primary shadow-md overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:text-white hover:shadow-lg active:scale-95"
-  >
-    <span className="relative z-10">Edit your password & info</span>
-    <span className="absolute inset-0 w-full h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
-  </button>
+        
+     <div className="flex justify-center ">
+            <div className="relative ">
+      {/* Trigger Button */}
+      <button
+        onClick={openPopup}
+        className="flex items-center relative py-2 px-20 text-background text-base font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0">
+        Edit your password
+      </button>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-card border-1 border-primary bg-opacity-50 flex items-center justify-center">
+          {/* Popup Box */}
+          <div className="bg-primary rounded-xl p-6 w-[350px] shadow-2xl relative">
+            {/* Close Button */}
+           <button
+  onClick={closePopup}
+  aria-label="Close"
+  className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center text-white text-3xl font-bold  hover:accent hover:cta-active transition-all duration-300 shadow-md hover:shadow-lg hover:scale-110 active:scale-95"
+>
+  &times;
+</button>
+
+<div className="bg-primary">
+            <h2 className="text-2xl font-semibold mb-4 text-[#FFF] font-primary">Your Info</h2>
+            <p className="text-[#FFF] mb-2 font-secondary">
+              <strong>Email:</strong> yourmail@example.com
+            </p>
+            <p className="text-[#FFF] mb-4 font-secondary">
+              <strong>Password:</strong> ********
+            </p>
+
+            {/* Your Custom Button */}
+            <button
+              type="submit"
+              className="flex text-sm font-secondary items-center relative border border-[#FFF] py-2 px-8 text-background  font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
+            >
+              <span className="relative z-10 font-primary">
+                Edit your password
+              </span>
+              <span className="absolute inset-0 w-full font-primary h-full -left-full rounded-full bg-gradient-to-r from-blue-800 to-blue-300 transition-all duration-700 ease-in-out group-hover:left-0 z-0"></span>
+            </button></div>
+
+
+          </div>
+        </div>
+      )}
+    </div>
 </div>
 
      
@@ -81,7 +132,7 @@ const UserInformation = () => {
 
           {/* === Personal Info === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Personal Info
             </h3>
             <Info label="Username" value={user.username} />
@@ -97,7 +148,7 @@ const UserInformation = () => {
 
           {/* === Work Details === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Work Details
             </h3>
             <Info label="Department" value={user.department} />
@@ -112,7 +163,7 @@ const UserInformation = () => {
 
           {/* === Guardian Info === */}
           <div>
-            <h3 className="text-3xl font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="text-2xl  font-primary  border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
               Guardian Info
             </h3>
             <Info label="Relation" value={user.guardian_relation} />
@@ -123,6 +174,7 @@ const UserInformation = () => {
 
         </div>
        </div>
+
 {/* --------------User works details-------------------- */}
       <div className="">
 <EmployeeSummary></EmployeeSummary>

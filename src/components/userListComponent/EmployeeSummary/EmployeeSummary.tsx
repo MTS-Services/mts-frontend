@@ -31,17 +31,17 @@ const EmployeeSummary = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-12">
-      <h2 className="text-4xl font-bold text-center mb-10 text-accent ">Employee Summary</h2>
+      <h2 className="text-4xl font-bold text-center mb-10 text-accent  font-primary">Employee Summary</h2>
 
       {/* Info Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {dataCards.map((item, index) => (
           <div key={index} className="bg-accnet/40 backdrop-blur-md border-1 border-primary shadow-lg rounded-xl p-4 text-accent">
             <div className="flex items-center mb-2">
-              <div className="mr-2 text-accent">{item.icon}</div>
-              <p className="text-sm text-accent">{item.label}</p>
+              <div className="mr-2 text-accent font-secondary">{item.icon}</div>
+              <p className="text-sm text-accent font-secondary">{item.label}</p>
             </div>
-            <p className="text-lg font-semibold">{item.value}</p>
+            <p className="text-lg font-semibold font-primary">{item.value}</p>
           </div>
         ))}
       </div>
