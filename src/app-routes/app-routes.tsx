@@ -4,17 +4,16 @@ import MainLayOut from '../MainLayOut';
 import ErrorPage from '../pages/ErrorPage/ErrorPage';
 import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
 
-import DashboardLayout from "../DashboardLayout";
-import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
-import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
-import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
-import BestContributors from "../pages/bestContributor/BestContributors";
-import LoginForm from "../pages/Auth/LoginForm";
-import RegisterForm from "../pages/Auth/RegisterForm";
+import DashboardLayout from '../DashboardLayout';
+import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
+import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
+import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
+import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
+import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
+import BestContributors from '../pages/bestContributor/BestContributors';
+import LoginForm from '../pages/Auth/LoginForm';
+import RegisterForm from '../pages/Auth/RegisterForm';
 import ChartView from './../layouts/DashBoard/UserDashBoard/chart/ChartView';
-
 
 const Home = lazy(() => import('../pages/Home/Home'));
 
@@ -35,8 +34,8 @@ const AppRoutes = createBrowserRouter([
         element: <LoginForm />,
       },
       {
-        path: "/register",
-        element: <RegisterForm/>,
+        path: '/register',
+        element: <RegisterForm />,
       },
       {
         path: '/contact',
@@ -66,7 +65,8 @@ const AppRoutes = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        path: "/dashboard",
+        index: true,
+        path: '/dashboard',
         element: <ChartView />,
       },
       {
