@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import axios from 'axios';
 import BarChart from '../../../../components/common/BarChart';
 import PieChart from '../../../../components/common/PieChart';
+import LineChart from '../../../../components/common/LineChart';
 
-const userData = [
-  { name: 'Aliza_Figma', amount: 1000 },
-  { name: 'Digital_door', amount: 5000 },
-  { name: 'Draw_infinity', amount: 500 },
-  { name: 'Lead_genie', amount: 2000 },
-  { name: 'tareenhossain', amount: 4000 },
-  { name: 'tamukal', amount: 2000 },
-  { name: 'mrakib', amount: 2000 },
-  // this call is for dynamic data if you want then you can use it
-  // ...
-];
+// 🧠 Initialize socket connection
+const socket = io('http://192.168.10.47:3000'); // Replace with your server URL
 
 const ChartView = () => {
   // sales each profile
   const [profileData, setProfileData] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
-
   // project data
   const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
+    //✅FETCH DATA
     const fetchProjects = async () => {
       try {
-        // ------1. FETCH DATA
+        // ------1️⃣ FETCH DATA
         // ** Fetch Sales Profile data
         const resSalesProfile = await axios.get(
           'http://192.168.10.47:3000/api/profile'
@@ -40,7 +33,7 @@ const ChartView = () => {
           }
         );
 
-        // -----2. FORMATE DATA
+        // -----2️⃣ FORMATE DATA
         // ** Format sales profile
         const formattedSalesProfile = resSalesProfile.data.salesData.map(
           (item) => ({
@@ -65,21 +58,37 @@ const ChartView = () => {
           })
         );
 
-        // -----3. UPDATE STATE
+        // -----3️⃣ UPDATE STATE
         // ** Update sales profile data state
         setProfileData(formattedSalesProfile);
         setTotalSales(totalSalesProfile);
 
         // ** Update project data state
         setProjectData(formattedProject);
-        console.log(formattedProject);
-        console.log(formattedSalesProfile);
+
+        // -----4️⃣ LOG DATA
+        // console.log(formattedProject);
+        // console.log(formattedSalesProfile);
       } catch (err) {
         console.error('Error fetching project data:', err);
       }
     };
 
     fetchProjects();
+
+    // ✅ CONNECT SOCKET.IO SETUP
+    // 🔌 Listen for updates
+
+    socket.on('salesData', (data) => {
+      console.log('📦 [Socket] salesData event fired');
+      console.log('➡️ Raw data:', data);
+
+      if (Array.isArray(data)) {
+        console.table(data);
+      } else {
+        console.log('✅ Parsed Data:', data.name, data.amount);
+      }
+    });
   }, []);
 
   return (
@@ -89,8 +98,8 @@ const ChartView = () => {
           <h2 className='text-2xl font-semibold mb-2 text-white'>
             👤 Sales Each Profile
           </h2>
-          <p className='text-3xl font-bold text-purple-500'>
-            ${totalSales.toFixed(2)}
+          <p className='text-3xl font-bold text-[#01aaf3]'>
+            ${totalSales.toLocaleString()}
           </p>
         </div>
 
@@ -129,6 +138,7 @@ const ChartView = () => {
             title='Sales Profile Visualization'
             label='Order Amount'
             yAxisTitle='Amount (USD)'
+            formatter={(val) => `$${val.toLocaleString()}`}
           />
         </div>
 
@@ -136,14 +146,15 @@ const ChartView = () => {
           <h1 className='text-2xl font-semibold text-amber-50 mb-6'>
             Sales by each profile
           </h1>
-          <BarChart
+          <LineChart
             data={profileData}
-            className={
-              'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
-            }
-            title='Sales Each Profile Visualization'
             label='Order Amount'
+            title='Sales Each Profile Visualization'
             yAxisTitle='Amount (USD)'
+            className={
+              'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
+            }
+            formatter={(val) => `$${val.toLocaleString()}`}
           />
         </div>
 
@@ -154,7 +165,7 @@ const ChartView = () => {
           <PieChart
             data={projectData}
             title='Project Distributions'
-            cutout={120} // Pure pie chart
+            cutout={150} // Pure pie chart
             className={
               'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
             }
@@ -168,7 +179,7 @@ const ChartView = () => {
           <PieChart
             data={projectData}
             title='Project Distributions'
-            cutout={50} // Pure pie chart
+            cutout={150} // Pure pie chart
             className={
               'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
             }
