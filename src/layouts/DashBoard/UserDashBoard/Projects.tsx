@@ -3,7 +3,7 @@ import { MdInfoOutline } from "react-icons/md";
 import { io } from "socket.io-client";
 
 const Projects = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
@@ -13,7 +13,7 @@ const Projects = () => {
   const [editRowId, setEditRowId] = useState(null);
   const [editedRow, setEditedRow] = useState({});
 
-  const toggleModal = () => setIsOpen(!isOpen);
+  // const toggleModal = () => setIsOpen(!isOpen);
 
   const mtsTargets = [
     { title: "Total Order", amount: "$30000" },
