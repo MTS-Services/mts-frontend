@@ -80,12 +80,12 @@ const Branches = () => (
     </h3>
     <ul className='text-center md:text-left'>
       <li className='flex items-start gap-4 justify-center md:justify-start font-secondary'>
-        <SiGooglemaps size={50} className='text-primary' />
+        <SiGooglemaps size={50} className='text-cta' />
         MAK Tech Solution (Jamuna): 6th Floor, A Majid Tower, Ka-24 Progati
         Sarani Rd, Dhaka 1229
       </li>
       <li className='flex items-center gap-4 mt-4 justify-center md:justify-start font-secondary'>
-        <SiGooglemaps size={50} className='text-primary' />
+        <SiGooglemaps size={50} className='text-cta' />
         MAK Tech Solution (Banasree): Abdullah Park, House 180/6/23/CAD,
         Road-14, Block-C, Banasree, Dhaka 1219 (above PizzaBurg).
       </li>
@@ -106,7 +106,7 @@ const MarketplacesList = () => (
             href={marketplace.href}
             target='_blank'
             rel='noopener noreferrer'
-            className='flex items-center gap-2 justify-center md:justify-start hover:text-primary transition-all'
+            className='flex items-center gap-2 justify-center md:justify-start hover:text-cta transition-all'
             aria-label={`Visit ${marketplace.label}`}
           >
             {marketplace.icon}
@@ -126,11 +126,11 @@ const Contact = () => (
     </h3>
     <ul className='text-center md:text-left font-secondary'>
       <li className='flex items-center gap-2 justify-center md:justify-start mb-4'>
-        <FaEnvelope size={16} className='text-primary' />
+        <FaEnvelope size={16} className='text-cta' />
         contact@maktechsolution.com
       </li>
       <li className='flex items-center gap-2 justify-center md:justify-start'>
-        <FaPhoneAlt size={16} className='text-primary' />
+        <FaPhoneAlt size={16} className='text-cta' />
         Phone: 01886-159495
       </li>
     </ul>
@@ -151,7 +151,7 @@ const FollowUs = () => (
           href={social.href}
           target='_blank'
           rel='noopener noreferrer'
-          className='text-accent hover:text-primary transition-colors'
+          className='text-accent hover:text-cta transition-colors'
           aria-label={social.label}
         >
           {social.icon}
@@ -172,7 +172,7 @@ const Footer: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <footer className='w-full bg-background text-white font-primary border-t border-gray-400 '>
+    <footer className='w-full bg-background text-accent font-primary border-t border-accent '>
       <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mt-6'>
         <div className='col-span-1'>
           <LogoSection imagePath={imagePath} />
@@ -191,11 +191,11 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <div className='w-full border-t border-gray-400 mt-8'></div>
+      <div className='w-full border-t border-accent mt-8'></div>
 
       {/* Footer Bottom */}
       <div className='max-w-[1400px] mx-auto px-4 py-4 text-center font-secondary'>
-        <p className='text-sm text-gray-400 leading-normal'>
+        <p className='text-sm text-accent leading-normal'>
           &copy; {currentYear} MAK Tech Solution. All rights reserved.
         </p>
       </div>

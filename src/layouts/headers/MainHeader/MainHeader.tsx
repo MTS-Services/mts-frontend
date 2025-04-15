@@ -33,7 +33,7 @@ const Header: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <header className='w-full bg-background text-accent shadow-md border-b border-gray-400'>
+    <header className='w-full bg-background text-accent shadow-md border-b border-accent'>
       <div className='max-w-[1400px] mx-auto flex items-center justify-between p-4 font-primary'>
         {/* Logo */}
         <Link to='/' className='flex items-center'>
@@ -41,12 +41,13 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Desktop Menu */}
+
         <nav className='hidden md:flex gap-8 text-lg font-medium'>
           {NAV_ITEMS.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className='hover:text-primary transition-colors duration-200'
+              className='hover:text-cta transition-colors duration-200'
             >
               {item.label}
             </a>

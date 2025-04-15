@@ -3,6 +3,7 @@ import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Breadcrumb from '../../components/common/breadcrumb';
 
 // Utility function for form input rendering
 const FormField = ({
@@ -91,7 +92,8 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-background py-16 font-primary'>
+    <div className='w-full bg-background pt-2 font-primary min-h-screen'>
+      <Breadcrumb />
       <div className='max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='border-2 border-gray-400 rounded-xl shadow-lg p-8'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
