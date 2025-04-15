@@ -9,6 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import { SiFiverr, SiUpwork, SiFreelancer, SiGooglemaps } from 'react-icons/si';
 import { FaRegFaceMehBlank } from 'react-icons/fa6';
+import { useTheme } from '../../../context/ThemeContext';
 
 // Interfaces
 interface SocialLink {
@@ -58,12 +59,13 @@ const marketplaces: Marketplace[] = [
 ];
 
 // Logo Section Component
-const LogoSection = () => (
+const LogoSection = ({ imagePath }) => (
   <div className='text-center md:text-left sm:w-[300px]'>
-    <Link to='/' className='flex items-center justify-center md:justify-start'>
-      <img className='w-48' src='/images/logo.png' alt='Logo' />
+    {/*Logo */}
+    <Link to='/' className='flex items-center'>
+      <img src={imagePath} alt='Theme Image' className='w-32' />
     </Link>
-    <p className='text-gray-400 text-base leading-normal pt-4 font-[Rubik]'>
+    <p className='text-accent text-base leading-normal pt-4 font-secondary'>
       MAK Tech Solution offers IT services, specializing in WordPress &
       development with 60+ experts, turning visions into reality.
     </p>
@@ -72,17 +74,17 @@ const LogoSection = () => (
 
 // Branches Section Component
 const Branches = () => (
-  <div className='text-center md:text-left sm:w-[300px] text-gray-400 font-[Rubik]'>
-    <h3 className='text-lg font-semibold mb-3 leading-normal text-white'>
+  <div className='text-center md:text-left sm:w-[300px] text-accent font-primary'>
+    <h3 className='text-xl font-semibold mb-3 leading-normal text-accent'>
       Branches
     </h3>
     <ul className='text-center md:text-left'>
-      <li className='flex items-start gap-4 justify-center md:justify-start'>
+      <li className='flex items-start gap-4 justify-center md:justify-start font-secondary'>
         <SiGooglemaps size={50} className='text-primary' />
         MAK Tech Solution (Jamuna): 6th Floor, A Majid Tower, Ka-24 Progati
         Sarani Rd, Dhaka 1229
       </li>
-      <li className='flex items-center gap-4 mt-4 justify-center md:justify-start'>
+      <li className='flex items-center gap-4 mt-4 justify-center md:justify-start font-secondary'>
         <SiGooglemaps size={50} className='text-primary' />
         MAK Tech Solution (Banasree): Abdullah Park, House 180/6/23/CAD,
         Road-14, Block-C, Banasree, Dhaka 1219 (above PizzaBurg).
@@ -94,10 +96,10 @@ const Branches = () => (
 // Marketplaces Section Component
 const MarketplacesList = () => (
   <div className='justify-center text-center md:text-left sm:w-[200px] mx-auto'>
-    <h3 className='text-lg font-semibold mb-3 leading-normal font-[Rubik]'>
+    <h3 className='text-xl font-semibold mb-3 leading-normal font-primary text-accent'>
       Marketplaces
     </h3>
-    <ul className='space-y-4 text-gray-400 text-base leading-normal'>
+    <ul className='space-y-4 text-accent text-base leading-normal'>
       {marketplaces.map((marketplace, idx) => (
         <li key={idx}>
           <a
@@ -118,12 +120,12 @@ const MarketplacesList = () => (
 
 // Contact Section Component
 const Contact = () => (
-  <div className='text-center md:text-left sm:w-[400px] text-gray-400 font-[Rubik]'>
-    <h3 className='text-lg font-semibold mb-3 leading-normal text-white'>
+  <div className='text-center md:text-left sm:w-[400px] text-accent font-primary'>
+    <h3 className='text-xl font-semibold mb-3 leading-normal text-accent'>
       Contact Us
     </h3>
-    <ul className='text-center md:text-left '>
-      <li className='flex items-center gap-2 justify-center md:justify-start'>
+    <ul className='text-center md:text-left font-secondary'>
+      <li className='flex items-center gap-2 justify-center md:justify-start mb-4'>
         <FaEnvelope size={16} className='text-primary' />
         contact@maktechsolution.com
       </li>
@@ -139,7 +141,7 @@ const Contact = () => (
 // Follow Us Section Component
 const FollowUs = () => (
   <div className='flex flex-col items-center md:items-start mt-4'>
-    <h3 className='text-lg font-light mb-3 leading-normal text-white font-[Rubik]'>
+    <h3 className='text-xl font-light mb-3 leading-normal text-accent font-primary'>
       Follow Us
     </h3>
     <div className='flex gap-5'>
@@ -149,7 +151,7 @@ const FollowUs = () => (
           href={social.href}
           target='_blank'
           rel='noopener noreferrer'
-          className='text-gray-300 hover:text-primary transition-colors'
+          className='text-accent hover:text-primary transition-colors'
           aria-label={social.label}
         >
           {social.icon}
@@ -162,37 +164,37 @@ const FollowUs = () => (
 // Footer Component
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const { theme } = useTheme();
+
+  const imagePath =
+    theme === 'light-mode'
+      ? '/images/black_logo.png'
+      : '/images/white_logo.png';
 
   return (
-    <footer className='w-full bg-background text-white font-[Poppins] border-t border-gray-400'>
-      {/* Container for Footer Content */}
-      <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8'>
-        {/* Logo Section */}
+    <footer className='w-full bg-background text-white font-primary border-t border-gray-400 '>
+      <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mt-6'>
         <div className='col-span-1'>
-          <LogoSection />
+          <LogoSection imagePath={imagePath} />
         </div>
 
-        {/* Branches Section */}
         <div className='col-span-1'>
           <Branches />
         </div>
 
-        {/* Marketplaces Section */}
         <div className='col-span-1'>
           <MarketplacesList />
         </div>
 
-        {/* Contact Section */}
         <div className='col-span-1'>
           <Contact />
         </div>
       </div>
 
-      {/* Full-width Divider */}
       <div className='w-full border-t border-gray-400 mt-8'></div>
 
       {/* Footer Bottom */}
-      <div className='max-w-[1400px] mx-auto px-4 py-4 text-center'>
+      <div className='max-w-[1400px] mx-auto px-4 py-4 text-center font-secondary'>
         <p className='text-sm text-gray-400 leading-normal'>
           &copy; {currentYear} MAK Tech Solution. All rights reserved.
         </p>

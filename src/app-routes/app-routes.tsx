@@ -11,9 +11,9 @@ import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
 import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
 import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
 import BestContributors from '../pages/bestContributor/BestContributors';
-import LoginForm from '../pages/auth/LoginForm';
-import RegisterForm from '../pages/auth/RegisterForm';
 import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
+import RegisterForm from '../pages/Auth/RegisterForm';
+import LoginForm from '../pages/Auth/LoginForm';
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
