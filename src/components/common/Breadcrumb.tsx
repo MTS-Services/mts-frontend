@@ -1,11 +1,11 @@
 function CtaSection({ signin }) {
   return (
     <div
-      className='relative w-full bg-cover bg-center'
+      className='relative w-full bg-cover bg-center max-w-[1400px] mx-auto'
       style={{
         backgroundImage: 'url(/assits/hero/b5.JPG)',
         backgroundAttachment: 'fixed',
-        backgroundSize: '1400px', // Set background size to 1400px
+        backgroundSize: '1400px auto',
         backgroundRepeat: 'no-repeat',
       }}
     >

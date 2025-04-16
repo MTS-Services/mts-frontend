@@ -53,13 +53,13 @@ const FormField: React.FC<{
           name={id}
           type={type}
           placeholder={label}
-          className='pl-2 rounded-xl peer h-14 w-full border-b border-accent text-accent bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
+          className='pl-2 rounded-xl peer py-2 px-2 w-full border-b border-accent text-accent bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
           required
         />
       )}
       <label
         htmlFor={id}
-        className='absolute left-0 -top-4 text-accent text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-accent peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
+        className='absolute left-2 -top-4 text-accent text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-accent peer-placeholder-shown:top-0 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
       >
         {label}
       </label>
@@ -141,7 +141,7 @@ const RegisterForm: React.FC = () => {
       <div className='mt-25 pb-25 flex flex-col justify-center '>
         {/* Left Column - Outside the border */}
         <div className=' lg:flex md:flex-row xl:flex flex-wrap justify-center items-center space-y-6 md:space-y-0 md:space-x-12'>
-          <div className='text-center md:text-left space-y-4 md:space-y-6'>
+          <div className='text-center md:text-center space-y-4 md:space-y-6'>
             <h2 className='text-4xl sm:text-5xl font-extrabold text-accent'>
               Welcome
             </h2>
@@ -151,7 +151,7 @@ const RegisterForm: React.FC = () => {
           </div>
 
           {/* Right Column: Form */}
-          <div className='pt-10 md:w-1/2 border-1 border-accent rounded-xl shadow-lg p-4 pb-4 bg-background'>
+          <div className='pt-10  lg:w-1/2 border-1 border-accent rounded-xl shadow-lg p-4 pb-4 bg-background'>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-10'>
               <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                 <FormField
@@ -252,12 +252,11 @@ const RegisterForm: React.FC = () => {
                 <FormField
                   id='education'
                   label='Education'
-                  type='password'
                   register={register}
                 />
 
-                {/* Profile Picture Inside Grid */}
-                <div className=' space-y-2'>
+                {/* Profile Picture */}
+                <div className='space-y-2'>
                   <label className='block text-sm font-medium text-accent'>
                     Profile Picture (DP)
                   </label>
@@ -284,7 +283,7 @@ const RegisterForm: React.FC = () => {
                       type='file'
                       className='sr-only'
                       accept='image/*'
-                      onChange={handleFileChange}
+                      onChange={handleFileChange} // Updated function to handle file change
                     />
                   </div>
                 </div>
@@ -301,7 +300,7 @@ const RegisterForm: React.FC = () => {
 
               {isLoading && <p className='text-accent'>...</p>}
 
-              <footer className='flex justify-center text-sm text-gray-500'>
+              <div className='flex justify-center text-sm text-gray-500'>
                 Already have an account?
                 <Link
                   to='/login'
@@ -309,7 +308,7 @@ const RegisterForm: React.FC = () => {
                 >
                   Sign In
                 </Link>
-              </footer>
+              </div>
             </form>
           </div>
         </div>

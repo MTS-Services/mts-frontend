@@ -60,12 +60,12 @@ const marketplaces: Marketplace[] = [
 
 // Logo Section Component
 const LogoSection = ({ imagePath }) => (
-  <div className='text-center md:text-left sm:w-[300px]'>
-    {/*Logo */}
-    <Link to='/' className='flex items-center md:justify-start justify-center'>
+  <div className='flex flex-col items-center md:items-start sm:w-full text-center md:text-left w-full mx-w-[300px]'>
+    {/* Logo */}
+    <Link to='/' className='flex items-center justify-center'>
       <img src={imagePath} alt='Theme Image' className='w-32' />
     </Link>
-    <p className='text-accent text-base leading-normal pt-4 font-secondary'>
+    <p className='text-accent text-base leading-normal pt-4 font-secondary text-center md:text-left'>
       MAK Tech Solution offers IT services, specializing in WordPress &
       development with 60+ experts, turning visions into reality.
     </p>
@@ -172,21 +172,21 @@ const Footer: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <footer className='w-full bg-background text-accent font-primary border-t border-accent '>
+    <footer className='w-full bg-background text-accent font-primary border-t border-accent'>
       <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mt-6'>
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <LogoSection imagePath={imagePath} />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <Branches />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <MarketplacesList />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <Contact />
         </div>
       </div>
