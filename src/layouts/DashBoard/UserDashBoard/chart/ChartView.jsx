@@ -4,29 +4,35 @@ import axios from 'axios';
 import BarChart from '../../../../components/common/BarChart';
 import PieChart from '../../../../components/common/PieChart';
 import LineChart from '../../../../components/common/LineChart';
+import { set } from 'react-hook-form';
 
 // 🧠 Initialize socket connection
-const socket = io('http://192.168.10.47:3000'); // Replace with your server URL
+const socket = io('http://192.168.10.47:3000');
 
 const ChartView = () => {
+  // sales profile
   const [profileData, setProfileData] = useState([]);
-  const [totalSales, setTotalSales] = useState(0);
+  const [totalSalesProfile, setTotalSalesProfile] = useState(0);
+  // sales projects
   const [projectData, setProjectData] = useState([]);
+  const [totalSalesProject, setTotalSalesProject] = useState(0);
+  const [totalSalesOrders, setTotalSalesOrders] = useState(0);
+  const [totalSalesFiverr, setTotalSalesFiverr] = useState(0);
 
   useEffect(() => {
-    //✅FETCH DATA
     const fetchProjects = async () => {
       try {
+        //✅ FETCH DATA
         const [resSalesProfile, resSalesProjects] = await Promise.all([
           axios.get('http://192.168.10.47:3000/api/profile'),
           axios.post('http://192.168.10.47:3000/api/project', {
             page: 1,
             limit: 10,
-            search: '',
           }),
         ]);
 
-        //1️⃣ Format data
+        //1️⃣ SALES PROFILE
+        // **** format sales profile ****
         const formattedSalesProfile = resSalesProfile.data.salesData.map(
           (item) => ({
             name: item.profile_name,
@@ -34,13 +40,14 @@ const ChartView = () => {
           })
         );
 
-        //2️⃣ Calculate total sales
+        // **** Calculate total sales profile ****
         const totalSalesProfile = formattedSalesProfile.reduce(
           (acc, item) => acc + item.amount,
           0
         );
 
-        //3️⃣ Format project data
+        //3️⃣ SALES PROJECT
+        // **** Format sales project
         const formattedProject = resSalesProjects.data.projects.map(
           (project) => ({
             name: project.project_name,
@@ -50,20 +57,42 @@ const ChartView = () => {
           })
         );
 
-        //4️⃣ Update state
+        // **** Calculate total sales projects
+        const totalSalesProjects = formattedProject?.reduce(
+          (acc, item) => acc + (item.order_amount || 0),
+          0
+        );
+        // **** Calculate total sales orders
+        const totalSalesBonus = formattedProject.reduce(
+          (acc, item) => acc + (item.bonus || 0),
+          0
+        );
+        //  **** Calculate total sales fiverr
+        const totalSalesAfterFiverr = formattedProject.reduce(
+          (acc, item) => acc + (item.after_fiverr_amount || 0),
+          0
+        );
+
+        // 4️⃣ Update state
+        // **** Sales Individual Profile ****
         setProfileData(formattedSalesProfile);
-        setTotalSales(totalSalesProfile);
+        setTotalSalesProfile(totalSalesProfile);
         setProjectData(formattedProject);
+        // **** Sales Projects ****
+        setTotalSalesProject(totalSalesProjects);
+        setTotalSalesOrders(totalSalesBonus);
+        setTotalSalesFiverr(totalSalesAfterFiverr);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
     };
 
-    // ✅CALL FUNCTION
+    // ✅FUNCTION CALL
     fetchProjects();
 
     // ✅ Socket event handlers
-    const handleSalesData = (newProfileData) => {
+    // ****** HANDLE SALES PROFILE ****
+    const handleSalesProfileSocket = (newProfileData) => {
       if (!Array.isArray(newProfileData)) {
         console.warn('Expected an array but got:', newProfileData);
         return;
@@ -84,65 +113,127 @@ const ChartView = () => {
         const filtered = prev.filter(
           (item) => !updatedProfiles.some((upd) => upd.name === item.name)
         );
-
+        // 3️⃣ Update state
         const newState = [...updatedProfiles, ...filtered];
 
-        // 3️⃣ Update total sales whenever profile data changes
+        // 4️⃣ Update total sales whenever profile data changes
         const newTotal = newState.reduce((sum, item) => sum + item.amount, 0);
+
+        // 5️⃣ Update state
         setTotalSales(newTotal);
 
         return newState;
       });
     };
+
+    // ****** HANDLE SALES PROJECT *****
+    const handleSalesProjectSocket = (newProjectData) => {
+      if (!Array.isArray(newProjectData)) {
+        console.warn('Expected an array but got:', newProjectData);
+        return;
+      }
+
+      // 1️⃣ Filter out invalid data
+      const validProjects = newProjectData.filter(
+        (item) =>
+          item?.project_name &&
+          item?.order_amount &&
+          item?.bonus &&
+          item?.after_fiverr_amount
+      );
+
+      // 2️⃣ Update project data
+      const updatedProjects = validProjects.map((item) => ({
+        name: item.project_name,
+        order_amount: Number(item.order_amount),
+        bonus: Number(item.bonus),
+        after_fiverr_amount: Number(item.after_fiverr_amount),
+      }));
+
+      setProjectData((prev) => {
+        const filtered = prev.filter(
+          (item) => !updatedProjects.some((upd) => upd.name === item.name)
+        );
+        // 3️⃣ Update state
+        const newState = [...updatedProjects, ...filtered];
+
+        // 4️⃣ Update total sales whenever project data changes
+        const newTotal = newState.reduce(
+          (sum, item) =>
+            sum +
+            (item.order_amount || 0) +
+            (item.bonus || 0) +
+            (item.after_fiverr_amount || 0),
+          0
+        );
+
+        // 5️⃣ Update state
+        setTotalSales(newTotal);
+
+        return newState;
+      });
+    };
+
     // ✅ Socket event handlers
-    socket.emit('salesData');
-    socket.on('salesData', handleSalesData);
+    socket.emit('salesDataEachProfile');
+    socket.emit('salesDataEachProfile');
+    socket.on('salesDataEachProfile', handleSalesProfileSocket);
+    socket.on('salesDataEachProfile', handleSalesProjectSocket);
 
     return () => {
-      socket.off('salesData', handleSalesData);
+      socket.off('salesDataEachProfile', handleSalesProfileSocket);
+      socket.off('salesDataEachProfile', handleSalesProjectSocket);
     };
-  }, [socket]); // Add socket to dependencies if it's not static
+  }, [socket]);
 
   return (
     <section className=''>
       <div className='grid grid-cols-4 gap-6 p-6 '>
         <div className='bg-black text-center rounded-2xl shadow-md p-6 border border-blue-900'>
-          <h2 className='text-2xl font-semibold mb-2 text-white'>
-            👤Each Profiles
+          <h2 className='text-2xl font-semibold mb-2 text-slate-300'>
+            🧑‍💼Each Profiles
           </h2>
-          <p className='text-3xl font-bold text-[#01aaf3]'>
-            ${totalSales.toLocaleString()}
+          <p className='text-3xl font-bold text-[#0190ce]'>
+            ${totalSalesProfile.toLocaleString()}
           </p>
         </div>
 
         <div className='bg-black text-center rounded-2xl shadow-md p-6 border border-blue-900'>
-          <h2 className='text-2xl font-semibold mb-2 text-white'>📋Projects</h2>
-          <p className='text-3xl font-bold text-yellow-500'>$8,760</p>
+          <h2 className='text-2xl font-semibold mb-2 text-slate-300'>
+            📋Projects
+          </h2>
+          <p className='text-3xl font-bold text-[#267e94]'>
+            ${totalSalesProject.toLocaleString()}
+          </p>
         </div>
 
         <div className='bg-black text-center rounded-2xl shadow-md p-6 border border-blue-900'>
-          <h2 className='text-2xl font-semibold mb-2 text-white'>
-            💰 Per Day Count
+          <h2 className='text-2xl font-semibold mb-2 text-slate-300'>
+            📈After Fiverr
           </h2>
-          <p className='text-3xl font-bold text-green-600'>$327</p>
+          <p className='text-3xl font-bold text-[#267e94]'>
+            ${totalSalesFiverr.toLocaleString()}
+          </p>
         </div>
 
         <div className='bg-black text-center rounded-2xl shadow-md p-6 border border-blue-900'>
-          <h2 className='text-2xl font-semibold mb-2 text-white'>
-            📈 Growth Rate
+          <h2 className='text-2xl font-semibold mb-2 text-slate-300'>
+            💰Bonus
           </h2>
-          <p className='text-3xl font-bold text-purple-600'>+12.4%</p>
+          <p className='text-3xl font-bold text-[#db9a00]'>
+            ${totalSalesOrders.toLocaleString()}
+          </p>
         </div>
       </div>
 
       <div className='grid grid-cols-2 gap-6 p-6 '>
         <div className=''>
-          <h1 className='text-2xl font-semibold text-amber-50 mb-6'>
-            Sales individual profile
+          <h1 className='text-2xl font-semibold text-slate-300 mb-6'>
+            Individual Profile
           </h1>
           <LineChart
             data={profileData}
-            label='Order Amount'
+            label='Amount'
             title='Sales Each Profile Visualization'
             yAxisTitle='Amount (USD)'
             className={
@@ -153,23 +244,22 @@ const ChartView = () => {
         </div>
 
         <div className=''>
-          <h1 className='text-2xl font-semibold text-amber-50 mb-6'>
-            Sales Projects
+          <h1 className='text-2xl font-semibold text-slate-300 mb-6'>
+            Projects Distributions
           </h1>
           <BarChart
-            data={profileData}
+            data={projectData}
             className={
               'bg-black shadow-sm rounded-lg p-6 border border-blue-900'
             }
-            title='Sales Project Visualization'
-            label='Order Amount'
+            title='Project Distributions'
             yAxisTitle='Amount (USD)'
             formatter={(val) => `$${val.toLocaleString()}`}
           />
         </div>
 
         <div className=''>
-          <h1 className='text-2xl font-semibold text-amber-50 mb-6'>
+          <h1 className='text-2xl font-semibold text-slate-300 mb-6'>
             Sales by each profile
           </h1>
           <PieChart
@@ -183,7 +273,7 @@ const ChartView = () => {
         </div>
 
         <div className=''>
-          <h1 className='text-2xl font-semibold text-amber-50 mb-6'>
+          <h1 className='text-2xl font-semibold text-slate-300 mb-6'>
             Sales by each profile
           </h1>
           <PieChart
