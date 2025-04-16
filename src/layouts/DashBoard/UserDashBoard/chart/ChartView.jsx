@@ -120,7 +120,7 @@ const ChartView = () => {
         const newTotal = newState.reduce((sum, item) => sum + item.amount, 0);
 
         // 5️⃣ Update state
-        setTotalSales(newTotal);
+        setTotalSalesProfile(newTotal);
 
         return newState;
       });
@@ -168,7 +168,7 @@ const ChartView = () => {
         );
 
         // 5️⃣ Update state
-        setTotalSales(newTotal);
+        setTotalSalesProject(newTotal);
 
         return newState;
       });
