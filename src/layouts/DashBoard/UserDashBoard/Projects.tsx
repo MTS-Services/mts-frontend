@@ -3,6 +3,7 @@ import { MdInfoOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import ProjectsUplodeForm from "./ProjectsUplodeForm";
+import Search from "../../../components/Search/Search";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -202,54 +203,63 @@ const Projects = () => {
       </div>
 
       {/* Filters */}
-      <div className="my-4 flex flex-wrap items-center gap-4 mt-10">
-        <select
-          value={filter.account}
-          onChange={(e) => setFilter({ ...filter, account: e.target.value })}
-          className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
-        >
-          <option value="">Filter by Account</option>
-          {uniqueAccounts.map((account, index) => (
-            <option key={index} value={account}>
-              {account}
-            </option>
-          ))}
-        </select>
 
-        <select
-          value={filter.operationStatus}
-          onChange={(e) =>
-            setFilter({ ...filter, operationStatus: e.target.value })
-          }
-          className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
-        >
-          <option value="">Filter by Operation Status</option>
-          {operationStatuses.map((status, index) => (
-            <option key={index} value={status}>
-              {status}
-            </option>
-          ))}
-        </select>
+      <div className="flex justify-between items-center ">
+        <div className="my-4 flex flex-wrap items-center gap-4 mt-10 w-2/3">
+          <select
+            value={filter.account}
+            onChange={(e) => setFilter({ ...filter, account: e.target.value })}
+            className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
+          >
+            <option value="">Filter by Account</option>
+            {uniqueAccounts.map((account, index) => (
+              <option key={index} value={account}>
+                {account}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={filter.orderedBy}
-          onChange={(e) => setFilter({ ...filter, orderedBy: e.target.value })}
-          className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
-        >
-          <option value="">Filter by Ordered by</option>
-          {orderedByOptions.map((name, index) => (
-            <option key={index} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
+          <select
+            value={filter.operationStatus}
+            onChange={(e) =>
+              setFilter({ ...filter, operationStatus: e.target.value })
+            }
+            className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
+          >
+            <option value="">Filter by Operation Status</option>
+            {operationStatuses.map((status, index) => (
+              <option key={index} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
 
-        <button
-          onClick={resetFilters}
-          className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition duration-300"
-        >
-          Reset Filters
-        </button>
+          <select
+            value={filter.orderedBy}
+            onChange={(e) =>
+              setFilter({ ...filter, orderedBy: e.target.value })
+            }
+            className="text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48"
+          >
+            <option value="">Filter by Ordered by</option>
+            {orderedByOptions.map((name, index) => (
+              <option key={index} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={resetFilters}
+            className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition duration-300"
+          >
+            Reset Filters
+          </button>
+        </div>
+        {/* Search */}
+        <div className="w-1/3 flex justify-end">
+          <Search />
+        </div>
       </div>
 
       {/* Table */}
@@ -433,7 +443,7 @@ const Projects = () => {
           </tbody>
         </table>
       </div>
-      <ProjectsUplodeForm/>
+      <ProjectsUplodeForm />
     </div>
   );
 };
