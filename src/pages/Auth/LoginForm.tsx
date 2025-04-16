@@ -11,6 +11,7 @@ type FormData = {
 };
 const LoginForm: React.FC = () => {
   const { setIsLoading, isLoading, signInUser } = React.useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
