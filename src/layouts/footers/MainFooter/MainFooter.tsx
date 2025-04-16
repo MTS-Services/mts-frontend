@@ -62,7 +62,7 @@ const marketplaces: Marketplace[] = [
 const LogoSection = ({ imagePath }) => (
   <div className='text-center md:text-left sm:w-[300px]'>
     {/*Logo */}
-    <Link to='/' className='flex items-center'>
+    <Link to='/' className='flex items-center md:justify-start justify-center'>
       <img src={imagePath} alt='Theme Image' className='w-32' />
     </Link>
     <p className='text-accent text-base leading-normal pt-4 font-secondary'>
