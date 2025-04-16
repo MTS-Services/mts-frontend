@@ -21,10 +21,10 @@ const RegisterView = () => {
 
   return (
     <section>
-      <div className="flex h-screen items-center justify-center bg-gray-100">
+      <div className="flex h-screen items-center justify-center bg-gray-100 p-5">
         <form
           onSubmit={handleSubmit}
-          className="w-96 rounded-lg border bg-amber-50 p-8 px-0 py-0 shadow-lg"
+          className="w-96 rounded-lg border bg-amber-50 p-8 px-0 py-0 pt-5 shadow-lg"
         >
           <h1 className="mb-4 text-2xl font-semibold">Register</h1>
           <div className="mb-4 flex flex-col">
