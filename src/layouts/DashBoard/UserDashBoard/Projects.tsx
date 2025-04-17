@@ -377,8 +377,6 @@ const Projects = () => {
                     {editRowId === row.id ? (
                       <input
                         type="number"
-                        min={1}
-                        max={5}
                         value={editedRow.bonus}
                         onChange={(e) =>
                           handleInputChange("bonus", e.target.value)
