@@ -9,16 +9,16 @@ import Loading from '../../components/Loading/Loading';
 import { AuthContext } from '../../context/AuthProvider';
 import Breadcrumb from '../../components/common/breadcrumb';
 
-const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
-const BLOOD_GROUP_OPTIONS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-const RELATIONSHIP_OPTIONS = ['Single', 'Married', 'Divorced', 'Widowed'];
-const DEPARTMENT_OPTIONS = ['IT', 'HR', 'Finance', 'Marketing'];
+const GENDER_OPTIONS = ["Male", "Female", "Other"];
+const BLOOD_GROUP_OPTIONS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const RELATIONSHIP_OPTIONS = ["Single", "Married", "Divorced", "Widowed"];
+const DEPARTMENT_OPTIONS = ["IT", "HR", "Finance", "Marketing"];
 const RELIGION_OPTIONS = [
-  'Christianity',
-  'Islam',
-  'Hinduism',
-  'Buddhism',
-  'Other',
+  "Christianity",
+  "Islam",
+  "Hinduism",
+  "Buddhism",
+  "Other",
 ];
 
 const FormField: React.FC<{
@@ -28,7 +28,7 @@ const FormField: React.FC<{
   options?: string[];
   fullWidth?: boolean;
   register: any;
-}> = ({ id, label, type = 'text', options, fullWidth = false, register }) => {
+}> = ({ id, label, type = "text", options, fullWidth = false, register }) => {
   return (
     <div className={`relative w-full ${fullWidth ? 'col-span-full' : ''}`}>
       {type === 'select' ? (
@@ -39,7 +39,7 @@ const FormField: React.FC<{
           className='rounded-xl peer w-full border-b border-accent text-gray-500 bg-transparent focus:outline-none focus:border-primary placeholder-transparent'
           required
         >
-          <option value=''>Select {label}</option>
+          <option value="">Select {label}</option>
           {options?.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -77,7 +77,7 @@ const RegisterForm: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const maxSizeMB = 2;
-      const isImage = file.type.startsWith('image/');
+      const isImage = file.type.startsWith("image/");
       const isTooLarge = file.size > maxSizeMB * 1024 * 1024;
 
       if (!isImage) return toast.error('Only image files are allowed.');
@@ -95,8 +95,8 @@ const RegisterForm: React.FC = () => {
 
       if (user) {
         const formData = new FormData();
-        formData.append('email', email);
-        formData.append('uid', user.uid);
+        formData.append("email", email);
+        formData.append("uid", user.uid);
 
         Object.entries(rest).forEach(([key, value]) => {
           if (key !== 'confirmPassword') {
@@ -105,11 +105,11 @@ const RegisterForm: React.FC = () => {
         });
 
         if (profileImage) {
-          formData.append('dp', profileImage);
+          formData.append("dp", profileImage);
         }
 
         const res = await axios.post(
-          'http://192.168.10.47:3000/api/teamMember/create',
+          "http://192.168.10.47:3000/api/teamMember/create",
           formData,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -120,12 +120,12 @@ const RegisterForm: React.FC = () => {
           toast.success('Registration successful! Please login.');
           navigate('/dashboard/projects');
         } else {
-          toast.error('Something went wrong. Please try again.');
+          toast.error("Something went wrong. Please try again.");
         }
       }
     } catch (err) {
       console.error(err);
-      toast.error('Registration failed. Please try again.');
+      toast.error("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -155,98 +155,98 @@ const RegisterForm: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-10'>
               <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                 <FormField
-                  id='first_name'
-                  label='First Name'
+                  id="first_name"
+                  label="First Name"
                   register={register}
                 />
                 <FormField
-                  id='last_name'
-                  label='Last Name'
+                  id="last_name"
+                  label="Last Name"
                   register={register}
                 />
                 <FormField
-                  id='email'
-                  label='E-mail'
-                  type='email'
+                  id="email"
+                  label="E-mail"
+                  type="email"
                   register={register}
                 />
                 <FormField
-                  id='number'
-                  label='Phone Number'
-                  type='tel'
+                  id="number"
+                  label="Phone Number"
+                  type="tel"
                   register={register}
                 />
                 <FormField
-                  id='permanent_address'
-                  label='Permanent Address'
+                  id="permanent_address"
+                  label="Permanent Address"
                   register={register}
                 />
                 <FormField
-                  id='present_address'
-                  label='Present Address'
+                  id="present_address"
+                  label="Present Address"
                   register={register}
                 />
                 <FormField
-                  id='gender'
-                  label='Gender'
-                  type='select'
+                  id="gender"
+                  label="Gender"
+                  type="select"
                   options={GENDER_OPTIONS}
                   register={register}
                 />
                 <FormField
-                  id='blood_group'
-                  label='Blood Group'
-                  type='select'
+                  id="blood_group"
+                  label="Blood Group"
+                  type="select"
                   options={BLOOD_GROUP_OPTIONS}
                   register={register}
                 />
                 <FormField
-                  id='relationship'
-                  label='Relationship'
-                  type='select'
+                  id="relationship"
+                  label="Relationship"
+                  type="select"
                   options={RELATIONSHIP_OPTIONS}
                   register={register}
                 />
                 <FormField
-                  id='guardian_relation'
-                  label='Guardian Relation'
+                  id="guardian_relation"
+                  label="Guardian Relation"
                   register={register}
                 />
                 <FormField
-                  id='guardian_number'
-                  label='Guardian Number'
-                  type='tel'
+                  id="guardian_number"
+                  label="Guardian Number"
+                  type="tel"
                   register={register}
                 />
                 <FormField
-                  id='guardian_address'
-                  label='Guardian Address'
+                  id="guardian_address"
+                  label="Guardian Address"
                   register={register}
                 />
                 <FormField
-                  id='department'
-                  label='Department'
-                  type='select'
+                  id="department"
+                  label="Department"
+                  type="select"
                   options={DEPARTMENT_OPTIONS}
                   register={register}
                 />
                 <FormField
-                  id='religion'
-                  label='Religion'
-                  type='select'
+                  id="religion"
+                  label="Religion"
+                  type="select"
                   options={RELIGION_OPTIONS}
                   register={register}
                 />
                 <FormField
-                  id='password'
-                  label='Password'
-                  type='password'
+                  id="password"
+                  label="Password"
+                  type="password"
                   register={register}
                 />
                 <FormField
-                  id='confirmPassword'
-                  label='Confirm Password'
-                  type='password'
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
                   register={register}
                 />
                 <FormField
@@ -303,8 +303,8 @@ const RegisterForm: React.FC = () => {
               <div className='flex justify-center text-sm text-gray-500'>
                 Already have an account?
                 <Link
-                  to='/login'
-                  className='text-primary hover:text-primary hover:underline transition-colors ml-1'
+                  to="/login"
+                  className="text-primary hover:text-primary ml-1 transition-colors hover:underline"
                 >
                   Sign In
                 </Link>

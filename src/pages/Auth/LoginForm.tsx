@@ -14,6 +14,7 @@ type FormData = {
 
 const LoginForm: React.FC = () => {
   const { setIsLoading, isLoading, signInUser } = React.useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -29,11 +30,11 @@ const LoginForm: React.FC = () => {
     try {
       const user = await signInUser(email, password);
       if (user) {
-        toast.success('Login Successful');
-        navigate('/dashboard');
+        toast.success("Login Successful");
+        navigate("/dashboard");
       }
     } catch (err) {
-      toast.error('Login Failed');
+      toast.error("Login Failed");
       console.log(err);
     } finally {
       setIsLoading(false);

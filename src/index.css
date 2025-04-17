@@ -9,7 +9,8 @@
   --color-secondary: rgb(17, 40, 74);
   --color-accent: rgb(255, 255, 255);
   --color-background: rgb(16, 24, 40);
-  --color-border-color: rgb(133, 119, 0);
+  --color-border-color: rgb(255, 255, 255);
+
   --shadow-box-style: 1px 1px 1px 2px rgb(0 0 0 / 0.1);
   --shadow-btn-style: 2px 2px 0px 2px rgb(0 0 0 / 0.1);
   --color-card: rgb(25, 25, 25);
@@ -25,7 +26,7 @@
   --color-accent: rgb(0, 0, 0);
   --color-background: rgb(255, 255, 255);
   --color-box-style: rgba(3, 185, 252, 0.904);
-
+  --color-border-color: rgb(25, 179, 231);
   --color-btn-shadow-color: rgb(30, 77, 148);
   --color-card: rgb(255, 255, 255);
 }
