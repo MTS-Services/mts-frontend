@@ -1,12 +1,13 @@
-import axios from "axios";
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { FaUserCircle } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Loading from "../../components/Loading/Loading";
-import { AuthContext } from "../../context/AuthProvider";
+import axios from 'axios';
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { FaUserCircle } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loading from '../../components/Loading/Loading';
+import { AuthContext } from '../../context/AuthProvider';
+import Breadcrumb from '../../components/common/breadcrumb';
 
 const GENDER_OPTIONS = ["Male", "Female", "Other"];
 const BLOOD_GROUP_OPTIONS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -20,7 +21,6 @@ const RELIGION_OPTIONS = [
   "Other",
 ];
 
-// Reusable FormField
 const FormField: React.FC<{
   id: string;
   label: string;
@@ -30,13 +30,13 @@ const FormField: React.FC<{
   register: any;
 }> = ({ id, label, type = "text", options, fullWidth = false, register }) => {
   return (
-    <div className={`relative ${fullWidth ? "col-span-2" : ""}`}>
-      {type === "select" ? (
+    <div className={`relative w-full ${fullWidth ? 'col-span-full' : ''}`}>
+      {type === 'select' ? (
         <select
           id={id}
           {...register(id)}
           name={id}
-          className="peer focus:border-primary w-full border-b-2 border-gray-300 bg-transparent text-gray-500 placeholder-transparent focus:outline-none"
+          className='rounded-xl peer w-full border-b border-accent text-gray-500 bg-transparent focus:outline-none focus:border-primary placeholder-transparent'
           required
         >
           <option value="">Select {label}</option>
@@ -53,13 +53,13 @@ const FormField: React.FC<{
           name={id}
           type={type}
           placeholder={label}
-          className="peer focus:border-primary h-14 w-full border-b-2 border-gray-300 bg-transparent text-white placeholder-transparent focus:outline-none"
+          className='pl-2 rounded-xl peer py-2 px-2 w-full border-b border-accent text-accent bg-transparent placeholder-transparent focus:outline-none focus:border-primary'
           required
         />
       )}
       <label
         htmlFor={id}
-        className="peer-focus:text-primary absolute -top-4 left-0 text-sm text-gray-500 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-sm"
+        className='absolute left-2 -top-4 text-accent text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-accent peer-placeholder-shown:top-0 peer-focus:-top-4 peer-focus:text-primary peer-focus:text-sm'
       >
         {label}
       </label>
@@ -71,7 +71,6 @@ const RegisterForm: React.FC = () => {
   const { setIsLoading, isLoading, createUser } = React.useContext(AuthContext);
   const { register, handleSubmit } = useForm();
   const [profileImage, setProfileImage] = React.useState<File | null>(null);
-
   const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,14 +80,9 @@ const RegisterForm: React.FC = () => {
       const isImage = file.type.startsWith("image/");
       const isTooLarge = file.size > maxSizeMB * 1024 * 1024;
 
-      if (!isImage) {
-        toast.error("Only image files are allowed.");
-        return;
-      }
-      if (isTooLarge) {
-        toast.error("File size should be under 2MB.");
-        return;
-      }
+      if (!isImage) return toast.error('Only image files are allowed.');
+      if (isTooLarge) return toast.error('File size should be under 2MB.');
+
       setProfileImage(file);
     }
   };
@@ -96,7 +90,6 @@ const RegisterForm: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       const { email, password, ...rest } = data;
-
       const userCredential = await createUser(email, password);
       const user = userCredential.user;
 
@@ -106,7 +99,7 @@ const RegisterForm: React.FC = () => {
         formData.append("uid", user.uid);
 
         Object.entries(rest).forEach(([key, value]) => {
-          if (key != "confirmPassword") {
+          if (key !== 'confirmPassword') {
             formData.append(key, value);
           }
         });
@@ -119,17 +112,13 @@ const RegisterForm: React.FC = () => {
           "http://192.168.10.47:3000/api/teamMember/create",
           formData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          },
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
         );
 
         if (res.status === 200 || res.status === 201) {
-          toast.success(
-            "Congratulation, Registration successful! Please Login to continue",
-          );
-          navigate("/dashboard/projects");
+          toast.success('Registration successful! Please login.');
+          navigate('/dashboard/projects');
         } else {
           toast.error("Something went wrong. Please try again.");
         }
@@ -142,27 +131,29 @@ const RegisterForm: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   return (
-    <section className="bg-background font-primary flex min-h-screen items-center justify-center p-4">
-      <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div
-          className="h-full w-full bg-cover bg-center opacity-50"
-          style={{ backgroundImage: "url(/images/background.jpg)" }}
-        ></div>
+    <section className='w-full bg-background pt-2 font-primary px-4 sm:px-6 lg:px-4'>
+      <Breadcrumb signin='Register' />
 
-        <div className="bg-background flex w-full max-w-7xl flex-col gap-6 space-y-8 rounded-xl border-2 border-gray-400 p-6 shadow-xl sm:p-12 md:flex-row md:gap-12 lg:p-16">
-          <div className="flex w-full flex-col items-center justify-center space-y-6 text-center md:w-1/2 md:text-left">
-            <h2 className="text-accent text-5xl font-extrabold">Register</h2>
-            <p className="text-lg text-gray-500">Register to your account</p>
+      {/* Main Form Container */}
+      <div className='mt-25 pb-25 flex flex-col justify-center '>
+        {/* Left Column - Outside the border */}
+        <div className=' lg:flex md:flex-row xl:flex flex-wrap justify-center items-center space-y-6 md:space-y-0 md:space-x-12'>
+          <div className='text-center md:text-center space-y-4 md:space-y-6'>
+            <h2 className='text-4xl sm:text-5xl font-extrabold text-accent'>
+              Welcome
+            </h2>
+            <p className='text-base sm:text-lg text-accent'>
+              Register to your account
+            </p>
           </div>
 
-          <div className="w-full space-y-6 md:w-1/2">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          {/* Right Column: Form */}
+          <div className='pt-10  lg:w-1/2 border-1 border-accent rounded-xl shadow-lg p-4 pb-4 bg-background'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-10'>
+              <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                 <FormField
                   id="first_name"
                   label="First Name"
@@ -232,7 +223,6 @@ const RegisterForm: React.FC = () => {
                   label="Guardian Address"
                   register={register}
                 />
-
                 <FormField
                   id="department"
                   label="Department"
@@ -240,7 +230,6 @@ const RegisterForm: React.FC = () => {
                   options={DEPARTMENT_OPTIONS}
                   register={register}
                 />
-
                 <FormField
                   id="religion"
                   label="Religion"
@@ -261,61 +250,57 @@ const RegisterForm: React.FC = () => {
                   register={register}
                 />
                 <FormField
-                  id="education"
-                  label="Education"
-                  fullWidth
+                  id='education'
+                  label='Education'
                   register={register}
                 />
-              </div>
 
-              {/* Profile Picture Upload */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-500">
-                  Profile Picture (DP)
-                </label>
-                <div className="flex items-center">
-                  <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gray-200">
-                    {profileImage ? (
-                      <img
-                        src={URL.createObjectURL(profileImage)}
-                        alt="Profile preview"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <FaUserCircle className="h-full w-full text-gray-400" />
-                    )}
-                  </div>
-                  <label
-                    htmlFor="dp"
-                    className="ml-4 cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    Upload Photo
+                {/* Profile Picture */}
+                <div className='space-y-2'>
+                  <label className='block text-sm font-medium text-accent'>
+                    Profile Picture (DP)
                   </label>
-                  <input
-                    id="dp"
-                    type="file"
-                    className="sr-only"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
+                  <div className='flex items-center'>
+                    <div className='h-12 w-12 rounded-full overflow-hidden bg-accent'>
+                      {profileImage ? (
+                        <img
+                          src={URL.createObjectURL(profileImage)}
+                          alt='Profile preview'
+                          className='h-full w-full object-cover'
+                        />
+                      ) : (
+                        <FaUserCircle className='h-full w-full text-accent' />
+                      )}
+                    </div>
+                    <label
+                      htmlFor='dp'
+                      className='ml-4 cursor-pointer py-2 px-3 border border-accent rounded-md text-sm font-medium text-accent hover:bg-cta transition-colors'
+                    >
+                      Upload Photo
+                    </label>
+                    <input
+                      id='dp'
+                      type='file'
+                      className='sr-only'
+                      accept='image/*'
+                      onChange={handleFileChange} // Updated function to handle file change
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Submit Button */}
-
-              <div className="flex justify-center">
+              <div className='flex justify-center'>
                 <button
-                  className="text-background bg-primary relative overflow-hidden rounded-full px-10 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-500 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:text-white hover:shadow-lg hover:before:left-0 active:scale-90"
-                  type="submit"
+                  type='submit'
+                  className='flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-accent hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                 >
                   Register
                 </button>
               </div>
 
-              {isLoading && <p className="text-white">...</p>}
+              {isLoading && <p className='text-accent'>...</p>}
 
-              {/* Footer */}
-              <footer className="flex justify-center text-sm text-gray-500">
+              <div className='flex justify-center text-sm text-gray-500'>
                 Already have an account?
                 <Link
                   to="/login"
@@ -323,7 +308,7 @@ const RegisterForm: React.FC = () => {
                 >
                   Sign In
                 </Link>
-              </footer>
+              </div>
             </form>
           </div>
         </div>
