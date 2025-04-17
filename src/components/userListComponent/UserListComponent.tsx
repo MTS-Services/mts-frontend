@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import axios from "axios";
+import Loading from "../Loading/Loading";
+import { Link } from "react-router-dom";
 
 const UserListComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -8,19 +10,27 @@ const UserListComponent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [departments, setDepartments] = useState([]);
 
-  // Fetching users on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.post(
-          "http://192.168.10.47:3000/api/teamMember",
-          {
-            limit: "50",
-          },
-        );
-        console.log("Data received:", res.data); // Debugging the API response
-        setUserData(res.data.teamMembers); // Adjust if response structure is different
+        const res = await axios.post("http://192.168.10.47:3000/api/teamMember", {
+          limit: "50",
+        });
+
+        const members = res.data.teamMembers;
+        setUserData(members);
+
+        const departmentSet = new Set();
+        members.forEach((user) => {
+          const departmentName = user.team?.department?.department_name;
+          if (departmentName) {
+            departmentSet.add(departmentName);
+          }
+        });
+
+        setDepartments([...departmentSet]);
       } catch (error) {
         console.error("Error fetching team members:", error);
       } finally {
@@ -31,7 +41,6 @@ const UserListComponent = () => {
     fetchUsers();
   }, []);
 
-  // Filtering logic
   const filteredUsers = userData.filter((user) => {
     const term = searchTerm.toLowerCase();
     const genderMatch =
@@ -39,19 +48,20 @@ const UserListComponent = () => {
       user.gender?.toLowerCase() === selectedGender.toLowerCase();
     const departmentMatch =
       selectedDepartment === "" ||
-      user.team.department.department_name
+      user.team?.department?.department_name
         ?.toLowerCase()
         .includes(selectedDepartment.toLowerCase());
 
     return (
       genderMatch &&
       departmentMatch &&
-      (user.first_name?.toLowerCase().includes(term) ||
+      (user.dp?.toLowerCase().includes(term) ||
+        user.first_name?.toLowerCase().includes(term) ||
         user.email?.toLowerCase().includes(term) ||
         user.number?.toLowerCase().includes(term) ||
         user.permanent_address?.toLowerCase().includes(term) ||
         user.guardian_number?.toLowerCase().includes(term) ||
-        user.team.department.department_name?.toLowerCase().includes(term) ||
+        user.team?.department?.department_name?.toLowerCase().includes(term) ||
         user.education?.toLowerCase().includes(term))
     );
   });
@@ -65,12 +75,13 @@ const UserListComponent = () => {
     "Guardian Number",
     "Department",
     "Education",
+    "User Info",
   ];
 
   return (
-    <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
-      <div className="flex w-full flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        {/* 🔍 Search Bar */}
+    <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between w-full">
+        {/* Search Bar */}
         <div className="w-full md:w-1/2">
           <div className="font-secondary relative mx-auto w-full max-w-md md:mx-0">
             <input
@@ -84,8 +95,8 @@ const UserListComponent = () => {
           </div>
         </div>
 
-        {/* 🟦 Dropdown Filters */}
-        <div className="flex w-full flex-col items-center justify-center gap-4 sm:flex-row md:w-auto">
+        {/* Filters */}
+        <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
           <select
             value={selectedGender}
             onChange={(e) => setSelectedGender(e.target.value)}
@@ -102,10 +113,11 @@ const UserListComponent = () => {
             className="font-secondary border-accent text-accent bg-background focus:ring-primary focus:border-primary w-full max-w-48 rounded-md border px-4 py-2 text-sm shadow-sm transition focus:ring-2 focus:outline-none sm:w-44"
           >
             <option value="">Select Department</option>
-            <option value="mern"> mern</option>
-            <option value="laravel">sales</option>
-            <option value="plugin">plugin</option>
-            <option value="wordpress">wordpress </option>
+            {departments.map((dept, index) => (
+              <option key={index} value={dept.toLowerCase()}>
+                {dept}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -113,16 +125,13 @@ const UserListComponent = () => {
       {/* Table */}
       <div className="mt-10 overflow-x-auto">
         {loading ? (
-          <div className="text-center text-gray-500">Loading users...</div>
+          <div className="text-center text-gray-500"><Loading /></div>
         ) : (
           <table className="w-full min-w-[1000px] text-left">
             <thead>
               <tr className="text-accent font-primary text-lg">
                 {tableHeaders.map((head, i) => (
-                  <th
-                    key={head}
-                    className={`px-2 py-1 text-lg ${i === 0 ? "py-3" : ""}`}
-                  >
+                  <th key={head} className={`px-2 py-1 text-lg ${i === 0 ? "py-3" : ""}`}>
                     {head}
                   </th>
                 ))}
@@ -134,43 +143,40 @@ const UserListComponent = () => {
                 filteredUsers.map((user, i) => (
                   <tr
                     key={i}
-                    className="border-accent/40 font-secondary text-accent hover:bg-primary border-b-1 border-dashed text-sm hover:text-white"
+                    className="border-b border-accent/40 font-secondary text-accent hover:text-white text-sm hover:bg-primary"
                   >
                     <td className="flex items-center justify-center px-2 py-1">
                       <div className="h-12 w-12 overflow-hidden rounded-full">
                         <img
-                          className="h-full w-full object-cover"
-                          src={user.image}
+                          className="w-full h-full object-cover"
+                          src={user.dp?.trim() ? user.dp : "/assits/Rewardspage/profileImg.jpg"}
                           alt="avatar"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/assits/Rewardspage/profileImg.jpg";
+                          }}
                         />
                       </div>
                     </td>
-                    <td className="px-1 py-2 text-sm font-light">
-                      {user.first_name || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.email || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.number || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.permanent_address || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.guardian_number || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.team.department.department_name || "N/A"}
-                    </td>
-                    <td className="px-1 py-2 text-base font-light">
-                      {user.education || "N/A"}
+                    <td className="px-1 font-light py-2">{user.first_name || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.email || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.number || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.permanent_address || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.guardian_number || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.team?.department?.department_name || "N/A"}</td>
+                    <td className="px-1 font-light py-2">{user.education || "N/A"}</td>
+                    <td className="px-1 font-light py-2">
+                      <Link to={`/dashboard/userdetails/${user.id}`}>
+                        <button className="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/80">
+                          View Info
+                        </button>
+                      </Link>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="py-6 text-center text-red-500">
+                  <td colSpan={9} className="text-center py-6 text-red-500">
                     No matching users found.
                   </td>
                 </tr>
