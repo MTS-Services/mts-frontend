@@ -32,7 +32,7 @@ const Header: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <header className='w-full bg-background text-accent shadow-md border-b border-accent'>
+    <header className='w-full bg-background text-accent shadow-md border-b border-accent/50'>
       <div className='max-w-[1400px] mx-auto flex items-center justify-between p-6 font-primary'>
         {/* Logo */}
         <Link to='/' className='flex items-center'>

@@ -60,12 +60,12 @@ const marketplaces: Marketplace[] = [
 
 // Logo Section Component
 const LogoSection = ({ imagePath }) => (
-  <div className='flex flex-col items-center md:items-start sm:w-full text-center md:text-left w-full mx-w-[300px]'>
+  <div className='relative md:right-[-50] flex flex-col md:items-center lg:items-start sm:w-[300px] text-center md:text-left w-full mx-w-[300px]'>
     {/* Logo */}
     <Link to='/' className='flex items-center justify-center'>
       <img src={imagePath} alt='Theme Image' className='w-32' />
     </Link>
-    <p className='text-accent text-base leading-normal pt-4 font-secondary text-center md:text-left'>
+    <p className='flex items-center pt-4 justify-center md:justify-start font-secondary '>
       MAK Tech Solution offers IT services, specializing in WordPress &
       development with 60+ experts, turning visions into reality.
     </p>
@@ -172,7 +172,7 @@ const Footer: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <footer className='w-full bg-background text-accent font-primary border-t border-accent'>
+    <footer className='w-full bg-background text-accent font-primary border-t border-accent/50'>
       <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mt-6'>
         <div className='col-span-1 text-center md:text-left'>
           <LogoSection imagePath={imagePath} />
@@ -191,12 +191,12 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <div className='w-full border-t border-accent mt-8'></div>
+      <div className='w-full border-t border-accent/50 mt-8'></div>
 
       {/* Footer Bottom */}
       <div className='max-w-[1400px] mx-auto px-4 py-4 text-center font-secondary'>
         <p className='text-sm text-accent leading-normal'>
-          &copy; {currentYear} MAK Tech Solution. All rights reserved.
+          &copy; {currentYear} MAK-Tech Solution. All rights reserved.
         </p>
       </div>
     </footer>
