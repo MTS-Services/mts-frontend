@@ -23,7 +23,6 @@ import {
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Link } from 'react-router';
 
 // Services data using only icons
 const services = [
@@ -123,7 +122,7 @@ const ServicesCart = () => {
  <section className="py-16 bg-background mx-auto">
   <div className="w-full lg:w-[1480px] mx-auto text-center px-4 sm:px-8 ">
     <h2
-      className="text-3xl sm:text-4xl font-bold text-[#FFF] mb-12"
+      className="text-3xl sm:text-4xl font-bold text-accent mb-12"
       data-aos="fade-down"
     >
       Our Services
@@ -137,34 +136,20 @@ const ServicesCart = () => {
           data-aos="fade-up"
           data-aos-delay={idx * 150}
         >
-          <div className="text-4xl text-[#FFF] mb-4">
+          <div className="text-4xl text-accent mb-4">
             <FontAwesomeIcon icon={service.icon} />
           </div>
-          <h3 className="text-[24px] font-semibold text-primary mb-2">
+          <h3 className="text-[24px] font-semibold text-primary mb-2 font-primary">
             {service.title}
           </h3>
-          <p className="text-[#FFF]">{service.description}</p>
+          <p className="text-accent font-secondary">{service.description}</p>
         </div>
       ))}
     </div>
 
     {/* Call to Action Section */}
-    <div className="mt-20 bg-[#1983E7] py-12 px-6 rounded-xl shadow-xl text-white">
-      <h3 className="text-3xl font-bold text-center mb-6">
-        Become a Full-Stack Developer
-      </h3>
-      <p className="text-center text-lg mb-8">
-        Start now
-      </p>
-      <div className="flex justify-center">
-        <Link
-          to="/"
-          className="inline-block bg-cta text-cta-text text-base sm:text-lg font-semibold px-8 py-3 rounded-full shadow-md hover:bg-cta-active hover:text-cta-txt-active hover:scale-105 transform transition duration-300 ease-in-out"
-        >
-          ⬅️ Contact Now
-        </Link>
-      </div>
-    </div>
+    
+  
   </div>
 </section>
 
