@@ -54,10 +54,7 @@ const AppRoutes = createBrowserRouter([
         element: <BestContributors />,
       },
 
-      {
-        path: 'userdetails',
-        element: <UserDetails />,
-      },
+   
     ],
   },
 
@@ -88,11 +85,10 @@ const AppRoutes = createBrowserRouter([
         path: 'userlist',
         element: <UserListPage />,
       },
-
       {
-        path: 'userdetails',
-        element: <UserDetails />,
-      },
+  path: 'userdetails/:id', // <-- :id is dynamic
+  element: <UserDetails />,
+},
     ],
   },
 ]);
