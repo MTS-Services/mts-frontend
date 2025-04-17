@@ -14,6 +14,7 @@ import BestContributors from '../pages/bestContributor/BestContributors';
 import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
 import RegisterForm from '../pages/Auth/RegisterForm';
 import LoginForm from '../pages/Auth/LoginForm';
+import RegisterView from '../pages/auth/RegisterView';
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -38,6 +39,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: '/register',
         element: <RegisterForm />,
+      },
+      {
+        path: '/register-2',
+        element: <RegisterView />,
       },
       {
         path: '/contact',

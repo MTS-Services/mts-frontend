@@ -14,7 +14,10 @@ const ToggleDarkAndLight = ({ isOpen }) => {
   return (
     <div>
       <button
-        onClick={toggleTheme}
+        onClick={() => {
+          toggleTheme();
+          handleCheckboxChange();
+        }}
         className="themeSwitcherThree relative inline-flex cursor-pointer select-none items-center"
       >
         <input
@@ -26,42 +29,44 @@ const ToggleDarkAndLight = ({ isOpen }) => {
 
         <div
           className={`${
-            !isOpen
-              ? ""
-              : "w-40 bg-background flex items-center justify-around border border-gray-500  rounded-full"
+            isOpen
+              ? `max-w-[130px] flex p-[2px] space-x-2 border border-gray-500 rounded-full transition-colors duration-300`
+              : ""
           }`}
         >
+          {/* Light Mode */}
           <div
             className={`${
-              isOpen ? "flex items-center  p-[4px] rounded-full" : "mb-5"
+              isChecked
+                ? "bg-primary text-white p-[2px] rounded-full transition-colors duration-300"
+                : "text-body-color"
             }`}
           >
             <div
-              className={`flex items-center justify-center  text-accent  ml-2 P-2 ${
-                isChecked
-                  ? "bg-sky-950 P-2 rounded-full text-white"
-                  : "text-body-color"
-              }`}
+              className={`flex items-center justify-center  p-[2px] rounded-full transition-colors duration-300 `}
             >
               <PiSunDimFill className="text-xl" />
-              <h2 className={`${isOpen ? "text-sm" : "hidden"}`}>Light</h2>
+              <h2 className={`${isOpen ? "text-sm ml-1" : "hidden"}`}>Light</h2>
             </div>
           </div>
 
+          {/* Dark Mode */}
           <div
             className={`${
-              isOpen ? "flex items-center p-[4px] rounded-full" : ""
+              isOpen ? "" :"mt-3"
+            }
+              
+              ${
+              !isChecked
+                ? "bg-primary text-white p-[2px] rounded-full transition-colors duration-300"
+                : "text-body-color"
             }`}
           >
             <div
-              className={`flex items-center justify-center  rounded text-accent  ${
-                !isChecked
-                  ? "bg-sky-950 P-2 rounded-full text-white"
-                  : "text-body-color"
-              }`}
+              className={`flex items-center justify-center  p-[2px] rounded-full transition-colors duration-300`}
             >
               <FaMoon className="text-sm" />
-              <h2 className={`${isOpen ? "text-sm" : "hidden"}`}>Dark</h2>
+              <h2 className={`${isOpen ? "text-sm ml-1" : "hidden"}`}>Dark</h2>
             </div>
           </div>
         </div>

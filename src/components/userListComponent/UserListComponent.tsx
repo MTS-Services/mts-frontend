@@ -83,15 +83,15 @@ const UserListComponent = () => {
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between w-full">
         {/* Search Bar */}
         <div className="w-full md:w-1/2">
-          <div className="relative w-full max-w-md mx-auto md:mx-0 font-secondary">
+          <div className="font-secondary relative mx-auto w-full max-w-md md:mx-0">
             <input
               type="text"
               placeholder="Search by user..."
-              className="w-full pl-11 pr-4 py-2 text-sm sm:text-base rounded-full shadow-md border border-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-300 text-accent bg-background"
+              className="border-accent focus:ring-primary focus:border-primary text-accent bg-background w-full rounded-full border py-2 pr-4 pl-11 text-sm shadow-md transition duration-300 focus:ring-2 focus:outline-none sm:text-base"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-primary text-lg sm:text-xl" />
+            <FiSearch className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-lg sm:text-xl" />
           </div>
         </div>
 
@@ -100,7 +100,7 @@ const UserListComponent = () => {
           <select
             value={selectedGender}
             onChange={(e) => setSelectedGender(e.target.value)}
-            className="w-full sm:w-44 font-secondary px-4 py-2 text-sm border border-accent rounded-md text-accent bg-background max-w-48 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+            className="font-secondary border-accent text-accent bg-background focus:ring-primary focus:border-primary w-full max-w-48 rounded-md border px-4 py-2 text-sm shadow-sm transition focus:ring-2 focus:outline-none sm:w-44"
           >
             <option value="">Select Male or Female</option>
             <option value="Male">Male</option>
@@ -110,7 +110,7 @@ const UserListComponent = () => {
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="w-full sm:w-44 font-secondary px-4 py-2 text-sm border border-accent rounded-md text-accent bg-background max-w-48 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+            className="font-secondary border-accent text-accent bg-background focus:ring-primary focus:border-primary w-full max-w-48 rounded-md border px-4 py-2 text-sm shadow-sm transition focus:ring-2 focus:outline-none sm:w-44"
           >
             <option value="">Select Department</option>
             {departments.map((dept, index) => (
@@ -123,13 +123,13 @@ const UserListComponent = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto mt-10">
+      <div className="mt-10 overflow-x-auto">
         {loading ? (
           <div className="text-center text-gray-500"><Loading /></div>
         ) : (
           <table className="w-full min-w-[1000px] text-left">
             <thead>
-              <tr className="text-accent text-lg font-primary">
+              <tr className="text-accent font-primary text-lg">
                 {tableHeaders.map((head, i) => (
                   <th key={head} className={`px-2 py-1 text-lg ${i === 0 ? "py-3" : ""}`}>
                     {head}
@@ -138,15 +138,15 @@ const UserListComponent = () => {
               </tr>
             </thead>
 
-            <tbody className="border-t-2 border-accent font-secondary">
+            <tbody className="border-accent font-secondary border-t-2">
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user, i) => (
                   <tr
                     key={i}
                     className="border-b border-accent/40 font-secondary text-accent hover:text-white text-sm hover:bg-primary"
                   >
-                    <td className="px-2 py-1 flex items-center justify-center">
-                      <div className="w-12 h-12 overflow-hidden rounded-full">
+                    <td className="flex items-center justify-center px-2 py-1">
+                      <div className="h-12 w-12 overflow-hidden rounded-full">
                         <img
                           className="w-full h-full object-cover"
                           src={user.dp?.trim() ? user.dp : "/assits/Rewardspage/profileImg.jpg"}
