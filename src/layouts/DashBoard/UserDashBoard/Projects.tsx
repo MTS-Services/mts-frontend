@@ -358,7 +358,15 @@ const Projects = () => {
                     {row?.clientName}
                   </td>
 
-                  <td className="border-secondary border-r px-2 py-3">
+                  <td
+                    className={`border-secondary border-r px-2 py-3 ${
+                      ["cancel", "revision"].includes(
+                        row.ops_status?.toLowerCase().trim(),
+                      )
+                        ? "bg-red-400"
+                        : ""
+                    }`}
+                  >
                     <select
                       value={row.ops_status}
                       onChange={(e) =>
@@ -381,7 +389,7 @@ const Projects = () => {
                       href={row?.sheet_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className=" hover:text-blue-800"
+                      className="hover:text-blue-800"
                     >
                       {row?.sheet_link}
                     </a>
@@ -414,7 +422,15 @@ const Projects = () => {
                     )}
                   </td>
 
-                  <td className="border-secondary border-r px-2 py-3">
+                  <td
+                    className={`border-secondary border-r px-2 py-3 ${
+                      ["revision"].includes(
+                        row.status?.toLowerCase().trim(),
+                      )
+                        ? "bg-red-400"
+                        : ""
+                    }`}
+                  >
                     <select
                       value={row.status}
                       onChange={(e) =>
