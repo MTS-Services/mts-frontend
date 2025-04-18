@@ -358,28 +358,6 @@ const Projects = () => {
                     {row?.clientName}
                   </td>
 
-                  {/* test selects*********************************  */}
-                  {/* <td className="px-2 py-3 border-r border-secondary">
-                    {editRowId === row.id ? (
-                      <select
-                        value={editedRow.ops_status}
-                        onChange={(e) =>
-                          handleInputChange("ops_status", e.target.value)
-                        }
-                        className="text-black px-2 py-1 rounded w-full"
-                      >
-                        <option value="">Select status</option>
-                        {operationStatuses.map((status, index) => (
-                          <option key={index} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      row?.ops_status
-                    )}
-                  </td> */}
-
                   <td className="border-secondary border-r px-2 py-3">
                     <select
                       value={row.ops_status}
@@ -399,7 +377,14 @@ const Projects = () => {
                   {/* test selectes************************* */}
 
                   <td className="border-secondary border-r px-2 py-3">
-                    {row?.sheet_link}
+                    <a
+                      href={row?.sheet_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className=" hover:text-blue-800"
+                    >
+                      {row?.sheet_link}
+                    </a>
                   </td>
 
                   <td className="border-secondary border-r px-2 py-3 capitalize">
@@ -428,28 +413,6 @@ const Projects = () => {
                       ""
                     )}
                   </td>
-
-                  {/* <td className="px-2 py-3 border-r border-secondary">
-                    {editRowId === row.id ? (
-                      <select
-                        value={editedRow.status}
-                        onChange={(e) =>
-                          handleInputChange("status", e.target.value)
-                        }
-                        className="text-black px-2 py-1 rounded w-full"
-                      >
-                        <option value="">Select status</option>
-                        {profileStatuses.map((status, index) => (
-                          <option key={index} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      row?.status
-                    )}
-                    
-                  </td> */}
 
                   <td className="border-secondary border-r px-2 py-3">
                     <select
