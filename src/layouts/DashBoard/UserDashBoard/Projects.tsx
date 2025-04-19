@@ -7,6 +7,7 @@ import Search from "../../../components/Search/Search";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
+
   const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
@@ -90,9 +91,25 @@ const Projects = () => {
         });
 
         const data = await response.json();
+
         if (Array.isArray(data?.projects)) {
-          setTableData(data.projects);
-          console.log(data);
+          const today = new Date();
+
+          const sortedProjects = data.projects.sort((a, b) => {
+            const dateA = new Date(a.deli_last_date);
+            const dateB = new Date(b.deli_last_date);
+
+            const isPastA = dateA < today;
+            const isPastB = dateB < today;
+
+            if (isPastA && isPastB) return dateA - dateB;
+            if (!isPastA && !isPastB) return dateA - dateB;
+            if (isPastA && !isPastB) return -1;
+            if (!isPastA && isPastB) return 1;
+          });
+
+          setTableData(sortedProjects);
+          console.log(sortedProjects);
         } else {
           setTableData([]);
         }
@@ -132,9 +149,6 @@ const Projects = () => {
     ),
   ];
 
-  const operationStatuses = ["Wip", "Completed", "Pending"];
-  const profileStatuses = ["Active", "Inactive", "Revision", "Pending"];
-
   const orderedByOptions = [
     ...new Set(
       tableData.map((row) =>
@@ -149,7 +163,7 @@ const Projects = () => {
     if (editRowId === row.id) {
       console.log(row.id);
 
-      return; // already editing this row
+      return;
     }
 
     setEditRowId(row.id);
@@ -292,9 +306,10 @@ const Projects = () => {
             className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
           >
             <option value="">Filter by Operation Status</option>
-            {operationStatuses.map((status, index) => (
-              <option key={index} value={status}>
-                {status}
+
+            {operationStatusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
@@ -382,8 +397,6 @@ const Projects = () => {
                     </select>
                   </td>
 
-                  {/* test selectes************************* */}
-
                   <td className="border-secondary border-r px-2 py-3">
                     <a
                       href={row?.sheet_link}
@@ -424,9 +437,7 @@ const Projects = () => {
 
                   <td
                     className={`border-secondary border-r px-2 py-3 ${
-                      ["revision"].includes(
-                        row.status?.toLowerCase().trim(),
-                      )
+                      ["revision"].includes(row.status?.toLowerCase().trim())
                         ? "bg-red-400"
                         : ""
                     }`}
