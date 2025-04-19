@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 const ProjectsUploadForm = () => {
@@ -18,6 +18,23 @@ const ProjectsUploadForm = () => {
     project_requirements: "",
     profile: "",
   });
+
+  const profileStatusOptions = [
+    { value: "active", label: "Active" },
+    { value: "inactive", label: "Inactive" },
+    { value: "revision", label: "Revision" },
+    { value: "inProgress", label: "In Progress" },
+    { value: "deliveryCompleted", label: "Delivery Completed" },
+  ];
+
+  const operationStatusOptions = [
+    { value: "wip", label: "Wip" },
+    { value: "delivered", label: "Delivered" },
+    { value: "submitted", label: "Submitted" },
+    { value: "clientUpdate", label: "Client Update" },
+    { value: "Revision", label: "Revision" },
+    { value: "cancel ", label: "Cancel " },
+  ];
 
   const [showForm, setShowForm] = useState(false);
 
@@ -41,13 +58,16 @@ const ProjectsUploadForm = () => {
     };
 
     try {
-      const response = await fetch("http://192.168.10.47:3000/api/project/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "http://192.168.10.47:3000/api/project/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
         },
-        body: JSON.stringify(dataToSend),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to upload project");
@@ -84,7 +104,7 @@ const ProjectsUploadForm = () => {
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
         >
           Upload Project
         </button>
@@ -97,17 +117,24 @@ const ProjectsUploadForm = () => {
               value={formData.clientName}
               onChange={handleChange}
               placeholder="Client Name"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
-            <input
-              type="text"
+            <select
               name="ops_status"
               value={formData.ops_status}
               onChange={handleChange}
-              placeholder="Operation Status"
-              className="w-full border border-gray-300 p-2 rounded"
-            />
+              className="focus:bg-primary w-full rounded border border-gray-300 p-2 px-2 py-1 focus:p-0.5"
+            >
+              <option value="">Select Operation Status</option>
+              {operationStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+
+            {/*  */}
 
             <input
               type="text"
@@ -115,7 +142,7 @@ const ProjectsUploadForm = () => {
               value={formData.sales_comments}
               onChange={handleChange}
               placeholder="Sales Comments"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -124,7 +151,7 @@ const ProjectsUploadForm = () => {
               value={formData.opsleader_comments}
               onChange={handleChange}
               placeholder="Ops Leader Comments"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -133,7 +160,7 @@ const ProjectsUploadForm = () => {
               value={formData.sheet_link}
               onChange={handleChange}
               placeholder="Sheet Link"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -142,7 +169,7 @@ const ProjectsUploadForm = () => {
               value={formData.ordered_by}
               onChange={handleChange}
               placeholder="Ordered By"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -150,17 +177,22 @@ const ProjectsUploadForm = () => {
               name="deli_last_date"
               value={formData.deli_last_date}
               onChange={handleChange}
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
-            <input
-              type="text"
+            <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              placeholder="Profile Status"
-              className="w-full border border-gray-300 p-2 rounded"
-            />
+              className="focus:bg-primary w-full rounded border border-gray-300 p-2 px-2 py-1 focus:p-0.5"
+            >
+              <option value="">Select Profile Status</option>
+              {profileStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
 
             <input
               type="number"
@@ -168,7 +200,7 @@ const ProjectsUploadForm = () => {
               value={formData.orderAmount}
               onChange={handleChange}
               placeholder="Order Amount"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -177,7 +209,7 @@ const ProjectsUploadForm = () => {
               value={formData.bonus}
               onChange={handleChange}
               placeholder="Bonus"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -186,7 +218,7 @@ const ProjectsUploadForm = () => {
               value={formData.rating}
               onChange={handleChange}
               placeholder="Rating"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -195,7 +227,7 @@ const ProjectsUploadForm = () => {
               value={formData.department}
               onChange={handleChange}
               placeholder="Department"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -204,7 +236,7 @@ const ProjectsUploadForm = () => {
               value={formData.project_requirements}
               onChange={handleChange}
               placeholder="Project Requirements"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
 
             <input
@@ -213,14 +245,14 @@ const ProjectsUploadForm = () => {
               value={formData.profile}
               onChange={handleChange}
               placeholder="Profile Name"
-              className="w-full border border-gray-300 p-2 rounded"
+              className="w-full rounded border border-gray-300 p-2"
             />
           </div>
 
           <div className="flex gap-4">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Submit
             </button>
@@ -228,7 +260,7 @@ const ProjectsUploadForm = () => {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+              className="rounded bg-gray-400 px-4 py-2 text-white hover:bg-gray-500"
             >
               Cancel
             </button>

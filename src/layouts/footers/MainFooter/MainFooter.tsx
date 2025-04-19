@@ -60,12 +60,12 @@ const marketplaces: Marketplace[] = [
 
 // Logo Section Component
 const LogoSection = ({ imagePath }) => (
-  <div className='text-center md:text-left sm:w-[300px]'>
-    {/*Logo */}
-    <Link to='/' className='flex items-center'>
+  <div className='relative md:right-[-50] flex flex-col md:items-center lg:items-start sm:w-[300px] text-center md:text-left w-full mx-w-[300px]'>
+    {/* Logo */}
+    <Link to='/' className='flex items-center justify-center'>
       <img src={imagePath} alt='Theme Image' className='w-32' />
     </Link>
-    <p className='text-accent text-base leading-normal pt-4 font-secondary'>
+    <p className='flex items-center pt-4 justify-center md:justify-start font-secondary '>
       MAK Tech Solution offers IT services, specializing in WordPress &
       development with 60+ experts, turning visions into reality.
     </p>
@@ -80,12 +80,12 @@ const Branches = () => (
     </h3>
     <ul className='text-center md:text-left'>
       <li className='flex items-start gap-4 justify-center md:justify-start font-secondary'>
-        <SiGooglemaps size={50} className='text-primary' />
+        <SiGooglemaps size={50} className='text-cta' />
         MAK Tech Solution (Jamuna): 6th Floor, A Majid Tower, Ka-24 Progati
         Sarani Rd, Dhaka 1229
       </li>
       <li className='flex items-center gap-4 mt-4 justify-center md:justify-start font-secondary'>
-        <SiGooglemaps size={50} className='text-primary' />
+        <SiGooglemaps size={50} className='text-cta' />
         MAK Tech Solution (Banasree): Abdullah Park, House 180/6/23/CAD,
         Road-14, Block-C, Banasree, Dhaka 1219 (above PizzaBurg).
       </li>
@@ -106,7 +106,7 @@ const MarketplacesList = () => (
             href={marketplace.href}
             target='_blank'
             rel='noopener noreferrer'
-            className='flex items-center gap-2 justify-center md:justify-start hover:text-primary transition-all'
+            className='flex items-center gap-2 justify-center md:justify-start hover:text-cta transition-all'
             aria-label={`Visit ${marketplace.label}`}
           >
             {marketplace.icon}
@@ -126,11 +126,11 @@ const Contact = () => (
     </h3>
     <ul className='text-center md:text-left font-secondary'>
       <li className='flex items-center gap-2 justify-center md:justify-start mb-4'>
-        <FaEnvelope size={16} className='text-primary' />
+        <FaEnvelope size={16} className='text-cta' />
         contact@maktechsolution.com
       </li>
       <li className='flex items-center gap-2 justify-center md:justify-start'>
-        <FaPhoneAlt size={16} className='text-primary' />
+        <FaPhoneAlt size={16} className='text-cta' />
         Phone: 01886-159495
       </li>
     </ul>
@@ -151,7 +151,7 @@ const FollowUs = () => (
           href={social.href}
           target='_blank'
           rel='noopener noreferrer'
-          className='text-accent hover:text-primary transition-colors'
+          className='text-accent hover:text-cta transition-colors'
           aria-label={social.label}
         >
           {social.icon}
@@ -172,31 +172,31 @@ const Footer: React.FC = () => {
       : '/images/white_logo.png';
 
   return (
-    <footer className='w-full bg-background text-white font-primary border-t border-gray-400 '>
+    <footer className='w-full bg-background text-accent font-primary border-t border-accent/50'>
       <div className='max-w-[1400px] mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8 mt-6'>
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <LogoSection imagePath={imagePath} />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <Branches />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <MarketplacesList />
         </div>
 
-        <div className='col-span-1'>
+        <div className='col-span-1 text-center md:text-left'>
           <Contact />
         </div>
       </div>
 
-      <div className='w-full border-t border-gray-400 mt-8'></div>
+      <div className='w-full border-t border-accent/50 mt-8'></div>
 
       {/* Footer Bottom */}
       <div className='max-w-[1400px] mx-auto px-4 py-4 text-center font-secondary'>
-        <p className='text-sm text-gray-400 leading-normal'>
-          &copy; {currentYear} MAK Tech Solution. All rights reserved.
+        <p className='text-sm text-accent leading-normal'>
+          &copy; {currentYear} MAK-Tech Solution. All rights reserved.
         </p>
       </div>
     </footer>
