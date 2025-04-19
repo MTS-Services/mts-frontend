@@ -259,6 +259,19 @@ const Projects = () => {
     }
   };
 
+  const isLastMonth   = (dateStr) => {
+    if (!dateStr) return false;
+  
+    const inputDate = new Date(dateStr);
+    const today = new Date();
+  
+    // Check if date is **before** the first day of the current month
+    const firstOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  
+    return inputDate < firstOfCurrentMonth;
+  };
+  
+
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
       {/* Summary Cards */}
@@ -359,7 +372,9 @@ const Projects = () => {
               filteredData.map((row, i) => (
                 <tr
                   key={i}
-                  className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-sm text-white transition-all"
+                  className={` text-sm text-white transition-all ${
+                    isLastMonth(row.date) ? "bg-red-500/60 border-2 border-orange-200" : "odd:bg-primary even:bg-primary/70 hover:bg-primary/80"
+                  }`}
                 >
                   <td className="border-secondary border-r px-2 py-3">
                     {row?.date}
