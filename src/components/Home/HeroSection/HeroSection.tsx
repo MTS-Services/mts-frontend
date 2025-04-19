@@ -65,7 +65,8 @@ const HeroSection = () => {
             <SwiperSlide key={product.id}>
               <div className="relative flex items-center justify-center overflow-hidden rounded-lg  shadow-md">
                 <div
-                  className="h-[250px] w-full mt-4 md:mt-8   bg-cover bg-center transition-all duration-1000 ease-in-out sm:h-[400px] md:h-[500px] lg:h-[600px]"
+                  className="h-[250px] w-full mt-4 md:mt-8   bg-cover bg-center transition-all duration-1000 ease-in-out 
+                  sm:h-[400px] md:h-[500px] lg:h-[600px]"
                   style={{
                     backgroundImage: `url(${product.image})`,
                     backgroundSize: "cover", // Ensure the image covers the container
