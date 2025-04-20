@@ -61,28 +61,40 @@ const Projects = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      const socket = io("http://192.168.10.47:3000");
+    const socket = io("http://192.168.10.47:3000");
 
-      socket.on("projectUpdated", (project) => {
-        console.log("Project updated:", project);
+    socket.on("projectUpdated", (project) => {
+      console.log("Project updated:", project);
+      setTableData((prevData) =>
+        prevData.map((row) =>
+          row.id === project.id ? { ...row, ...project } : row,
+        ),
+      );
+    });
 
-        setTableData((prevData) =>
-          prevData.map((row) =>
-            row.id === project.id ? { ...row, ...project } : row,
-          ),
-        );
+    socket.on("projectCreated", (project) => {
+      if (!project) return;
 
-        if (editRowId === project.id) {
-          setEditedRow({
-            ops_status: project.ops_status || "",
-            deli_last_date: project.deli_last_date?.split("T")[0] || "",
-            status: project.status || "",
-            bonus: project.bonus || 0,
-            rating: project.rating || "",
-          });
-        }
+      // Flatten in case it's deeply nested
+      let fixedProject;
+
+      if (Array.isArray(project)) {
+        fixedProject = project.flat(Infinity)[0]; 
+        fixedProject = project;
+      }
+
+      if (typeof fixedProject !== "object" || fixedProject === null) return;
+
+      console.log("✅ Adding project:", fixedProject);
+
+      setTableData((prevData) => {
+        const updated = [...prevData, fixedProject];
+        console.log("📋 Updated table data:", updated);
+        return updated;
       });
+    });
+
+    const fetchData = async () => {
       try {
         const response = await fetch("http://192.168.10.47:3000/api/project", {
           method: "POST",
@@ -91,6 +103,7 @@ const Projects = () => {
         });
 
         const data = await response.json();
+        console.log("Response:", data.projects);
 
         if (Array.isArray(data?.projects)) {
           const today = new Date();
@@ -98,7 +111,6 @@ const Projects = () => {
           const sortedProjects = data.projects.sort((a, b) => {
             const dateA = new Date(a.deli_last_date);
             const dateB = new Date(b.deli_last_date);
-
             const isPastA = dateA < today;
             const isPastB = dateB < today;
 
@@ -109,7 +121,6 @@ const Projects = () => {
           });
 
           setTableData(sortedProjects);
-          console.log(sortedProjects);
         } else {
           setTableData([]);
         }
@@ -119,6 +130,11 @@ const Projects = () => {
     };
 
     fetchData();
+
+    // Optional: Clean up socket when component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const filteredData = tableData.filter((row) => {
@@ -161,7 +177,7 @@ const Projects = () => {
 
   const handleEditClick = (row) => {
     if (editRowId === row.id) {
-      console.log(row.id);
+      //console.log(row.id);
 
       return;
     }
@@ -259,18 +275,21 @@ const Projects = () => {
     }
   };
 
-  const isLastMonth   = (dateStr) => {
+  const isLastMonth = (dateStr) => {
     if (!dateStr) return false;
-  
+
     const inputDate = new Date(dateStr);
     const today = new Date();
-  
+
     // Check if date is **before** the first day of the current month
-    const firstOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  
+    const firstOfCurrentMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1,
+    );
+
     return inputDate < firstOfCurrentMonth;
   };
-  
 
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
@@ -372,8 +391,10 @@ const Projects = () => {
               filteredData.map((row, i) => (
                 <tr
                   key={i}
-                  className={` text-sm text-white transition-all ${
-                    isLastMonth(row.date) ? "bg-red-500/60 border-2 border-orange-200" : "odd:bg-primary even:bg-primary/70 hover:bg-primary/80"
+                  className={`text-sm text-white transition-all ${
+                    isLastMonth(row.date)
+                      ? "border-2 border-orange-200 bg-red-500/60"
+                      : "odd:bg-primary even:bg-primary/70 hover:bg-primary/80"
                   }`}
                 >
                   <td className="border-secondary border-r px-2 py-3">
