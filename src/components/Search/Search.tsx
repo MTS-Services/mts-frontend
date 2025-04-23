@@ -6,51 +6,56 @@ interface ClientData {
   uniqueClientNames: string[];
 }
 
+  
 const Search: React.FC = () => {
-  const [isHidden, setIsHidden] = useState<boolean>(true); // Manage visibility of suggestions
-  const [searchQuery, setSearchQuery] = useState<string>(""); // Controlled input query
-  const [clientSuggestions, setClientSuggestions] = useState<string[]>([]); // Array of client names
-  const containerRef = useRef<HTMLDivElement>(null); // Ref for container
+  const [isHidden, setIsHidden] = useState<boolean>(true); 
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [clientSuggestions, setClientSuggestions] = useState<string[]>([]); 
+  const containerRef = useRef<HTMLDivElement>(null); 
 
   // Function to display client suggestions
   const displayClientSuggestions = (clients: string[]): void => {
-    setClientSuggestions(clients); // Set the client suggestions in the state
+    setClientSuggestions(clients); 
   };
 
   // Function to fetch client suggestions from the API
   const fetchClientSuggestions = useCallback(async (query: string): Promise<void> => {
     if (!query.trim()) {
-      setClientSuggestions([]); // Clear suggestions if query is empty
+      setClientSuggestions([]); 
       return;
     }
 
     try {
       const response = await fetch(`http://192.168.10.47:3000/api/project/clientSuggestions/?query=${query}`);
-      const data: ClientData = await response.json(); // Ensure we are getting the expected data format
+      const data: ClientData = await response.json(); 
 
       if (data.uniqueClientNames && data.uniqueClientNames.length > 0) {
-        displayClientSuggestions(data.uniqueClientNames); // Update the client suggestions list
+        // Filter client suggestions based on exact match of the query
+        const filteredClients = data.uniqueClientNames.filter(client => 
+          client.toLowerCase() === query.toLowerCase() 
+        );
+        displayClientSuggestions(filteredClients); 
       } else {
-        setClientSuggestions([]); // No results found, clear the list
+        setClientSuggestions([]); 
       }
     } catch (error) {
-      console.error("Error fetching suggestions:", error); // Handle any errors
+      console.error("Error fetching suggestions:", error); 
     }
-  }, []); // Empty dependency ensures this function doesn't depend on any state or props
+  }, []); 
 
   // Function to simulate fetching projects by client
   const fetchProjectsByClient = (client: string): void => {
-    console.log(`Fetching projects for ${client}`); // This should be replaced with actual fetching logic
+    console.log(`Fetching projects for ${client}`); 
   };
 
   // Effect hook to trigger fetching when searchQuery changes
   useEffect(() => {
     if (searchQuery.trim()) {
-      fetchClientSuggestions(searchQuery); // Fetch client suggestions if there is a query
+      fetchClientSuggestions(searchQuery);  
     } else {
-      setClientSuggestions([]); // Clear suggestions if the search query is empty
+      setClientSuggestions([]); 
     }
-  }, [searchQuery, fetchClientSuggestions]); // Dependencies ensure this effect runs on changes to searchQuery
+  }, [searchQuery, fetchClientSuggestions]); 
 
   return (
     <div className="relative w-full sm:w-96" ref={containerRef}>
@@ -59,10 +64,10 @@ const Search: React.FC = () => {
         <input
           type="text"
           placeholder="Search"
-          value={searchQuery} // Bind input value to state
-          onChange={(e) => setSearchQuery(e.target.value)} // Update state on input change
-          onFocus={() => setIsHidden(false)} // Show suggestions on focus
-          onBlur={() => setTimeout(() => setIsHidden(true), 100)} // Hide suggestions after blur
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          onFocus={() => setIsHidden(false)} 
+          onBlur={() => setTimeout(() => setIsHidden(true), 100)} 
           className="w-full pl-12 pr-4 py-2 text-sm sm:text-base rounded-full shadow-md border border-accent focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition duration-400 text-accent bg-background"
         />
         <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-primary text-xl" />
@@ -78,9 +83,9 @@ const Search: React.FC = () => {
                   key={index}
                   className="cursor-pointer py-2 px-4 rounded-lg hover:bg-primary hover:text-background"
                   onClick={() => {
-                    setSearchQuery(client); // Set selected client name in the search query
-                    setClientSuggestions([]); // Clear suggestions after selection
-                    fetchProjectsByClient(client); // Fetch projects for selected client
+                    setSearchQuery(client); 
+                    setClientSuggestions([]); 
+                    fetchProjectsByClient(client); 
                   }}
                 >
                   {client}
