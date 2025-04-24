@@ -6,89 +6,92 @@ interface ClientData {
   uniqueClientNames: string[];
 }
 
-  
 const Search: React.FC = () => {
-  const [isHidden, setIsHidden] = useState<boolean>(true); 
+  const [isHidden, setIsHidden] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [clientSuggestions, setClientSuggestions] = useState<string[]>([]); 
-  const containerRef = useRef<HTMLDivElement>(null); 
+  const [clientSuggestions, setClientSuggestions] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Function to display client suggestions
   const displayClientSuggestions = (clients: string[]): void => {
-    setClientSuggestions(clients); 
+    setClientSuggestions(clients);
   };
 
   // Function to fetch client suggestions from the API
-  const fetchClientSuggestions = useCallback(async (query: string): Promise<void> => {
-    if (!query.trim()) {
-      setClientSuggestions([]); 
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://192.168.10.47:3000/api/project/clientSuggestions/?query=${query}`);
-      const data: ClientData = await response.json(); 
-
-      if (data.uniqueClientNames && data.uniqueClientNames.length > 0) {
-        // Filter client suggestions based on exact match of the query
-        const filteredClients = data.uniqueClientNames.filter(client => 
-          client.toLowerCase() === query.toLowerCase() 
-        );
-        displayClientSuggestions(filteredClients); 
-      } else {
-        setClientSuggestions([]); 
+  const fetchClientSuggestions = useCallback(
+    async (query: string): Promise<void> => {
+      if (!query.trim()) {
+        setClientSuggestions([]);
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching suggestions:", error); 
-    }
-  }, []); 
+
+      try {
+        const response = await fetch(
+          `http://192.168.10.47:3000/api/project/clientSuggestions/?query=${query}`,
+        );
+        const data: ClientData = await response.json();
+
+        if (data.uniqueClientNames && data.uniqueClientNames.length > 0) {
+          displayClientSuggestions(data.uniqueClientNames);
+        } else {
+          setClientSuggestions([]);
+        }
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
+    },
+    [],
+  );
 
   // Function to simulate fetching projects by client
   const fetchProjectsByClient = (client: string): void => {
-    console.log(`Fetching projects for ${client}`); 
+    console.log(`Fetching projects for ${client}`);
   };
 
   // Effect hook to trigger fetching when searchQuery changes
   useEffect(() => {
     if (searchQuery.trim()) {
-      fetchClientSuggestions(searchQuery);  
+      fetchClientSuggestions(searchQuery);
     } else {
-      setClientSuggestions([]); 
+      setClientSuggestions([]);
     }
-  }, [searchQuery, fetchClientSuggestions]); 
+  }, [searchQuery, fetchClientSuggestions]);
 
   return (
     <div className="relative w-full sm:w-96" ref={containerRef}>
       {/* Search input container */}
-      <div className="relative font-secondary">
+      <div className="font-secondary relative">
         <input
           type="text"
           placeholder="Search"
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)} 
-          onFocus={() => setIsHidden(false)} 
-          onBlur={() => setTimeout(() => setIsHidden(true), 100)} 
-          className="w-full pl-12 pr-4 py-2 text-sm sm:text-base rounded-full shadow-md border border-accent focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition duration-400 text-accent bg-background"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setIsHidden(false)}
+          onBlur={() => setTimeout(() => setIsHidden(true), 100)}
+          className="border-accent focus:ring-primary focus:border-primary text-accent from-secondary w-full transform rounded-full border bg-gradient-to-r py-2 pr-4 pl-12 text-sm shadow-md transition duration-400 ease-in-out hover:scale-105 hover:shadow-xl focus:ring-2 focus:outline-none sm:text-base"
         />
-        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-primary text-xl" />
+        <FiSearch className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-xl" />
       </div>
 
       {/* Display suggestions if not hidden and there are results */}
       {!isHidden && searchQuery && (
-        <div className="absolute w-full bg-accent rounded-xl p-2 mt-2 z-10 shadow-lg text-background max-h-48 overflow-auto">
+        <div className="bg-accent text-background absolute z-10 mt-2 max-h-48 w-full overflow-auto rounded-xl p-2 shadow-lg">
           <ul id="result-list" className="space-y-2">
             {clientSuggestions.length > 0 ? (
               clientSuggestions.map((client, index) => (
                 <li
                   key={index}
-                  className="cursor-pointer py-2 px-4 rounded-lg hover:bg-primary hover:text-background"
+                  className="hover:bg-primary hover:text-background border-secondary flex items-center justify-between rounded-lg border px-6 py-2"
                   onClick={() => {
-                    setSearchQuery(client); 
-                    setClientSuggestions([]); 
-                    fetchProjectsByClient(client); 
+                    setSearchQuery(client);
+                    setClientSuggestions([]);
+                    fetchProjectsByClient(client);
                   }}
                 >
                   {client}
+                  <button className="border-primary bg-background text-accent cursor-pointer rounded-xl border px-8 py-1">
+                    Add
+                  </button>
                 </li>
               ))
             ) : (

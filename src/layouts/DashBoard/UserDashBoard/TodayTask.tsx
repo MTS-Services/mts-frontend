@@ -1,41 +1,87 @@
-import { useState } from 'react';
-import { MdInfoOutline } from 'react-icons/md';
-import { MdArrowDropDown } from 'react-icons/md';
+import React, { useState } from "react";
+import { MdArrowDropDown } from "react-icons/md";
+import DatePicker from "react-datepicker";
+import { FcCalendar } from "react-icons/fc";
+import {
+  MdAttachMoney,
+  MdCheckCircle,
+  MdEdit,
+  MdAccessTime,
+  MdArrowCircleDown,
+} from "react-icons/md";
 
-const TodayTask = () => {
+import "react-datepicker/dist/react-datepicker.css";
+
+const SalesProject = () => {
   const [filter, setFilter] = useState({
-    assign: '',
-    status: '',
+    startDate: null,
+    endDate: null,
+    status: "",
   });
 
   const mtsTargets = [
-    { title: 'Total Revision', amount: '10' },
-    { title: 'Time Short', amount: '4' },
-    { title: 'Submitted', amount: '2', note: 'mr' },
+    {
+      title: "Total Sales :",
+      amount: "10",
+      icon: <MdAttachMoney size={24} />,
+    },
+    { title: "Revision :", amount: "4", icon: <MdEdit size={24} /> },
+    { title: "Complete :", amount: "2", icon: <MdCheckCircle size={24} /> },
+    {
+      title: "Submit :",
+      amount: "2",
+      icon: <MdArrowCircleDown size={24} />,
+    },
+    { title: "Short Time :", amount: "2", icon: <MdAccessTime size={24} /> },
   ];
 
   const tableHeaders = [
-    'Client Name',
-    'Last Update',
-    'Assign',
-    'Expect Finish Time',
-    'Status',
-    'Delivery Last Date',
+    "Client Name",
+    "Last Update",
+    "Assign",
+    "Expect Finish Time",
+    "Status",
+    "Delivery Last Date",
   ];
 
   const [tableData, setTableData] = useState([
-    ['Alex', '20.10.2025', 'Masud', '10:30 AM', 'Done', '30.10.2025'],
-    ['Jordan', '21.10.2025', 'Rakib', '11:30 AM', 'Pending', '31.10.2025'],
-    ['Rifat', '22.10.2025', 'Salman', '9:00 AM', 'Wip', '01.11.2025'],
+    ["Alex", "04/25/2025", "Kamrul", "10:30 AM", "Done", "05/25/2025"],
+    ["Jordan", "06/26/2025", "Sunny", "11:30 AM", "Pending", "07/26/2025"],
+    ["Rifat", "07/27/2025", "Munshi", "9:00 AM", "Wip", "08/27/2025"],
+    ["John", "09/28/2025", "Munshi", "9:00 AM", "Wip", "10/30/2025"],
+    ["Smith", "11/01/2025", "Munshi", "9:00 AM", "Wip", "12/31/2025"],
+    ["David", "12/05/2025", "Ali", "1:00 PM", "Done", "01/05/2026"],
+    ["Maria", "02/15/2026", "Sara", "3:00 PM", "Pending", "03/15/2026"],
+    ["Sophia", "03/10/2026", "Ahmed", "2:00 PM", "Wip", "04/10/2026"],
+    ["Daniel", "05/18/2026", "Liam", "4:00 PM", "Done", "06/18/2026"],
+    ["Olivia", "07/22/2026", "Zara", "10:00 AM", "Pending", "08/22/2026"],
+    ["Luke", "08/30/2026", "Jack", "11:45 AM", "Wip", "09/30/2026"],
+    ["Emily", "10/05/2026", "Michael", "5:00 PM", "Done", "11/05/2026"],
+    ["James", "11/11/2026", "William", "12:00 PM", "Pending", "12/11/2026"],
+    ["Ava", "12/14/2026", "Benjamin", "7:30 AM", "Wip", "01/14/2027"],
+    ["Isabella", "02/20/2027", "Lucas", "8:30 AM", "Done", "03/20/2027"],
+    ["Ethan", "04/10/2027", "Mia", "3:30 PM", "Pending", "05/10/2027"],
+    ["Mason", "06/01/2027", "Zoe", "6:00 PM", "Wip", "07/01/2027"],
+    ["Charlotte", "07/25/2027", "Grace", "9:30 AM", "Done", "08/25/2027"],
+    ["Amelia", "09/03/2027", "Elijah", "4:30 PM", "Pending", "10/03/2027"],
+    ["Sebastian", "11/12/2027", "Ella", "2:30 PM", "Wip", "12/12/2027"],
   ]);
 
-  const assignOptions = [...new Set(tableData.map((row) => row[2]))];
   const statusOptions = [...new Set(tableData.map((row) => row[4]))];
 
+  // Extract only the date part for filtering
   const filteredData = tableData.filter((row) => {
-    const assignMatch = filter.assign ? row[2] === filter.assign : true;
+    const lastUpdate = new Date(row[1]);
+    const deliveryLastDate = new Date(row[5]);
+    const startDateMatch = filter.startDate
+      ? lastUpdate >= filter.startDate
+      : true;
+    const endDateMatch = filter.endDate
+      ? deliveryLastDate <= filter.endDate
+      : true;
     const statusMatch = filter.status ? row[4] === filter.status : true;
-    return assignMatch && statusMatch;
+
+    return startDateMatch && endDateMatch && statusMatch;
   });
 
   const handleChange = (rowIndex, colIndex, value) => {
@@ -44,50 +90,68 @@ const TodayTask = () => {
     setTableData(newData);
   };
 
+  const handleReset = () => {
+    setFilter({ startDate: null, endDate: null, status: "" });
+  };
+
   return (
-    <div className='w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6'>
+    <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
       {/* Dashboard Summary Cards */}
-      <div className='flex flex-wrap items-start gap-2'>
-        {mtsTargets.map(({ title, amount, note }, idx) => (
+      <div className="flex flex-wrap items-start gap-2">
+        {mtsTargets.map(({ title, amount, icon }, idx) => (
           <div
             key={idx}
-            className='relative bg-primary p-4 text-white rounded-sm w-full md:w-[30%] lg:w-[20%] xl:w-[14%] w-[10%] lg:h-28'
+            className="border-primary relative w-[10%] w-full rounded-sm border bg-black p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
           >
-            <h2 className='text-sm md:text-xl'>{title}</h2>
-            <h2 className='text-sm md:text-xl'>{amount}</h2>
-            {note && (
-              <div className='absolute top-2 right-2 group'>
-                <MdInfoOutline className='text-xl' />
-                <div className='absolute top-6 right-0 bg-black text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 w-40 pointer-events-none'>
-                  {note}
-                </div>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {icon}
+              <h2 className="text-sm md:text-xl">{title}</h2>
+            </div>
+            <h2 className="text-sm md:text-xl">{amount}</h2>
           </div>
         ))}
       </div>
 
       {/* Filter Dropdowns */}
-      <div className='my-4 flex gap-4 mt-10'>
-        <select
-          value={filter.assign}
-          onChange={(e) => setFilter({ ...filter, assign: e.target.value })}
-          className='text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48'
-        >
-          <option value=''>Filter by Assign</option>
-          {assignOptions.map((assign, index) => (
-            <option key={index} value={assign}>
-              {assign}
-            </option>
-          ))}
-        </select>
+      <div className="my-4 mt-10 flex gap-4">
+        <div className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm">
+          <label
+            htmlFor="startDate"
+            className="flex items-center justify-center gap-2"
+          >
+            Start Date <FcCalendar size={20} />
+          </label>
+          <DatePicker
+            selected={filter.startDate}
+            onChange={(date) => setFilter({ ...filter, startDate: date })}
+            dateFormat="P"
+            placeholderText="MM/DD/YYYY"
+            className="bg-background w-full px-8 py-2 text-sm"
+          />
+        </div>
+
+        <div className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm">
+          <label
+            htmlFor="endDate"
+            className="flex items-center justify-center gap-2"
+          >
+            End Date <FcCalendar size={20} />
+          </label>
+          <DatePicker
+            selected={filter.endDate}
+            onChange={(date) => setFilter({ ...filter, endDate: date })}
+            dateFormat="P"
+            placeholderText="MM/DD/YYYY"
+            className="bg-background w-full px-8 py-2 text-sm"
+          />
+        </div>
 
         <select
           value={filter.status}
           onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-          className='text-sm px-4 py-2 border border-accent rounded-md w-full text-accent bg-background max-w-48'
+          className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
         >
-          <option value=''>Filter by Status</option>
+          <option value="">Filter by Status</option>
           {statusOptions.map((status, index) => (
             <option key={index} value={status}>
               {status}
@@ -96,16 +160,26 @@ const TodayTask = () => {
         </select>
       </div>
 
+      {/* Reset Button */}
+      <div className="mt-4">
+        <button
+          onClick={handleReset}
+          className="cursor-pointer rounded-md bg-red-500 px-4 py-2 text-white"
+        >
+          Reset Dates
+        </button>
+      </div>
+
       {/* Project Details Table */}
-      <div className='overflow-x-auto mt-10'>
-        <table className='w-full min-w-[1000px] text-left'>
+      <div className="mt-10 overflow-x-auto">
+        <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className='bg-secondary text-white text-[16px] border border-white'>
+            <tr className="bg-secondary border border-white text-[16px] text-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`px-2 py-3 border border-white ${
-                    i === 0 ? 'border-x' : ''
+                  className={`border border-white px-2 py-3 ${
+                    i === 0 ? "border-x" : ""
                   }`}
                 >
                   {head}
@@ -113,46 +187,46 @@ const TodayTask = () => {
               ))}
             </tr>
           </thead>
-          <tbody className='border-2 border-white'>
+          <tbody className="border-2 border-white">
             {filteredData.length > 0 ? (
               filteredData.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className='odd:bg-primary even:bg-primary/70 text-white text-sm hover:bg-primary/80 transition-all duration-300 ease-in-out transform'
+                  className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 transform text-sm text-white transition-all duration-300 ease-in-out"
                 >
                   {row.map((cell, colIndex) => {
-                    const isAssignCol = colIndex === 2;
+                    const isCalendarCol = colIndex === 3;
                     const isStatusCol = colIndex === 4;
                     return (
                       <td
                         key={colIndex}
-                        className={`px-2 py-3 border-r border-secondary font-primary font-normal ${
-                          colIndex === 0 ? 'border-x' : ''
+                        className={`border-secondary font-primary border-r px-2 py-3 font-normal ${
+                          colIndex === 0 ? "border-x" : ""
                         }`}
                       >
-                        {isAssignCol || isStatusCol ? (
-                          <div className='relative w-full flex items-center'>
+                        {isCalendarCol || isStatusCol ? (
+                          <div className="relative flex w-full items-center">
                             <select
                               value={cell}
                               onChange={(e) =>
                                 handleChange(rowIndex, colIndex, e.target.value)
                               }
-                              className='appearance-none bg-transparent text-white border-none focus:outline-none text-sm w-full pr-4'
+                              className="w-full appearance-none border-none bg-transparent pr-4 text-sm text-white focus:outline-none"
                             >
-                              {(isAssignCol
-                                ? assignOptions
+                              {(isCalendarCol
+                                ? tableData.map((row) => row[3]) // Use the time from table data
                                 : statusOptions
                               ).map((opt) => (
                                 <option
                                   key={opt}
                                   value={opt}
-                                  className='bg-primary text-white px-2 py-1'
+                                  className="bg-primary px-2 py-1 text-white"
                                 >
                                   {opt}
                                 </option>
                               ))}
                             </select>
-                            <MdArrowDropDown className='absolute right-1 pointer-events-none text-white text-lg' />
+                            <MdArrowDropDown className="pointer-events-none absolute right-1 text-lg text-white" />
                           </div>
                         ) : (
                           cell
@@ -164,7 +238,7 @@ const TodayTask = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={tableHeaders.length} className='text-center py-4'>
+                <td colSpan={tableHeaders.length} className="py-4 text-center">
                   No projects found.
                 </td>
               </tr>
@@ -176,4 +250,4 @@ const TodayTask = () => {
   );
 };
 
-export default TodayTask;
+export default SalesProject;

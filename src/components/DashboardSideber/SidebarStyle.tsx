@@ -18,7 +18,7 @@ const SidebarStyle = () => {
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/dashboard" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-    { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
+    { icon: <FaTasks />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
   ];
