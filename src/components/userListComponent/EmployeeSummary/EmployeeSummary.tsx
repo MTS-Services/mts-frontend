@@ -30,7 +30,7 @@ const EmployeeSummary = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-12">
+    <div className="max-w-6xl mx-auto ">
       <h2 className="text-4xl font-bold text-center mb-10 text-accent  font-primary">Employee Summary</h2>
 
       {/* Info Grid */}

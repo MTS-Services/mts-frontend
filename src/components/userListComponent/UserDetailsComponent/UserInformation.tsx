@@ -125,7 +125,7 @@ const UserInformation = () => {
   );
 
   return (
-    <section className="min-h-screen p-10">
+    <section className="lg:py-12 py-8">
       <div className="max-w-6xl mx-auto bg-card p-8 rounded-xl shadow-md shadow-primary">
         <div className="flex items-center justify-between flex-wrap">
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
@@ -139,7 +139,7 @@ const UserInformation = () => {
               }}
             />
             <div>
-              <h2 className="text-2xl font-primary text-primary text-shadow-md">
+              <h2 className="md:text-2xl text-xl font-primary text-primary text-shadow-md">
                 {user.first_name} <span>{user.last_name}</span>
               </h2>
               <p className="text-accent text-sm capitalize font-secondary">{user.role}</p>
