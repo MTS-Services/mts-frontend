@@ -249,6 +249,7 @@ const Projects = () => {
 
       toast.success("Operation Status updated successfully.");
     } catch (error) {
+      console.log(error);
       toast.warning("Failed to update Operation status:");
     }
   };
@@ -271,6 +272,7 @@ const Projects = () => {
 
       toast.success("Profile Status updated successfully.");
     } catch (error) {
+      console.log(error);
       toast.warning("Failed to update Profile status.");
     }
   };

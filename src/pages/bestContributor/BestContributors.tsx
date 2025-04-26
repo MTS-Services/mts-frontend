@@ -1,6 +1,6 @@
 import BestContributor from "../../components/BestContributor/BestContributor"
 import PunctualityAwards from "../../components/PunctualityAwards/PunctualityAwards"
-import RisingTalent from "../../components/RisingTalent/RisingTalent"
+import RisingTalent from "../../components/PunctualityAwards/RisingTalent/RisingTalent"
 
 function BestContributors  ()  {
   return (

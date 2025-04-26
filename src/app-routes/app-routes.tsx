@@ -5,6 +5,7 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 import DashboardLayout from "../DashboardLayout";
+import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
@@ -72,6 +73,7 @@ const AppRoutes = createBrowserRouter([
         path: "/dashboard",
         element: <ChartView />,
       },
+
       {
         path: "all-projects",
         element: <AllProjects />,
@@ -80,6 +82,12 @@ const AppRoutes = createBrowserRouter([
         path: "projects",
         element: <Projects />,
       },
+
+      {
+        path: "projectsdetails",
+        element: <ProjectsDetails></ProjectsDetails>,
+      },
+
       {
         path: "todaytask",
         element: <TodayTask />,
