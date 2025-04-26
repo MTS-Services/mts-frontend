@@ -22,7 +22,7 @@ const SalesProject = () => {
   const mtsTargets = [
     {
       title: "Total Sales :",
-      amount: "10",
+      amount: "1000",
       icon: <MdAttachMoney size={24} />,
     },
     { title: "Revision :", amount: "4", icon: <MdEdit size={24} /> },
@@ -97,11 +97,11 @@ const SalesProject = () => {
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
       {/* Dashboard Summary Cards */}
-      <div className="flex flex-wrap items-start gap-2">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         {mtsTargets.map(({ title, amount, icon }, idx) => (
           <div
             key={idx}
-            className="border-primary relative w-[10%] w-full rounded-sm border bg-black p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+            className="border-primary relative items-start overflow-hidden rounded-sm border bg-black p-4 px-4 py-4 text-ellipsis text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
           >
             <div className="flex items-center gap-2">
               {icon}

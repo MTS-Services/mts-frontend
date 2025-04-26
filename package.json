@@ -20,6 +20,7 @@
     "aos": "^2.3.4",
     "axios": "^1.8.4",
     "chart.js": "^4.4.8",
+    "cors": "^2.8.5",
     "dompurify": "^3.2.5",
     "firebase": "^11.6.0",
     "framer-motion": "^12.6.3",
