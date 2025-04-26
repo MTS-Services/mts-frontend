@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-import ProjectsUplodeForm from "./ProjectsUplodeForm";
 import Search from "../../../components/Search/Search";
+import ProjectsUplodeForm from "./ProjectsUplodeForm";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -79,7 +79,7 @@ const Projects = () => {
       let fixedProject;
 
       if (Array.isArray(project)) {
-        fixedProject = project.flat(Infinity)[0]; 
+        fixedProject = project.flat(Infinity)[0];
         fixedProject = project;
       }
 
@@ -249,6 +249,7 @@ const Projects = () => {
 
       toast.success("Operation Status updated successfully.");
     } catch (error) {
+      console.log(error);
       toast.warning("Failed to update Operation status:");
     }
   };
@@ -271,6 +272,7 @@ const Projects = () => {
 
       toast.success("Profile Status updated successfully.");
     } catch (error) {
+      console.log(error);
       toast.warning("Failed to update Profile status.");
     }
   };
@@ -565,6 +567,7 @@ const Projects = () => {
           </tbody>
         </table>
       </div>
+
       <ProjectsUplodeForm />
     </div>
   );
