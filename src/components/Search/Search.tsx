@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { FiSearch } from "react-icons/fi";
+import SecondaryButton from "../Button/SecondaryButton";
+import PrimaryButton from "./../Button/PrimaryButton";
+import ResetButton from "./../Button/ResetButton";
 
-// Define types for props and state
 interface ClientData {
   uniqueClientNames: string[];
 }
@@ -133,46 +135,56 @@ const Search: React.FC = () => {
     }
   };
 
+  // Reset the page state
+  const resetPage = () => {
+    setSearchQuery("");
+    setClientSuggestions([]);
+    setProjects([]);
+    setRevisionComments("");
+    setDeliveryDate("");
+    setIsHidden(true);
+  };
+
   return (
-    <div className="mx-auto max-w-3xl rounded-lg bg-black p-6 text-white shadow-lg">
+    <div className="max-w-3xl rounded-lg text-white shadow-lg">
       {/* Search input container */}
       <div className="font-secondary relative">
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search for a client..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsHidden(false)}
           onBlur={() => setTimeout(() => setIsHidden(true), 100)}
-          className="border-accent focus:ring-primary focus:border-primary text-accent from-secondary w-full transform rounded-full border bg-gradient-to-r py-2 pr-4 pl-12 text-sm shadow-md transition duration-400 ease-in-out hover:scale-105 hover:shadow-xl focus:ring-2 focus:outline-none sm:text-base"
+          className="border-accent focus:ring-primary focus:border-primary text-accent from-secondary w-130 transform rounded-full border bg-gradient-to-r py-2 pr-4 pl-12 text-sm shadow-md transition duration-400 ease-in-out hover:scale-105 hover:shadow-xl focus:ring-2 focus:outline-none sm:text-base"
         />
         <FiSearch className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-xl" />
       </div>
 
       {/* Display suggestions if not hidden and there are results */}
       {!isHidden && searchQuery && (
-        <div className="absolute z-10 mt-2 max-h-48 w-full overflow-auto rounded-xl bg-black p-2 shadow-lg">
-          <ul id="result-list" className="space-y-2">
+        <div className="bg-background text-accent absolute mt-2 mb-4 max-h-72 w-130 overflow-auto rounded-lg border p-4 shadow-md">
+          <ul className="space-y-2">
             {clientSuggestions.map((client, index) => (
               <li
                 key={index}
-                className="rounded-md p-2 hover:bg-black hover:text-white"
+                className="hover:text-accent hover:bg-secondary flex items-center justify-between rounded-md p-2"
                 onClick={() => {
-                  setSearchQuery(client); // Update the search query with the full client name
-                  setClientSuggestions([]); // Clear suggestions after selection
-                  fetchProjectsByClient(client); // Fetch projects when a client is selected
+                  setSearchQuery(client);
+                  setClientSuggestions([]);
+                  fetchProjectsByClient(client);
                 }}
               >
                 {client}
-                <button
-                  className="ml-4 cursor-pointer rounded-lg bg-blue-500 px-3 py-1 text-white"
+
+                <SecondaryButton
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the li click
                     fetchProjectsByClient(client); // Fetch projects when "Add" is clicked
                   }}
                 >
                   Add
-                </button>
+                </SecondaryButton>
               </li>
             ))}
           </ul>
@@ -188,7 +200,7 @@ const Search: React.FC = () => {
               {projects.map((project) => (
                 <li
                   key={project.id}
-                  className="mb-4 rounded-lg border bg-gray-800 p-4 shadow-md"
+                  className="bg-background text-accent mb-4 rounded-lg border p-4 shadow-md"
                 >
                   <strong>Project Name:</strong> {project.project_name} <br />
                   <strong>Order ID:</strong> {project.order_id} <br />
@@ -207,12 +219,13 @@ const Search: React.FC = () => {
                     View Sheet
                   </a>
                   <br />
-                  <button
-                    onClick={() => openModal(project.id)}
-                    className="mt-2 rounded-lg bg-green-500 px-4 py-2 text-white"
-                  >
-                    Add Revision
-                  </button>
+                  <div className="flex items-center justify-between">
+                    <SecondaryButton onClick={() => openModal(project.id)}>
+                      Add Revision
+                    </SecondaryButton>
+                    {/* Reset Button */}
+                    <ResetButton onClick={resetPage}>Reset</ResetButton>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -231,25 +244,23 @@ const Search: React.FC = () => {
               &times;
             </span>
             <h3 className="mb-4 text-xl font-semibold">Add Revision</h3>
+
             <input
               type="text"
               placeholder="Revision Comments"
               value={revisionComments}
               onChange={(e) => setRevisionComments(e.target.value)}
-              className="mb-4 w-full rounded-lg border border-gray-300 bg-black p-2 text-white"
+              className="text-accent bg-background mb-4 w-full rounded-lg border border-gray-300 p-2"
             />
+
             <input
               type="date"
               value={deliveryDate}
               onChange={(e) => setDeliveryDate(e.target.value)}
-              className="mb-4 w-full rounded-lg border border-gray-300 bg-black p-2 text-white"
+              className="text-accent bg-background mb-4 w-full rounded-lg border border-gray-300 p-2"
             />
-            <button
-              onClick={submitRevision}
-              className="w-full rounded-lg bg-green-500 py-2 text-white hover:bg-green-600"
-            >
-              Submit
-            </button>
+
+            <PrimaryButton onClick={submitRevision}>Submit</PrimaryButton>
           </div>
         </div>
       )}

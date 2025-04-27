@@ -11,6 +11,7 @@ import {
 } from "react-icons/md";
 
 import "react-datepicker/dist/react-datepicker.css";
+import ResetButton from "../../../components/Button/ResetButton";
 
 const SalesProject = () => {
   const [filter, setFilter] = useState({
@@ -158,16 +159,11 @@ const SalesProject = () => {
             </option>
           ))}
         </select>
-      </div>
+        {/* Reset Button */}
 
-      {/* Reset Button */}
-      <div className="mt-4">
-        <button
-          onClick={handleReset}
-          className="cursor-pointer rounded-md bg-red-500 px-4 py-2 text-white"
-        >
-          Reset Dates
-        </button>
+        <ResetButton className="flex justify-start" onClick={handleReset}>
+          Reset
+        </ResetButton>
       </div>
 
       {/* Project Details Table */}

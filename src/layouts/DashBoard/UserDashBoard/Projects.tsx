@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import ProjectsUplodeForm from "./ProjectsUplodeForm";
 import Search from "../../../components/Search/Search";
+import SecondaryButton from "../../../components/Button/SecondaryButton";
+import ResetButton from "../../../components/Button/ResetButton";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -203,60 +205,59 @@ const Projects = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center justify-between">
-        <div className="my-4 mt-10 flex w-2/3 flex-wrap items-center gap-4">
-          <select
-            value={filter.account}
-            onChange={(e) => setFilter({ ...filter, account: e.target.value })}
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Account</option>
-            {uniqueAccounts.map((account, index) => (
-              <option key={index} value={account}>
-                {account}
-              </option>
-            ))}
-          </select>
+      <div className="my-4 mt-10 flex justify-between">
+        <div>
+          <div className="flex gap-4">
+            <select
+              value={filter.account}
+              onChange={(e) =>
+                setFilter({ ...filter, account: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Account</option>
+              {uniqueAccounts.map((account, index) => (
+                <option key={index} value={account}>
+                  {account}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={filter.operationStatus}
-            onChange={(e) =>
-              setFilter({ ...filter, operationStatus: e.target.value })
-            }
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Operation Status</option>
-            {operationStatuses.map((status, index) => (
-              <option key={index} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
+            <select
+              value={filter.operationStatus}
+              onChange={(e) =>
+                setFilter({ ...filter, operationStatus: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Operation Status</option>
+              {operationStatuses.map((status, index) => (
+                <option key={index} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={filter.orderedBy}
-            onChange={(e) =>
-              setFilter({ ...filter, orderedBy: e.target.value })
-            }
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Ordered by</option>
-            {orderedByOptions.map((name, index) => (
-              <option key={index} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
+            <select
+              value={filter.orderedBy}
+              onChange={(e) =>
+                setFilter({ ...filter, orderedBy: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Ordered by</option>
+              {orderedByOptions.map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
 
-          <button
-            onClick={resetFilters}
-            className="rounded-md bg-red-500 px-4 py-2 text-sm text-white transition duration-300 hover:bg-red-600"
-          >
-            Reset Filters
-          </button>
+            <ResetButton onClick={resetFilters}>Reset</ResetButton>
+          </div>
         </div>
         {/* Search */}
-        <div className="flex w-1/3 justify-end">
+        <div>
           <Search />
         </div>
       </div>
@@ -410,19 +411,25 @@ const Projects = () => {
                   {/* Actioin   buttone  */}
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (
-                      <button
-                        className="rounded bg-green-500 px-2 py-1 text-white"
-                        onClick={() => handleSave(row.id)}
-                      >
+                      // <button
+                      //   className="rounded bg-green-500 px-2 py-1 text-white"
+                      //   onClick={() => handleSave(row.id)}
+                      // >
+                      //   Save
+                      // </button>
+                      <SecondaryButton onClick={() => handleSave(row.id)}>
                         Save
-                      </button>
+                      </SecondaryButton>
                     ) : (
-                      <button
-                        className="rounded bg-yellow-500 px-2 py-1 text-white"
-                        onClick={() => handleEditClick(row)}
-                      >
+                      // <button
+                      //   className="rounded bg-yellow-500 px-2 py-1 text-white"
+                      //   onClick={() => handleEditClick(row)}
+                      // >
+                      //   Edit
+                      // </button>
+                      <SecondaryButton onClick={() => handleEditClick(row)}>
                         Edit
-                      </button>
+                      </SecondaryButton>
                     )}
                   </td>
                 </tr>
