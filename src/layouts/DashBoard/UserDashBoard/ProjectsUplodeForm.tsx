@@ -86,16 +86,16 @@ const ProjectsUploadForm = () => {
   return (
     <div className="p-6">
       {!showForm ? (
-        // <button
-        //   onClick={() => setShowForm(true)}
-        //   className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
-        // >
-        //   Upload Project
-        // </button>
-        <PrimaryButton onClick={() => setShowForm(true)}>
+        <button
+          onClick={() => setShowForm(true)}
+          className="text-background bg-primary hover:text-accent flex cursor-pointer items-center overflow-hidden rounded-full px-6 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:shadow-lg hover:before:left-0 active:scale-90 sm:px-8 sm:text-lg md:px-10 lg:px-12"
+        >
           Upload Project
-        </PrimaryButton>
+        </button>
       ) : (
+        // <PrimaryButton onClick={() => setShowForm(true)}>
+        //   Upload Project
+        // </PrimaryButton>
         <form onSubmit={handleSubmit} className="items-center space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <input

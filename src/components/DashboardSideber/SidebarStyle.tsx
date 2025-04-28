@@ -14,6 +14,7 @@ import {
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
+import { SlSettings } from "react-icons/sl";
 
 const SidebarStyle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -26,6 +27,7 @@ const SidebarStyle = () => {
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    { icon: <SlSettings />, label: "Operation", path: "operation" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
   ];
   return (

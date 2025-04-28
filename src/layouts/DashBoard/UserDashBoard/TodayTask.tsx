@@ -26,8 +26,8 @@ const SalesProject = () => {
       amount: "1000",
       icon: <MdAttachMoney size={24} />,
     },
-    { title: "Revision :", amount: "4", icon: <MdEdit size={24} /> },
-    { title: "Complete :", amount: "2", icon: <MdCheckCircle size={24} /> },
+    { title: "Cancel :", amount: "4", icon: <MdEdit size={24} /> },
+    { title: "Delivery:", amount: "2", icon: <MdCheckCircle size={24} /> },
     {
       title: "Submit :",
       amount: "2",
@@ -102,7 +102,7 @@ const SalesProject = () => {
         {mtsTargets.map(({ title, amount, icon }, idx) => (
           <div
             key={idx}
-            className="border-primary relative items-start overflow-hidden rounded-sm border bg-black p-4 px-4 py-4 text-ellipsis text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+            className="bg-primary border-border-color relative w-full rounded-sm border-2 p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
           >
             <div className="flex items-center gap-2">
               {icon}

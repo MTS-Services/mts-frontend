@@ -59,7 +59,7 @@ const Search: React.FC = () => {
 
   // Fetch projects for the selected client
   const fetchProjectsByClient = async (client: string) => {
-    setProjects([]); // Clear the project list before fetching new ones
+    setProjects([]);
 
     try {
       const response = await fetch(
@@ -70,7 +70,7 @@ const Search: React.FC = () => {
       if (data.projects && data.projects.length > 0) {
         setProjects(data.projects);
       } else {
-        setProjects([]); // No projects found
+        setProjects([]);
         alert("No projects found for this client.");
       }
     } catch (error) {
@@ -83,21 +83,21 @@ const Search: React.FC = () => {
     if (searchQuery.trim()) {
       fetchClientSuggestions(searchQuery);
     } else {
-      setClientSuggestions([]); // Clear suggestions if query is empty
+      setClientSuggestions([]);
     }
   }, [searchQuery, fetchClientSuggestions]);
 
   // Open the modal for adding revision
   const openModal = (projectId: string) => {
     setSelectedProjectId(projectId);
-    setShowModal(true); // Show the modal
+    setShowModal(true);
   };
 
   // Close the modal
   const closeModal = () => {
     setShowModal(false);
-    setRevisionComments(""); // Clear previous input
-    setDeliveryDate(""); // Clear previous input
+    setRevisionComments("");
+    setDeliveryDate("");
   };
 
   // Handle the submission of the revision
