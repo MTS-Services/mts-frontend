@@ -4,7 +4,6 @@ import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
-<<<<<<< HEAD
 import DashboardLayout from '../DashboardLayout';
 import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
 import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
@@ -18,21 +17,7 @@ import LoginForm from '../pages/Auth/LoginForm';
 import RegisterView from '../pages/auth/RegisterView';
 import ProjectsDetails from '../layouts/DashBoard/ProjectgsDetails/ProjectsDetails';
 import BestContributorsfrom from '../components/common/BestContributorsfrom/BestContributorsfrom';
-=======
-import DashboardLayout from "../DashboardLayout";
-import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
-import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView";
-import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
-import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
-import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
-import LoginForm from "../pages/Auth/LoginForm";
-import RegisterForm from "../pages/Auth/RegisterForm";
-import RegisterView from "../pages/auth/RegisterView";
-import BestContributors from "../pages/bestContributor/BestContributors";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
->>>>>>> 48b00bfd5ebc79b6bb223f514e2f546cc6cc03ef
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -122,7 +107,6 @@ const AppRoutes = createBrowserRouter([
         element: <UserListPage />,
       },
       {
-<<<<<<< HEAD
         path: 'bestcontributors',
         element: <BestContributorsfrom/>,
       },
@@ -130,11 +114,6 @@ const AppRoutes = createBrowserRouter([
   path: 'userdetails/:id', // <-- :id is dynamic
   element: <UserDetails />,
 },
-=======
-        path: "userdetails/:id", // <-- :id is dynamic
-        element: <UserDetails />,
-      },
->>>>>>> 48b00bfd5ebc79b6bb223f514e2f546cc6cc03ef
     ],
   },
 ]);
