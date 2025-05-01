@@ -133,8 +133,8 @@ const ProjectsDetail = () => {
   if (loading || !user) return <Loading />;
 
   return (
-    <section className="lg:py-12 py-8">
-      <div className="max-w-6xl mx-auto bg-card p-8 rounded-xl shadow-md shadow-primary">
+    <section className="lg:py-12 py-8 ">
+      <div className=" mx-auto bg-card p-8 rounded-xl shadow-md shadow-primary">
         <div className="flex items-center justify-between flex-wrap">
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
          
@@ -165,7 +165,7 @@ const ProjectsDetail = () => {
         </div>
 
         {/* Three Columns Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3  gap-10 mt-8">
           <div>
             <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4 uppercase">
               Project Info
@@ -189,7 +189,7 @@ const ProjectsDetail = () => {
               Department Info
             </h3>
             {[
-              "department_name", "department_target", "department_achieve", "department_cancel", "department_special_order", "department_designation", "project_requirements"
+              "department_name", "department_target", "department_achieve", "department_cancel",  "department_designation", "project_requirements"
             ].map((field) => (
               <Info
                 key={field}
@@ -207,7 +207,7 @@ const ProjectsDetail = () => {
               Team  Info
             </h3>
             {[
-              "Team_Name",  "Leader_Name", "Total_Team_Member", "Cancel_Projects", "Total_Revision", "Team_Target", "Team_Achieve"
+              "Team_Name",  "Leader_Name", "Total_Team_Member","Total_Revision",
             ].map((field) => (
               <Info
                 key={field}
@@ -220,6 +220,7 @@ const ProjectsDetail = () => {
             ))}
           </div>
         </div>
+
       </div>
     </section>
   );

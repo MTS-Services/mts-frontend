@@ -16,6 +16,7 @@ import RegisterForm from '../pages/Auth/RegisterForm';
 import LoginForm from '../pages/Auth/LoginForm';
 import RegisterView from '../pages/auth/RegisterView';
 import ProjectsDetails from '../layouts/DashBoard/ProjectgsDetails/ProjectsDetails';
+import BestContributorsfrom from '../components/common/BestContributorsfrom/BestContributorsfrom';
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -94,10 +95,18 @@ const AppRoutes = createBrowserRouter([
         path: 'performance',
         element: <Performance />,
       },
+      {
+        path: 'bestcontributor',
+        element: <BestContributors />,
+      },
 
       {
         path: 'userlist',
         element: <UserListPage />,
+      },
+      {
+        path: 'bestcontributors',
+        element: <BestContributorsfrom/>,
       },
       {
   path: 'userdetails/:id', // <-- :id is dynamic

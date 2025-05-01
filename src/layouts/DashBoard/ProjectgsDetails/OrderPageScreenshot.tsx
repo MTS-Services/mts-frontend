@@ -22,11 +22,11 @@ const OrderPageScreenshot = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen p-6 space-y-8">
+    <div className="bg-background min-h-screen  space-y-8">
       <div><h4 className='text-accent font-bold  text-4xl '>Order Page Screenshot</h4></div>
 
       {/* Screenshot Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
   {screenshots.map((img) => (
     <div key={img.id} className="h-[350px] overflow-auto border border-muted rounded-lg p-2">
       <img
@@ -68,9 +68,9 @@ const OrderPageScreenshot = () => {
 
       {/* Login Info Cards */}
   
-  <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 m-auto'>
+  <div className='grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 m-auto'>
   {/* Client Login */}
-  <div className="bg-background rounded-lg p-2 shadow-md border border-accent min-h-[250px] overflow-auto">
+  <div className="bg-background rounded-lg p-2 shadow-md border border-accent lg:min-h-[250px] overflow-auto">
     <h3 className="text-lg font-bold mb-4">👤 Client Login Info</h3>
     <div className="space-y-2 break-words">
       <div className="p-3 border border-accent rounded">
@@ -141,6 +141,32 @@ const OrderPageScreenshot = () => {
       </div>
     </div>
   </div>
+
+
+
+  {/* Reference/Competitor */}
+  <div className="bg-background rounded-lg p-2 shadow-md border border-accent min-h-[250px] overflow-auto">
+    <h3 className="text-lg font-bold mb-4">Specials Plugin</h3>
+    <div className="space-y-2 break-words">
+      <div className="p-3 border border-accent rounded">
+        <div>
+          <h5>Reference website link or design (Figma, Invision, Adobe XD, PSD) </h5>
+            <span className="font-semibold">🔗 URL:</span> https://ab3413430.mtsdevs.com/wp-admin/
+        </div>
+      
+      </div>
+      <div className="p-3 border border-accent rounded">
+        <span className="font-semibold">Special Requirement</span> 
+      </div>
+      <div className="p-3 border border-accent rounded">
+        <span className="font-semibold">🔗 URL:</span> 
+      </div>
+    </div>
+  </div>
+
+
+
+
 
 </div>
 

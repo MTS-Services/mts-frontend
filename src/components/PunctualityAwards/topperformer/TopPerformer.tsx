@@ -1,37 +1,22 @@
 
 // Static member data
+import "./topperformer.css"
 const punctualityAwards = [
-  {
-    name: "MD. ASIF FIYAZ SHORON",
-    position: "HR & IT Administrator",
-    image: "/developer zoon/MD. ASIF FIYAZ SHORON.jpg",
-    award: "Punctuality",
-    bio: "John is a passionate developer with 5+ years of experience.",
-    experience: "5 years"
-  },
-  
-  {
-    name: "md. ali hossain",
-    position: "Punctuality",
-    image: "/developer zoon/md ali hossain.png",
-    award: "Jr. Web Developer",
-    bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
-    experience: "4 years"
-  },
+ 
 
   {
-    name: "md. Farhan Sadik ",
-    position: "Jr. Web Developer",
-    image: "/developer zoon/md farhan sadik.JPG",
+    name: "Fatema akter ",
+    position: "WEB DEVELOPER",
+    image: "public/developer zoon/fatema.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
   },
 
   {
-    name: "TURJOY NANDI ",
-    position: "JR.key account  manager, ",
-    image: "/developer zoon/turjo.jpg",
+    name: "Md asif",
+    position: "ACCOUNT MANAGER, SALES",
+    image: "public/developer zoon/asif.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
@@ -48,15 +33,14 @@ const punctualityAwards = [
   }
 ];
 
-const PunctualityAwards = () => {
+const TopPerformer = () => {
   return (
     <section className=" bg-gradient-to-r-4   text-accent/40  mx-auto gap-6 w-full  max-w-[1400px]  lg:py-24 md:py-16 xl:py-24 py-4 px-[10px] md:px-[20px] ">
 
 
    <div className="md:mb-4 mb-4 lg:mb-6 ">
   <h3 className="lg:text-4xl overflow-y-auto  leading-[67px] xl:text-4xl font-primary text-4xl font-extrabold  text-accent">
-Punctuality Awards
-
+top performer
   </h3>
 
   <div className="flex items-center  gap-2 w-[200px]">
@@ -64,7 +48,8 @@ Punctuality Awards
   
   </div>
 </div>
-  <div className=" mx-auto text-center">
+
+      <div className=" mx-auto text-center">
         {/* Section Heading */}
         
         {/* Cards Container - Responsive Grid */}
@@ -90,11 +75,9 @@ Punctuality Awards
 
 
       </div>
-
-
     </section>
 
   );
 };
 
-export default PunctualityAwards;
+export default TopPerformer

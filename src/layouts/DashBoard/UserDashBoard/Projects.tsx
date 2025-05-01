@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import ProjectsUplodeForm from "./ProjectsUplodeForm";
 import Search from "../../../components/Search/Search";
+import { Link } from "react-router";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -533,6 +534,16 @@ const Projects = () => {
                     )}
                   </td>
                   {/* Actioin   buttone  */}
+
+<Link
+  to="/dashboard/projectsdetails"
+  className=" px-3 py-2 text-white rounded-lg shadow-md hover:scale-105 m-auto"
+>
+  Details
+</Link>
+
+
+
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (
                       <button

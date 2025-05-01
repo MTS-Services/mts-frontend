@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
+import { FaHome, FaMedal, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
@@ -21,6 +21,8 @@ const SidebarStyle = () => {
     { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
+{ icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" }
+
   ];
   return (
     <aside
