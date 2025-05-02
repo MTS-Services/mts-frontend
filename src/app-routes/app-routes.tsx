@@ -75,11 +75,11 @@ const AppRoutes = createBrowserRouter([
       },
 
       {
-        path: "all-projects",
+        path: "projects",
         element: <AllProjects />,
       },
       {
-        path: "projects",
+        path: "projects-old",
         element: <Projects />,
       },
 
