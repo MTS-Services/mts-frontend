@@ -1,5 +1,5 @@
-import { ToastContainer } from 'react-toastify';
-import DashboardSideber from './components/DashboardSideber/DashboardSideber';
+import { ToastContainer } from "react-toastify";
+import DashboardSideber from "./components/DashboardSideber/DashboardSideber";
 
 const DashboardLayout = () => {
   return (
@@ -7,7 +7,7 @@ const DashboardLayout = () => {
       <main>
         <DashboardSideber />
       </main>
-      <ToastContainer position='top-right' autoClose={6000} />
+      <ToastContainer position="top-right" autoClose={6000} />
     </>
   );
 };
