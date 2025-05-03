@@ -173,7 +173,7 @@ function BestContributorsForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* awoardName */}
           <div>
-            <label className="text-accent/40 block mb-2 font-primary">Award Name</label>
+            <label className="text-accent block mb-2 font-primary">Award Name</label>
             <input
               type="text"
               name="award_name"
@@ -186,8 +186,8 @@ function BestContributorsForm() {
 
           {/* কন্ট্রিবিউটর টাইপ নির্বাচন */}
           <div>
-            <label className="text-gray-300 block mb-2">Select Contributor Type</label>
-            <div className="flex gap-6 text-white">
+            <label className="text-accent block mb-2">Select Contributor Type</label>
+            <div className="flex gap-6 text-accent">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
@@ -215,10 +215,10 @@ function BestContributorsForm() {
           {formData.contributorType === "special" && (
             <div>
               {/* কন্ট্রিবিউটর সিলেকশন */}
-              <label className="text-gray-300 block mb-2">Search & Select Contributors</label>
+              <label className="text-accent block mb-2">Search & Select Contributors</label>
               <div className="relative">
                 <div
-                  className="min-h-12 w-full p-3 bg-gray-800 rounded flex flex-wrap items-center gap-2 cursor-pointer border border-gray-700"
+                  className="min-h-12 w-full p-3 bg-background rounded flex flex-wrap items-center gap-2 cursor-pointer border border-accent/40"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
                   {formData.selectedContributors.length > 0 ? (
@@ -266,14 +266,14 @@ function BestContributorsForm() {
                         </div>
                       ))
                     ) : (
-                      <div className="p-3 text-gray-400">No contributors found</div>
+                      <div className="p-3 text-accent">No contributors found</div>
                     )}
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="text-gray-300 block mb-2">Thankful Message</label>
+                <label className="text-accent block pt-2">Thankful Message</label>
                 <input
                   type="text"
                   name="thankful_message"
@@ -288,7 +288,7 @@ function BestContributorsForm() {
 
           {formData.contributorType === "unspecial" && (
             <div>
-              <label className="text-gray-300 block mb-2">Search & Select Contributors</label>
+              <label className="text-accent block mb-2">Search & Select Contributors</label>
               <div className="relative">
                 <div
                   className="min-h-12 w-full p-3 bg-gray-800 rounded flex flex-wrap items-center gap-2 cursor-pointer border border-gray-700"

@@ -18,6 +18,7 @@ import RegisterView from '../pages/auth/RegisterView';
 import ProjectsDetails from '../layouts/DashBoard/ProjectgsDetails/ProjectsDetails';
 import BestContributorsfrom from '../components/common/BestContributorsfrom/BestContributorsfrom';
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -106,10 +107,17 @@ const AppRoutes = createBrowserRouter([
         path: "userlist",
         element: <UserListPage />,
       },
+      
       {
         path: 'bestcontributors',
         element: <BestContributorsfrom/>,
       },
+
+      {
+        path: 'teamtistribution',
+        element: <TeamDistribution/>,
+      },
+
       {
   path: 'userdetails/:id', // <-- :id is dynamic
   element: <UserDetails />,
