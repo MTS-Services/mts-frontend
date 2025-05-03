@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
+
+import { FaHome, FaMedal, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
@@ -7,6 +8,10 @@ import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
+import { GrGroup } from "react-icons/gr";
+
+
+
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 
 const SidebarStyle = () => {
@@ -20,7 +25,12 @@ const SidebarStyle = () => {
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+
     { icon: <FaUser />, label: "User List", path: "userlist" },
+    { icon: <GrGroup />, label: "Team Distribution", path: "teamtistribution" },
+
+{ icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" }
+
   ];
   return (
     <aside

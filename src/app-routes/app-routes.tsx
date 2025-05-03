@@ -4,19 +4,21 @@ import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
-import DashboardLayout from "../DashboardLayout";
-import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
-import ChartView from "../layouts/DashBoard/UserDashBoard/chart/ChartView";
-import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
-import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
-import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
-import LoginForm from "../pages/Auth/LoginForm";
-import RegisterForm from "../pages/Auth/RegisterForm";
-import RegisterView from "../pages/auth/RegisterView";
-import BestContributors from "../pages/bestContributor/BestContributors";
+import DashboardLayout from '../DashboardLayout';
+import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
+import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
+import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
+import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
+import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
+import BestContributors from '../pages/bestContributor/BestContributors';
+import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
+import RegisterForm from '../pages/Auth/RegisterForm';
+import LoginForm from '../pages/Auth/LoginForm';
+import RegisterView from '../pages/auth/RegisterView';
+import ProjectsDetails from '../layouts/DashBoard/ProjectgsDetails/ProjectsDetails';
+import BestContributorsfrom from '../components/common/BestContributorsfrom/BestContributorsfrom';
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -96,15 +98,30 @@ const AppRoutes = createBrowserRouter([
         path: "performance",
         element: <Performance />,
       },
+      {
+        path: 'bestcontributor',
+        element: <BestContributors />,
+      },
 
       {
         path: "userlist",
         element: <UserListPage />,
       },
+      
       {
-        path: "userdetails/:id", // <-- :id is dynamic
-        element: <UserDetails />,
+        path: 'bestcontributors',
+        element: <BestContributorsfrom/>,
       },
+
+      {
+        path: 'teamtistribution',
+        element: <TeamDistribution/>,
+      },
+
+      {
+  path: 'userdetails/:id', // <-- :id is dynamic
+  element: <UserDetails />,
+},
     ],
   },
 ]);
