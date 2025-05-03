@@ -104,6 +104,7 @@ function SingleDeshboardProject({ item, refetch }) {
       await handleUpdate({ ops_status: newStatus });
     } else {
       setSastatus(newStatus);
+      refetch();
       if (newStatus === "delivered") {
         await handleUpdate({
           status: newStatus,
