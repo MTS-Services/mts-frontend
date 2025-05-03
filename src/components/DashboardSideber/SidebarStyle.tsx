@@ -1,6 +1,14 @@
 import { useState } from "react";
+import {
+  FaHome,
+  FaProjectDiagram,
+  FaTasks,
+  FaUser,
+  FaChartLine,
+  FaMedal,
+} from "react-icons/fa";
+import { GiTeamUpgrade } from "react-icons/gi";
 
-import { FaHome, FaMedal, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
@@ -10,9 +18,8 @@ import {
 } from "react-icons/io";
 import { GrGroup } from "react-icons/gr";
 
-
-
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
+import { SlSettings } from "react-icons/sl";
 
 const SidebarStyle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -23,25 +30,30 @@ const SidebarStyle = () => {
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/dashboard" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-    { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
+    { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    {
+      icon: <GiTeamUpgrade />,
+      label: "Team Performance",
+      path: "teamperformance",
+    },
+    { icon: <SlSettings />, label: "Operation", path: "operation" },
 
     { icon: <FaUser />, label: "User List", path: "userlist" },
     { icon: <GrGroup />, label: "Team Distribution", path: "teamtistribution" },
 
-{ icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" }
-
+    { icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" },
   ];
   return (
     <aside
-      className={`min-h-screen bg-background text-accent hover:text-accent border-r-1 border-gray-700 shadow-md shadow-black z-1  ${
-        isOpen ? "w-48 space-y-3 py-4 px-2" : "w-14 space-y-2 py-2 px-2"
-      } transition-all duration-400 ease-in-out flex flex-col justify-between`}
+      className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 shadow-md shadow-black ${
+        isOpen ? "w-48 space-y-3 px-2 py-4" : "w-14 space-y-2 px-2 py-2"
+      } flex flex-col justify-between transition-all duration-400 ease-in-out`}
     >
       {/* Logo & Toggle */}
       <div className="flex items-center justify-between p-2">
         <img
-          className={`${!isOpen ? "hidden" : "lg:w-28 md:w-20 w-26"}`}
+          className={`${!isOpen ? "hidden" : "w-26 md:w-20 lg:w-28"}`}
           src={
             theme === "light-mode"
               ? "/images/black_logo.png"
@@ -51,9 +63,9 @@ const SidebarStyle = () => {
         />
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
-            <IoMdArrowDropleftCircle className="text-xl cursor-pointer" />
+            <IoMdArrowDropleftCircle className="cursor-pointer text-xl" />
           ) : (
-            <IoMdArrowDroprightCircle className="text-[20px] cursor-pointer" />
+            <IoMdArrowDroprightCircle className="cursor-pointer text-[20px]" />
           )}
         </button>
       </div>
@@ -64,11 +76,9 @@ const SidebarStyle = () => {
           <Link
             to={item.path}
             key={index}
-            className={`group cursor-pointer relative p-2 flex items-center rounded-lg text-xl my-2 
-              ${
-                location.pathname === item.path ? "bg-primary" : "bg-background"
-              }
-              hover:bg-primary hover:text-white hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out transform`}
+            className={`group relative my-2 flex cursor-pointer items-center rounded-lg p-2 text-xl ${
+              location.pathname === item.path ? "bg-primary" : "bg-background"
+            } hover:bg-primary transform transition-all duration-300 ease-in-out hover:scale-105 hover:text-white hover:shadow-lg`}
           >
             <div className="flex items-center space-x-2">
               <span className="text-[18px]">{item.icon}</span>
@@ -78,7 +88,7 @@ const SidebarStyle = () => {
                 {item.label}
               </h2>
               {!isOpen && (
-                <span className="absolute left-12 bg-primary text-white text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
+                <span className="bg-primary absolute left-12 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
                   {item.label}
                 </span>
               )}
@@ -91,17 +101,17 @@ const SidebarStyle = () => {
       <ToggleDarkAndLight isOpen={isOpen} />
 
       {/* User Info */}
-      <div className="flex items-center space-x-4 mt-auto">
+      <div className="mt-auto flex items-center space-x-4">
         <div className="group relative flex items-center">
           <img
             src="/user_profile.png"
             className={`${
               isOpen ? "w-11" : "w-11"
-            } rounded-full border-1 border-primary`}
+            } border-primary rounded-full border-1`}
             alt="user"
           />
           {!isOpen && (
-            <span className="absolute left-14 bg-primary text-accent text-sm px-2 py-2 rounded-sm opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-300 whitespace-nowrap">
+            <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
               User Profile
             </span>
           )}

@@ -3,28 +3,29 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayOut from "../MainLayOut";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-
-import DashboardLayout from '../DashboardLayout';
-import Performance from '../layouts/DashBoard/UserDashBoard/Performance';
-import Projects from '../layouts/DashBoard/UserDashBoard/Projects';
-import TodayTask from '../layouts/DashBoard/UserDashBoard/TodayTask';
-import UserListPage from '../layouts/DashBoard/UserDashBoard/userListpage/UserListPage';
-import UserDetails from '../layouts/DashBoard/userDetails/UserDetails';
-import BestContributors from '../pages/bestContributor/BestContributors';
-import ChartView from '../layouts/DashBoard/UserDashBoard/chart/ChartView';
-import RegisterForm from '../pages/Auth/RegisterForm';
-import LoginForm from '../pages/Auth/LoginForm';
-import RegisterView from '../pages/auth/RegisterView';
-import ProjectsDetails from '../layouts/DashBoard/ProjectgsDetails/ProjectsDetails';
-import BestContributorsfrom from '../components/common/BestContributorsfrom/BestContributorsfrom';
-import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
-import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
+import LoginForm from "../pages/Auth/LoginForm";
+import RegisterForm from "../pages/Auth/RegisterForm";
+import RegisterView from "../pages/Auth/RegisterView";
+import BestContributors from "../pages/bestContributor/BestContributors";
+import DashboardLayout from "../DashboardLayout";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
 const Home = lazy(() => import("../pages/Home/Home"));
 
 const Contact = lazy(() => import("../pages/Contact/Contact"));
+import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
+import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
+import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import BestContributorsForm from "../FormTesting/FinalForm";
+import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
+import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -77,29 +78,28 @@ const AppRoutes = createBrowserRouter([
       },
 
       {
+        path: "projects",
+        element: <Projects />,
+      },
+      {
         path: "all-projects",
         element: <AllProjects />,
       },
       {
-        path: "projects",
-        element: <Projects />,
-      },
-
-      {
         path: "projectsdetails",
-        element: <ProjectsDetails></ProjectsDetails>,
+        element: <ProjectsDetails />,
       },
 
       {
         path: "todaytask",
-        element: <TodayTask />,
+        element: <SalesProject />,
       },
       {
         path: "performance",
         element: <Performance />,
       },
       {
-        path: 'bestcontributor',
+        path: "bestcontributor",
         element: <BestContributors />,
       },
 
@@ -107,21 +107,33 @@ const AppRoutes = createBrowserRouter([
         path: "userlist",
         element: <UserListPage />,
       },
-      
+
       {
-        path: 'bestcontributors',
-        element: <BestContributorsfrom/>,
+        path: "operation",
+        element: <OperationPage />,
+      },
+      {
+        path: "teamperformance",
+        element: <TeamPerformancePage />,
+      },
+      {
+        path: "userdetails/:id", // <-- :id is dynamic
+        element: <UserDetails />,
+      },
+      {
+        path: "bestcontributors",
+        element: <BestContributorsForm />,
       },
 
       {
-        path: 'teamtistribution',
-        element: <TeamDistribution/>,
+        path: "teamtistribution",
+        element: <TeamDistribution />,
       },
 
       {
-  path: 'userdetails/:id', // <-- :id is dynamic
-  element: <UserDetails />,
-},
+        path: "userdetails/:id", // <-- :id is dynamic
+        element: <UserDetails />,
+      },
     ],
   },
 ]);
