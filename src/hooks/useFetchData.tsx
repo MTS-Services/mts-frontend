@@ -1,14 +1,16 @@
+// useFetchData.js
 import axios from "axios";
-import { use } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const cache = {};
 
 export function useFetchData(url, method = "GET", body = null) {
-  async function fetchData(retries = 3) {
-    if (cache[url]) {
-      return cache[url];
-    }
+  const [data, setData] = useState(null);
+  const [version, setVersion] = useState(0); // trigger for reload
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
       const options = {
         method,
@@ -18,18 +20,19 @@ export function useFetchData(url, method = "GET", body = null) {
 
       const response = await axios(url, options);
       cache[url] = response.data;
-      return response.data;
+      setData(response.data);
     } catch (error) {
-      if (retries > 0) {
-        console.warn(`Retrying... attempts left: ${retries}`);
-        return await fetchData(retries - 1);
-      } else {
-        console.error("API error after retries:", error);
-        throw error;
-      }
+      console.error("API error:", error);
+    } finally {
+      setLoading(false);
     }
-  }
+  }, [url, method, body]);
 
-  const data = use(fetchData());
-  return data;
+  useEffect(() => {
+    fetchData();
+  }, [fetchData, version]);
+
+  const refetch = () => setVersion((v) => v + 1);
+
+  return { data, loading, refetch };
 }

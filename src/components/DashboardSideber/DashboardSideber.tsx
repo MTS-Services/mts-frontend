@@ -1,18 +1,18 @@
-import { Outlet } from 'react-router-dom';
-import SidebarStyle from './SidebarStyle'; // Sidebar component
+import { Outlet } from "react-router-dom";
+import SidebarStyle from "./SidebarStyle"; // Sidebar component
 
-const  DashboardLayout = () => {
+const DashboardLayout = () => {
   return (
-    <div className='flex min-h-screen bg-gray-900 text-white'>
+    <div className="flex w-full bg-gray-900 text-white">
       {/* Sidebar */}
       <SidebarStyle />
 
       {/* Main Content Area */}
-      <div className='flex-1 flex flex-col'>
+      <div className="flex flex-1 flex-col flex-wrap">
         {/* Topbar */}
 
         {/* Content Outlet */}
-        <main className='flex-1 overflow-y-auto p-6 bg-background'>
+        <main className="bg-background flex-1 p-6">
           <Outlet />
         </main>
       </div>
