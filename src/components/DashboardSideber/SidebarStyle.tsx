@@ -5,8 +5,10 @@ import {
   FaTasks,
   FaUser,
   FaChartLine,
+  FaMedal,
 } from "react-icons/fa";
 import { GiTeamUpgrade } from "react-icons/gi";
+
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
@@ -14,6 +16,8 @@ import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
+import { GrGroup } from "react-icons/gr";
+
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 import { SlSettings } from "react-icons/sl";
 
@@ -34,7 +38,11 @@ const SidebarStyle = () => {
       path: "teamperformance",
     },
     { icon: <SlSettings />, label: "Operation", path: "operation" },
+
     { icon: <FaUser />, label: "User List", path: "userlist" },
+    { icon: <GrGroup />, label: "Team Distribution", path: "teamtistribution" },
+
+    { icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" },
   ];
   return (
     <aside

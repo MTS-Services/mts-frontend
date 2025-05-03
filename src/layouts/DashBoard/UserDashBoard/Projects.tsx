@@ -409,6 +409,16 @@ const Projects = () => {
                     )}
                   </td>
                   {/* Actioin   buttone  */}
+
+<Link
+  to="/dashboard/projectsdetails"
+  className=" px-3 py-2 text-white rounded-lg shadow-md hover:scale-105 m-auto"
+>
+  Details
+</Link>
+
+
+
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (
                       // <button
