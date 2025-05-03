@@ -20,6 +20,23 @@ const ProjectsUploadForm = () => {
     profile: "",
   });
 
+  const profileStatusOptions = [
+    { value: "active", label: "Active" },
+    { value: "inactive", label: "Inactive" },
+    { value: "revision", label: "Revision" },
+    { value: "inProgress", label: "In Progress" },
+    { value: "deliveryCompleted", label: "Delivery Completed" },
+  ];
+
+  const operationStatusOptions = [
+    { value: "wip", label: "Wip" },
+    { value: "delivered", label: "Delivered" },
+    { value: "submitted", label: "Submitted" },
+    { value: "clientUpdate", label: "Client Update" },
+    { value: "Revision", label: "Revision" },
+    { value: "cancel ", label: "Cancel " },
+  ];
+
   const [showForm, setShowForm] = useState(false);
 
   const handleChange = (e) => {
@@ -107,14 +124,21 @@ const ProjectsUploadForm = () => {
               className="w-full rounded border border-gray-300 p-2"
             />
 
-            <input
-              type="text"
+            <select
               name="ops_status"
               value={formData.ops_status}
               onChange={handleChange}
-              placeholder="Operation Status"
-              className="w-full rounded border border-gray-300 p-2"
-            />
+              className="focus:bg-primary w-full rounded border border-gray-300 p-2 px-2 py-1 focus:p-0.5"
+            >
+              <option value="">Select Operation Status</option>
+              {operationStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+
+            {/*  */}
 
             <input
               type="text"
@@ -160,14 +184,19 @@ const ProjectsUploadForm = () => {
               className="w-full rounded border border-gray-300 p-2"
             />
 
-            <input
-              type="text"
+            <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              placeholder="Profile Status"
-              className="w-full rounded border border-gray-300 p-2"
-            />
+              className="focus:bg-primary w-full rounded border border-gray-300 p-2 px-2 py-1 focus:p-0.5"
+            >
+              <option value="">Select Profile Status</option>
+              {profileStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
 
             <input
               type="number"
@@ -227,7 +256,7 @@ const ProjectsUploadForm = () => {
           <div className="flex gap-4">
             {/* <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Submit
             </button> */}

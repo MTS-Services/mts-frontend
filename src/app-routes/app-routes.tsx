@@ -5,8 +5,8 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 import DashboardLayout from "../DashboardLayout";
+import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
@@ -17,6 +17,8 @@ import LoginForm from "../pages/Auth/LoginForm";
 import RegisterView from "../pages/auth/RegisterView";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/operationPage";
 import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
+import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -73,10 +75,20 @@ const AppRoutes = createBrowserRouter([
         path: "/dashboard",
         element: <ChartView />,
       },
+
       {
         path: "projects",
         element: <Projects />,
       },
+      {
+        path: "all-projects",
+        element: <AllProjects />,
+      },
+      {
+        path: "projectsdetails",
+        element: <ProjectsDetails></ProjectsDetails>,
+      },
+
       {
         path: "todaytask",
         element: <TodayTask />,
