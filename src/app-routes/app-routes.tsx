@@ -16,6 +16,7 @@ import RegisterForm from "../pages/Auth/RegisterForm";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterView from "../pages/auth/RegisterView";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/operationPage";
+import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -92,6 +93,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "operation",
         element: <OperationPage />,
+      },
+      {
+        path: "teamperformance",
+        element: <TeamPerformancePage />,
       },
       {
         path: "userdetails/:id", // <-- :id is dynamic

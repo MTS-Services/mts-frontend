@@ -6,6 +6,7 @@ import {
   FaUser,
   FaChartLine,
 } from "react-icons/fa";
+import { GiTeamUpgrade } from "react-icons/gi";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import { useTheme } from "../../context/ThemeContext";
@@ -27,6 +28,11 @@ const SidebarStyle = () => {
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    {
+      icon: <GiTeamUpgrade />,
+      label: "Team Performance",
+      path: "teamperformance",
+    },
     { icon: <SlSettings />, label: "Operation", path: "operation" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
   ];
