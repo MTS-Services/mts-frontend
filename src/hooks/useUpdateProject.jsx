@@ -16,9 +16,10 @@ export const useUpdateProject = () => {
     setSuccess(false);
     try {
       const response = await axios.put(
-        `http://192.168.10.47:3000/api/project/${parseInt(projectId)}`,
+        `https://mtsbackend20-production.up.railway.app/api/project/${parseInt(projectId)}`,
         data,
       );
+      console.log(data);
 
       if (!(data.opsleader_comments || data.sales_comments)) {
         setSuccess(true);

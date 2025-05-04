@@ -61,7 +61,7 @@ const Projects = () => {
   ];
 
   useEffect(() => {
-    const socket = io("http://192.168.10.47:3000");
+    const socket = io("https://mtsbackend20-production.up.railway.app/");
 
     socket.on("projectUpdated", (project) => {
       console.log("Project updated:", project);
@@ -96,11 +96,14 @@ const Projects = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.10.47:3000/api/project", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ page: "1", limit: "100" }),
-        });
+        const response = await fetch(
+          "https://mtsbackend20-production.up.railway.app/api/project",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ page: "1", limit: "100" }),
+          },
+        );
 
         const data = await response.json();
         console.log("Response:", data.projects);
@@ -206,7 +209,7 @@ const Projects = () => {
       };
 
       const response = await fetch(
-        `http://192.168.10.47:3000/api/project/${id}`,
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -239,13 +242,16 @@ const Projects = () => {
         ),
       );
 
-      await fetch(`http://192.168.10.47:3000/api/project/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ops_status: newStatus }),
         },
-        body: JSON.stringify({ ops_status: newStatus }),
-      });
+      );
 
       toast.success("Operation Status updated successfully.");
     } catch (error) {
@@ -262,13 +268,16 @@ const Projects = () => {
         ),
       );
 
-      await fetch(`http://192.168.10.47:3000/api/project/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
         },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      );
 
       toast.success("Profile Status updated successfully.");
     } catch (error) {

@@ -1,11 +1,10 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 
-
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserInformation = () => {
   const { id } = useParams();
@@ -18,7 +17,9 @@ const UserInformation = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(`http://192.168.10.47:3000/api/teamMember/${id}`);
+        const res = await axios.get(
+          `https://mtsbackend20-production.up.railway.app/api/teamMember/${id}`,
+        );
         const fetchedUser = res.data.teamMember;
 
         const userData = {
@@ -39,7 +40,7 @@ const UserInformation = () => {
           religion: fetchedUser.religion || "",
           department_name: fetchedUser?.team?.department?.department_name || "",
           role: fetchedUser.role || "N/A",
-          
+
           status: fetchedUser.status || "Active",
           joined: fetchedUser.joining_date || "N/A",
           last_login: fetchedUser.last_login || "N/A",
@@ -65,11 +66,21 @@ const UserInformation = () => {
   const handleSave = async () => {
     try {
       const allowedFields = [
-        "first_name", "last_name", "email", "number",
-        "permanent_address", "present_address", "gender",
-        "blood_group", "relationship", "education", "guardian_relation",
-        "guardian_number", "guardian_address", "religion",
-        "role"
+        "first_name",
+        "last_name",
+        "email",
+        "number",
+        "permanent_address",
+        "present_address",
+        "gender",
+        "blood_group",
+        "relationship",
+        "education",
+        "guardian_relation",
+        "guardian_number",
+        "guardian_address",
+        "religion",
+        "role",
       ];
 
       const filteredData = {};
@@ -79,21 +90,22 @@ const UserInformation = () => {
         }
       }
 
-      const response = await fetch(`http://192.168.10.47:3000/api/teamMember/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(filteredData),
-      });
+      const response = await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/teamMember/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(filteredData),
+        },
+      );
 
       if (response.ok) {
-  setUser({ ...user, ...filteredData });
-  setIsEditing(false);
-  toast.success("User information updated successfully!");
-} else {
-  toast.error("Failed to update user information. Please try again.");
-}
-
-
+        setUser({ ...user, ...filteredData });
+        setIsEditing(false);
+        toast.success("User information updated successfully!");
+      } else {
+        toast.error("Failed to update user information. Please try again.");
+      }
     } catch (error) {
       console.error("Save error", error);
       setMessage("An error occurred while saving the data. Please try again.");
@@ -101,22 +113,26 @@ const UserInformation = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-10 text-xl text-accent"><Loading /></div>;
+    return (
+      <div className="text-accent mt-10 text-center text-xl">
+        <Loading />
+      </div>
+    );
   }
 
   if (!user) {
-    return <div className="text-center mt-10 text-red-500">Data not found</div>;
+    return <div className="mt-10 text-center text-red-500">Data not found</div>;
   }
 
   const Info = ({ label, field, value, editable = false, onChange }) => (
-    <p className="text-base font-light text-accent mb-2 pr-1 font-secondary border-b pb-1 border-accent/20 flex items-center">
+    <p className="text-accent font-secondary border-accent/20 mb-2 flex items-center border-b pr-1 pb-1 text-base font-light">
       <strong className="pr-1">{label}:</strong>
       {editable ? (
         <input
           type="text"
           value={editedUser[field] || ""}
           onChange={(e) => onChange(field, e.target.value)}
-          className="border p-1 rounded-md"
+          className="rounded-md border p-1"
         />
       ) : (
         value
@@ -125,12 +141,12 @@ const UserInformation = () => {
   );
 
   return (
-    <section className="lg:py-12 py-8">
-      <div className="max-w-6xl mx-auto bg-card p-8 rounded-xl shadow-md shadow-primary">
-        <div className="flex items-center justify-between flex-wrap">
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+    <section className="py-8 lg:py-12">
+      <div className="bg-card shadow-primary mx-auto max-w-6xl rounded-xl p-8 shadow-md">
+        <div className="flex flex-wrap items-center justify-between">
+          <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row">
             <img
-              className="w-20 h-20 shadow-box-style rounded-full"
+              className="shadow-box-style h-20 w-20 rounded-full"
               src={user.dp || "/assits/Rewardspage/profileImg.jpg"}
               alt="avatar"
               onError={(e) => {
@@ -139,24 +155,26 @@ const UserInformation = () => {
               }}
             />
             <div>
-              <h2 className="md:text-2xl text-xl font-primary text-primary text-shadow-md">
+              <h2 className="font-primary text-primary text-xl text-shadow-md md:text-2xl">
                 {user.first_name} <span>{user.last_name}</span>
               </h2>
-              <p className="text-accent text-sm capitalize font-secondary">{user.role}</p>
+              <p className="text-accent font-secondary text-sm capitalize">
+                {user.role}
+              </p>
             </div>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="py-2 px-6 text-background text-base font-bold rounded-full bg-primary shadow-md hover:scale-105 transition-all"
+              className="text-background bg-primary rounded-full px-6 py-2 text-base font-bold shadow-md transition-all hover:scale-105"
             >
               {isEditing ? "Cancel" : "Edit User Info"}
             </button>
             {isEditing && (
               <button
                 onClick={handleSave}
-                className="py-2 px-6 text-background text-base font-bold rounded-full bg-primary shadow-md hover:scale-105 transition-all"
+                className="text-background bg-primary rounded-full px-6 py-2 text-base font-bold shadow-md transition-all hover:scale-105"
               >
                 Save Changes
               </button>
@@ -165,21 +183,29 @@ const UserInformation = () => {
         </div>
 
         {message && (
-          <div className={`text-center mt-4 ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
+          <div
+            className={`mt-4 text-center ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}
+          >
             {message}
           </div>
         )}
 
-
-
-
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-8">
+        <div className="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3">
           <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="font-primary border-accent/40 text-primary mb-4 border-b pb-1 text-2xl text-shadow-md">
               Personal Info
             </h3>
-            {["Email", "Number", "Present Address", "Permanent Address", "Gender", "Blood Group", "relationship", "Education", "Religion"].map((label) => (
+            {[
+              "Email",
+              "Number",
+              "Present Address",
+              "Permanent Address",
+              "Gender",
+              "Blood Group",
+              "relationship",
+              "Education",
+              "Religion",
+            ].map((label) => (
               <Info
                 key={label}
                 label={label}
@@ -192,35 +218,51 @@ const UserInformation = () => {
           </div>
 
           <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="font-primary border-accent/40 text-primary mb-4 border-b pb-1 text-2xl text-shadow-md">
               Work Details
             </h3>
-            {["Department_name", "Role", "Location", "Manager", "Status", "Joined", "Last Login", "Access Level"].map((label) => (
+            {[
+              "Department_name",
+              "Role",
+              "Location",
+              "Manager",
+              "Status",
+              "Joined",
+              "Last Login",
+              "Access Level",
+            ].map((label) => (
               <Info
                 key={label}
                 label={label}
                 field={label.toLowerCase().replace(/ /g, "_")}
                 value={user[label.toLowerCase().replace(/ /g, "_")]}
-                editable={isEditing && label !== "Department_name" && label !== "Joined" && label !== "Last Login"}
+                editable={
+                  isEditing &&
+                  label !== "Department_name" &&
+                  label !== "Joined" &&
+                  label !== "Last Login"
+                }
                 onChange={handleInputChange}
               />
             ))}
           </div>
 
           <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4">
+            <h3 className="font-primary border-accent/40 text-primary mb-4 border-b pb-1 text-2xl text-shadow-md">
               Guardian Info
             </h3>
-            {["Guardian Relation", "Guardian Number", "Guardian Address"].map((label) => (
-              <Info
-                key={label}
-                label={label}
-                field={label.toLowerCase().replace(/ /g, "_")}
-                value={user[label.toLowerCase().replace(/ /g, "_")]}
-                editable={isEditing}
-                onChange={handleInputChange}
-              />
-            ))}
+            {["Guardian Relation", "Guardian Number", "Guardian Address"].map(
+              (label) => (
+                <Info
+                  key={label}
+                  label={label}
+                  field={label.toLowerCase().replace(/ /g, "_")}
+                  value={user[label.toLowerCase().replace(/ /g, "_")]}
+                  editable={isEditing}
+                  onChange={handleInputChange}
+                />
+              ),
+            )}
           </div>
         </div>
       </div>

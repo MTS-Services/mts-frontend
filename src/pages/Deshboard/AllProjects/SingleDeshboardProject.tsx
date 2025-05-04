@@ -3,11 +3,13 @@ import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useSocket } from "../../../context/SocketContext";
+import { useTheme } from "../../../context/ThemeContext";
 import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
 
 function SingleDeshboardProject({ item, refetch }) {
+  const { theme } = useTheme();
   const { days, hours } = useCurrentTime(item.deli_last_date);
 
   const [date, setDate] = useState(item.deli_last_date);
@@ -131,7 +133,9 @@ function SingleDeshboardProject({ item, refetch }) {
   };
 
   return (
-    <tr className="odd:bg-primary text-accent even:bg-primary/20">
+    <tr
+      className={`${theme == "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`}
+    >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.clientName}</p>
         <p className="p-2"># {item.id}</p>
@@ -212,7 +216,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <div className="p-2">
           {show ? (
             <div className="w-full" onClick={() => setShow(false)}>
-              <div className="text-accent flex cursor-pointer items-center justify-between">
+              <div className="flex cursor-pointer items-center justify-between">
                 {date}
                 <FiCalendar className="h-5 w-5" />
               </div>
