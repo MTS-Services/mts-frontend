@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /**
  * Custom hook to update a project by ID.
@@ -28,6 +29,7 @@ export const useUpdateProject = () => {
       console.log("Update success:", response.data);
     } catch (err) {
       console.error("Update failed:", err);
+      toast.warning("Erro: Check console");
       setError(err);
     } finally {
       setLoading(false);

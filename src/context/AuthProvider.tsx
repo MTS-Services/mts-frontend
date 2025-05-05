@@ -16,6 +16,7 @@ const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const createUser = (email, password) => {
@@ -30,6 +31,7 @@ const AuthProvider = ({ children }) => {
 
   const logOutUser = () => {
     setIsLoading(true);
+
     return signOut(auth);
   };
 
@@ -46,8 +48,12 @@ const AuthProvider = ({ children }) => {
       //       localStorage.removeItem("access-token");
       //     }
       //   });
+
+      //   const res = await axios.get(`/api/get-user-role?email=${currentUser.email}`);
+      //   setRole(res.data.role);
       // } else {
       //   localStorage.removeItem("access-token");
+      //   setRole(null)
       // }
 
       setIsLoading(false);
@@ -59,6 +65,7 @@ const AuthProvider = ({ children }) => {
   const authInfo = {
     user,
     setIsLoading,
+    role,
     isLoading,
     createUser,
     signInUser,

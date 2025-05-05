@@ -214,7 +214,9 @@ function AllProjects() {
               <button className="cursor-pointer px-2">Add New Project</button>
             </div>
 
-            {showModal && <AddProjectForm setShowModal={setShowModal} />}
+            {showModal && (
+              <AddProjectForm setShowModal={setShowModal} refetch={refetch} />
+            )}
 
             <div className="border-border-color bg-secondary flex items-center justify-between gap-3 rounded border-2 p-2 duration-150 hover:scale-95">
               <div className="border-border-color/30 flex items-center rounded border bg-white px-2 py-1">

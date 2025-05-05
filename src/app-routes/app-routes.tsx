@@ -13,6 +13,7 @@ import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import LoginForm from "../pages/Auth/LoginForm";
+import PrivateRoute from "../pages/Auth/PrivateRoute";
 import RegisterForm from "../pages/Auth/RegisterForm";
 import RegisterView from "../pages/auth/RegisterView";
 import BestContributors from "../pages/bestContributor/BestContributors";
@@ -76,7 +77,11 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "projects",
-        element: <AllProjects />,
+        element: (
+          <PrivateRoute>
+            <AllProjects />
+          </PrivateRoute>
+        ),
       },
       {
         path: "projects-old",

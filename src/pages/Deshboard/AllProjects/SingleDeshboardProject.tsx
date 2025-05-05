@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import { toast } from "react-toastify";
-import { useSocket } from "../../../context/SocketContext";
 import { useTheme } from "../../../context/ThemeContext";
 import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
@@ -11,7 +10,6 @@ import { useUpdateProject } from "../../../hooks/useUpdateProject";
 function SingleDeshboardProject({ item, refetch }) {
   const { theme } = useTheme();
   const { days, hours } = useCurrentTime(item.deli_last_date);
-
   const [date, setDate] = useState(item.deli_last_date);
   const [extension, setExtension] = useState(item.extension ?? 0);
   const [show, setShow] = useState(true);
@@ -19,6 +17,7 @@ function SingleDeshboardProject({ item, refetch }) {
   const [operationComment, setOperationComment] = useState(
     item.opsleader_comments ?? "",
   );
+
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
     item.department_id,
   );
@@ -29,7 +28,6 @@ function SingleDeshboardProject({ item, refetch }) {
   const [sastatus, setSastatus] = useState(item.status ?? "nra");
   const [revision, setRevision] = useState(item.revision ?? 0);
 
-  const socket = useSocket();
   const dateInputRef = useRef(null);
   const { updateProject, error, success } = useUpdateProject();
 
@@ -48,7 +46,6 @@ function SingleDeshboardProject({ item, refetch }) {
   };
 
   const { departments, teams, profiles, salesteams } = useSocketData(
-    socket,
     selectedDepartmentId,
     selectedTeamId,
     item,

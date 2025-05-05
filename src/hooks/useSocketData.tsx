@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useSocket } from "../context/SocketContext";
 import { useSocketFetcher } from "./useSocketFetcher";
 
 export const useSocketData = (
-  socket,
+  Socket,
   departmentId,
   teamId,
   projectItem,
   setProjectStates,
 ) => {
+  const socket = useSocket();
   const departments = useSocketFetcher(
     socket,
     "getDepartmentNames",

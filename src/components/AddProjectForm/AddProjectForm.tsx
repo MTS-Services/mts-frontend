@@ -1,8 +1,46 @@
-function AddProjectForm({ setShowModal }) {
-  const handleSubmit = (e) => {
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { useSocket } from "../../context/SocketContext.js";
+import {
+  useDepartmentNames,
+  useProfileNames,
+  useSalesMembers,
+} from "../../hooks/useSocketDataUtils.js";
+
+function AddProjectForm({ setShowModal, refetch }) {
+  const socket = useSocket();
+  const departments = useDepartmentNames(socket);
+  const profiles = useProfileNames(socket);
+  const sales = useSalesMembers(socket);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // handle form submit here
-    setShowModal(false);
+    const form = new FormData(e.target);
+    const data = Object.fromEntries(form.entries());
+    try {
+      const token = Cookies.get("core");
+
+      const res = await axios.post(
+        "https://mtsbackend20-production.up.railway.app/api/project/create",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (res.status === 200 || res.status === 201) {
+        toast.success("Project added successfully");
+        refetch?.(); // refetch only if provided
+        setShowModal(false);
+      }
+    } catch (error) {
+      toast.error("Failed to add project");
+      console.error(error);
+    }
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -54,9 +92,11 @@ function AddProjectForm({ setShowModal }) {
             className="border-primary w-full rounded border-2 px-3 py-2 text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Select Department</option>
-            <option value="Design">Design</option>
-            <option value="Development">Development</option>
-            <option value="Marketing">Marketing</option>
+            {departments?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.department_name}
+              </option>
+            ))}
             {/* ডায়নামিক ডেটা চাইলে এখানে map করতে পারো */}
           </select>
 
@@ -66,9 +106,12 @@ function AddProjectForm({ setShowModal }) {
             className="border-primary w-full rounded border-2 px-3 py-2 text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Select Profile</option>
-            <option value="Fiverr">Fiverr</option>
-            <option value="Upwork">Upwork</option>
-            <option value="LinkedIn">LinkedIn</option>
+            {profiles?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.profile_name}
+              </option>
+            ))}
+
             {/* ডায়নামিক ডেটা চাইলে এখানে map করতে পারো */}
           </select>
 
@@ -78,9 +121,11 @@ function AddProjectForm({ setShowModal }) {
             className="border-primary w-full rounded border-2 px-3 py-2 text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             <option value="">Select Ordered By</option>
-            <option value="Munshi">Munshi</option>
-            <option value="Kamrul">Kamrul</option>
-            <option value="Sanny">Sanny</option>
+            {sales?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item?.name}
+              </option>
+            ))}
             {/* ডায়নামিক ডেটা চাইলে এখানে map করতে পারো */}
           </select>
 

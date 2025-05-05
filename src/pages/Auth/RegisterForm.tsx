@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { FaUserCircle } from "react-icons/fa";
@@ -8,17 +9,38 @@ import "react-toastify/dist/ReactToastify.css";
 import Breadcrumb from "../../components/common/breadcrumb";
 import Loading from "../../components/Loading/Loading";
 import { AuthContext } from "../../context/AuthProvider";
+import { useSocket } from "../../context/SocketContext";
+import { useDepartmentNames } from "../../hooks/useSocketDataUtils";
 
-const GENDER_OPTIONS = ["Male", "Female", "Other"];
-const BLOOD_GROUP_OPTIONS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-const RELATIONSHIP_OPTIONS = ["Single", "Married", "Divorced", "Widowed"];
-const DEPARTMENT_OPTIONS = ["IT", "HR", "Finance", "Marketing"];
+const GENDER_OPTIONS = [
+  { id: 1, label: "Male" },
+  { id: 2, label: "Female" },
+];
+
+const BLOOD_GROUP_OPTIONS = [
+  { id: 1, label: "A+" },
+  { id: 2, label: "A-" },
+  { id: 3, label: "B+" },
+  { id: 4, label: "B-" },
+  { id: 5, label: "AB+" },
+  { id: 6, label: "AB-" },
+  { id: 7, label: "O+" },
+  { id: 8, label: "O-" },
+];
+
+const RELATIONSHIP_OPTIONS = [
+  { id: 1, label: "Single" },
+  { id: 2, label: "Married" },
+  { id: 3, label: "Divorced" },
+  { id: 4, label: "Widowed" },
+];
+
 const RELIGION_OPTIONS = [
-  "Christianity",
-  "Islam",
-  "Hinduism",
-  "Buddhism",
-  "Other",
+  { id: 1, label: "Christianity" },
+  { id: 2, label: "Islam" },
+  { id: 3, label: "Hinduism" },
+  { id: 4, label: "Buddhism" },
+  { id: 5, label: "Other" },
 ];
 
 const FormField: React.FC<{
@@ -37,12 +59,11 @@ const FormField: React.FC<{
           {...register(id)}
           name={id}
           className="peer border-accent focus:border-primary w-full rounded-xl border-b bg-transparent text-gray-500 placeholder-transparent focus:outline-none"
-          required
         >
           <option value="">Select {label}</option>
-          {options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {options?.map((option, index) => (
+            <option key={(option, index)} value={option?.id}>
+              {option?.department_name || option?.label}
             </option>
           ))}
         </select>
@@ -54,7 +75,6 @@ const FormField: React.FC<{
           type={type}
           placeholder={label}
           className="peer border-accent text-accent focus:border-primary w-full rounded-xl border-b bg-transparent px-2 py-2 pl-2 placeholder-transparent focus:outline-none"
-          required
         />
       )}
       <label
@@ -72,6 +92,8 @@ const RegisterForm: React.FC = () => {
   const { register, handleSubmit } = useForm();
   const [profileImage, setProfileImage] = React.useState<File | null>(null);
   const navigate = useNavigate();
+  const socket = useSocket();
+  const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -118,9 +140,16 @@ const RegisterForm: React.FC = () => {
 
         if (res.status === 200 || res.status === 201) {
           toast.success("Registration successful! Please login.");
+          if (res.data.token) {
+            console.log(res, res.data, res.data.token);
+            Cookies.set("core", res.data.token, { expires: 1 }); // 1 day
+          } else {
+            Cookies.remove("core");
+          }
           navigate("/dashboard/projects");
         } else {
           toast.error("Something went wrong. Please try again.");
+          Cookies.remove("core");
         }
       }
     } catch (err) {
