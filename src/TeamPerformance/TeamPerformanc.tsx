@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 
-const Performance = () => {
+const TeamPerformance = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedQuater, setSelectedQuater] = useState("");
-  const [tableData, setTableData] = useState([]);
+  interface TableRow {
+    clientName: string;
+    after_fiverr_amount?: number;
+    status?: string;
+    bonus?: number;
+  }
+
+  const [tableData, setTableData] = useState<TableRow[]>([]);
 
   const lastQuarter = [
-    { title: "Individual target", amount: "$3000", note: "mr" },
+    { title: "Target", amount: "$3000", note: "mr" },
     { title: "Achieve", amount: "$2000", note: "mr" },
     { title: "+/-", amount: "2", note: "mr" },
   ];
@@ -19,13 +26,7 @@ const Performance = () => {
     { title: "Achieve", amount: "$2000", note: "mr" },
   ];
 
-  const tableHeaders = [
-    "Client Name",
-    "Project Price",
-    "Achive price",
-    "Leader comment",
-    "Your comments",
-  ];
+  const tableHeaders = ["Member Name", "Target", "Achive price", "+/-"];
 
   const monthName = [
     "January",
@@ -159,7 +160,7 @@ const Performance = () => {
 
       <div>
         <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="mb-5 text-4xl text-white">Monthly Destribution</h2>
+          <h2 className="mb-5 text-4xl text-white">Member Performance</h2>
           <select
             className="bg-background rounded px-4 py-1 text-white outline-none"
             value={selectedMonth}
@@ -234,4 +235,4 @@ const Performance = () => {
   );
 };
 
-export default Performance;
+export default TeamPerformance;
