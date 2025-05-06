@@ -1,31 +1,32 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import DashboardLayout from "../DashboardLayout";
+import BestContributorsForm from "../FormTesting/FinalForm";
+import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
+import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
+import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
+import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
+import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
+import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
+import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
+import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import MainLayOut from "../MainLayOut";
-import ErrorPage from "../pages/ErrorPage/ErrorPage";
-import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
-import RegisterView from "../pages/Auth/RegisterView";
+import RegisterView from "../pages/auth/RegisterView";
+import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
-import DashboardLayout from "../DashboardLayout";
+import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
 const Home = lazy(() => import("../pages/Home/Home"));
 
 const Contact = lazy(() => import("../pages/Contact/Contact"));
-import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
-import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
-import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
-import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
-import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
-import BestContributorsForm from "../FormTesting/FinalForm";
-import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
-import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -79,12 +80,23 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "projects",
-        element: <Projects />,
+        element: (
+          <RoleProtectedRoute
+            allowedRoles={[
+              "sales_member",
+              "operation_member",
+              "operation_leader",
+            ]}
+          >
+            <AllProjects />
+          </RoleProtectedRoute>
+        ),
       },
       {
-        path: "all-projects",
-        element: <AllProjects />,
+        path: "projects-old",
+        element: <Projects />,
       },
+
       {
         path: "projectsdetails",
         element: <ProjectsDetails />,

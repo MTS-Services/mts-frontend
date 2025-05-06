@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-import ProjectsUplodeForm from "./ProjectsUplodeForm";
-import Search from "../../../components/Search/Search";
-import SecondaryButton from "../../../components/Button/SecondaryButton";
 import ResetButton from "../../../components/Button/ResetButton";
+import SecondaryButton from "../../../components/Button/SecondaryButton";
+import Search from "../../../components/Search/Search";
+import ProjectsUplodeForm from "./ProjectsUplodeForm";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -45,8 +45,41 @@ const Projects = () => {
   ];
 
   useEffect(() => {
+    const socket = io("https://mtsbackend20-production.up.railway.app/");
+
+    socket.on("projectUpdated", (project) => {
+      console.log("Project updated:", project);
+      setTableData((prevData) =>
+        prevData.map((row) =>
+          row.id === project.id ? { ...row, ...project } : row,
+        ),
+      );
+    });
+
+    socket.on("projectCreated", (project) => {
+      if (!project) return;
+
+      // Flatten in case it's deeply nested
+      let fixedProject;
+
+      if (Array.isArray(project)) {
+        fixedProject = project.flat(Infinity)[0];
+        fixedProject = project;
+      }
+
+      if (typeof fixedProject !== "object" || fixedProject === null) return;
+
+      console.log("✅ Adding project:", fixedProject);
+
+      setTableData((prevData) => {
+        const updated = [...prevData, fixedProject];
+        console.log("📋 Updated table data:", updated);
+        return updated;
+      });
+    });
+
     const fetchData = async () => {
-      const socket = io("http://192.168.10.47:3000");
+      const socket = io("https://mtsbackend20-production.up.railway.app/");
 
       socket.on("projectUpdated", (project) => {
         console.log("Project updated:", project);
@@ -63,11 +96,14 @@ const Projects = () => {
       });
 
       try {
-        const response = await fetch("http://192.168.10.47:3000/api/project", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ page: "1", limit: "100" }),
-        });
+        const response = await fetch(
+          "https://mtsbackend20-production.up.railway.app/api/project",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ page: "1", limit: "100" }),
+          },
+        );
 
         const data = await response.json();
         if (Array.isArray(data?.projects)) {
@@ -156,7 +192,7 @@ const Projects = () => {
       };
 
       const response = await fetch(
-        `http://192.168.10.47:3000/api/project/${id}`,
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -179,6 +215,74 @@ const Projects = () => {
       console.error("Save error", error);
       toast.warning("Update Failed");
     }
+  };
+
+  const handleOpsStatusChange = async (newStatus, id) => {
+    try {
+      setTableData((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, ops_status: newStatus } : item,
+        ),
+      );
+
+      await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ops_status: newStatus }),
+        },
+      );
+
+      toast.success("Operation Status updated successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.warning("Failed to update Operation status:");
+    }
+  };
+
+  const handleStatusChange = async (newStatus, id) => {
+    try {
+      setTableData((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, status: newStatus } : item,
+        ),
+      );
+
+      await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        },
+      );
+
+      toast.success("Profile Status updated successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.warning("Failed to update Profile status.");
+    }
+  };
+
+  const isLastMonth = (dateStr) => {
+    if (!dateStr) return false;
+
+    const inputDate = new Date(dateStr);
+    const today = new Date();
+
+    // Check if date is **before** the first day of the current month
+    const firstOfCurrentMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1,
+    );
+
+    return inputDate < firstOfCurrentMonth;
   };
 
   return (
@@ -410,14 +514,12 @@ const Projects = () => {
                   </td>
                   {/* Actioin   buttone  */}
 
-<Link
-  to="/dashboard/projectsdetails"
-  className=" px-3 py-2 text-white rounded-lg shadow-md hover:scale-105 m-auto"
->
-  Details
-</Link>
-
-
+                  <Link
+                    to="/dashboard/projectsdetails"
+                    className="m-auto rounded-lg px-3 py-2 text-white shadow-md hover:scale-105"
+                  >
+                    Details
+                  </Link>
 
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import SecondaryButton from "../Button/SecondaryButton";
 import PrimaryButton from "./../Button/PrimaryButton";
@@ -41,7 +41,7 @@ const Search: React.FC = () => {
 
       try {
         const response = await fetch(
-          `http://192.168.10.47:3000/api/project/clientSuggestions/?query=${query}`,
+          `https://mtsbackend20-production.up.railway.app/api/project/clientSuggestions/?query=${query}`,
         );
         const data: ClientData = await response.json();
 
@@ -63,7 +63,7 @@ const Search: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.10.47:3000/api/project/byClient?clientName=${client}`,
+        `https://mtsbackend20-production.up.railway.app/api/project/byClient?clientName=${client}`,
       );
       const data = await response.json();
 
@@ -114,7 +114,7 @@ const Search: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.10.47:3000/api/project/updateRevision/${selectedProjectId}`,
+        `https://mtsbackend20-production.up.railway.app/api/project/updateRevision/${selectedProjectId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

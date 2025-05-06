@@ -60,7 +60,7 @@ const ProjectsUploadForm = () => {
 
     try {
       const response = await fetch(
-        "http://192.168.10.47:3000/api/project/create",
+        "https://mtsbackend20-production.up.railway.app/api/project/create",
         {
           method: "POST",
           headers: {
