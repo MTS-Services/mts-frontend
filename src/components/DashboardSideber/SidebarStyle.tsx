@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import {
@@ -13,6 +13,9 @@ import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 
 const SidebarStyle = () => {
   const { theme, toggleTheme } = useTheme();
+  const { dbUser } = useContext(AuthContext);
+
+  console.log("db: ", dbUser);
 
   const { logOutUser } = React.useContext(AuthContext);
   const navigate = useNavigate();
@@ -60,7 +63,7 @@ const SidebarStyle = () => {
       </div>
 
       {/* Sidebar Items */}
-      <nav>
+      <nav className="font-secondary">
         {sidebarItems.map((item, index) => (
           <Link
             to={item.path}
@@ -84,6 +87,19 @@ const SidebarStyle = () => {
             </div>
           </Link>
         ))}
+        <div className="border-primary text[4px] flex w-12 w-full flex-wrap gap-2 overflow-hidden border-1 p-2">
+          <p>
+            Role:
+            <br /> {dbUser?.role}
+          </p>
+          <br />
+          <p>
+            Email:
+            <br />
+            {dbUser?.email}
+          </p>
+          <br />
+        </div>
       </nav>
 
       {/* Light/Dark Toggle */}
@@ -93,7 +109,7 @@ const SidebarStyle = () => {
       <div className="mt-auto flex items-center space-x-4">
         <div className="group relative flex items-center">
           <img
-            src="/user_profile.png"
+            src={`${dbUser?.dp}`}
             className={`${
               isOpen ? "w-11" : "w-11"
             } border-primary rounded-full border-1`}
@@ -108,10 +124,12 @@ const SidebarStyle = () => {
         {isOpen && (
           <>
             <div className="text-start">
-              <h2 className="text-[14px]">Masud Rana</h2>
-              <h2 className="text-[10px]">Web Developer</h2>
+              <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+              <h2 className="font-secondary text-[10px]">{`${
+                dbUser?.designation || "Pending.."
+              }`}</h2>
             </div>
-            <div className="ml-auto">
+            <div className="hover:text-primary ml-auto cursor-pointer">
               <FiLogOut onClick={handleLogOut} className="text-[20px]" />
             </div>
           </>

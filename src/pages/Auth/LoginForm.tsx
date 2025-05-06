@@ -30,28 +30,35 @@ const LoginForm: React.FC = () => {
     const { email, password } = data;
 
     try {
-      const user = await signInUser(email, password);
+      const userCredential = await signInUser(email, password);
 
-      if (user) {
-        console.log(user.user.email);
-        toast.success("Login Successful");
+      if (userCredential?.user) {
         const res = await axios.post(
           "https://mtsbackend20-production.up.railway.app/api/teamMember/login",
-          {
-            email: user.user.email,
-          },
+          { email },
         );
 
         if (res.data.token) {
-          Cookies.set("core", res.data.token, { expires: 1 }); // 1 day
+          Cookies.set("core", res.data.token, { expires: 1 });
+          toast.success("Login Successful");
+
+          const role = res.data?.teamMember?.role;
+
+          // 🔁 Redirect based on role
+          if (role === "sales_member") {
+            navigate("/dashboard/projects");
+          } else if (role === "operation_member") {
+            navigate("/dashboard/");
+          } else {
+            navigate("/"); // default
+          }
         } else {
-          Cookies.remove("core");
+          toast.error("Login failed. No token returned.");
         }
-        navigate("/dashboard");
       }
     } catch (err) {
       toast.error("Login Failed");
-      console.log(err);
+      console.error(err);
     } finally {
       setIsLoading(false);
     }

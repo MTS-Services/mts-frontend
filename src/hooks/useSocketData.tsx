@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { useSocket } from "../context/SocketContext";
 import { useSocketFetcher } from "./useSocketFetcher";
 
 export const useSocketData = (
-  Socket,
+  socket,
   departmentId,
   teamId,
   projectItem,
   setProjectStates,
 ) => {
-  const socket = useSocket();
   const departments = useSocketFetcher(
     socket,
     "getDepartmentNames",
@@ -17,11 +15,12 @@ export const useSocketData = (
     "getDepartmentName",
   );
 
+  const departmentIdStr = String(departmentId || "");
   const teams = useSocketFetcher(
     socket,
     "getTeamsForDepartment",
     departmentId,
-    `getTeamName:${departmentId}`,
+    `getTeamName:${departmentIdStr}`,
   );
 
   const salesteams = useSocketFetcher(

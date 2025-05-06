@@ -13,9 +13,9 @@ import TodayTask from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import LoginForm from "../pages/Auth/LoginForm";
-import PrivateRoute from "../pages/Auth/PrivateRoute";
 import RegisterForm from "../pages/Auth/RegisterForm";
 import RegisterView from "../pages/auth/RegisterView";
+import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 
@@ -78,9 +78,15 @@ const AppRoutes = createBrowserRouter([
       {
         path: "projects",
         element: (
-          <PrivateRoute>
+          <RoleProtectedRoute
+            allowedRoles={[
+              "sales_member",
+              "operation_member",
+              "operation_leader",
+            ]}
+          >
             <AllProjects />
-          </PrivateRoute>
+          </RoleProtectedRoute>
         ),
       },
       {

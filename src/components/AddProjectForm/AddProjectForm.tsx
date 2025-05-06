@@ -20,7 +20,7 @@ function AddProjectForm({ setShowModal, refetch }) {
     const data = Object.fromEntries(form.entries());
     try {
       const token = Cookies.get("core");
-
+      console.log(data);
       const res = await axios.post(
         "https://mtsbackend20-production.up.railway.app/api/project/create",
         data,
@@ -70,7 +70,7 @@ function AddProjectForm({ setShowModal, refetch }) {
           />
           <input
             type="number"
-            name="order_amount"
+            name="orderAmount"
             placeholder="Order Amount"
             className="border-primary w-full rounded border-2 px-3 py-2 text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
@@ -82,7 +82,7 @@ function AddProjectForm({ setShowModal, refetch }) {
           />
           <input
             type="date"
-            name="delivery_date"
+            name="deli_last_date"
             className="border-primary w-full rounded border-2 px-3 py-2 text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
