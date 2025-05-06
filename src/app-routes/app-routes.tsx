@@ -17,6 +17,7 @@ import RegisterForm from "../pages/Auth/RegisterForm";
 import RegisterView from "../pages/auth/RegisterView";
 import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
+import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
@@ -36,7 +37,11 @@ const AppRoutes = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: (
+          <CelebrationCurtain>
+            <Home />
+          </CelebrationCurtain>
+        ),
       },
       {
         path: "/login",

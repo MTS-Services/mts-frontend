@@ -175,7 +175,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={teamHandler}
           value={selectedTeamId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
@@ -217,9 +217,10 @@ function SingleDeshboardProject({ item, refetch }) {
         >
           SA :
           <select
-            className={`${statusObj[sastatus]} focus:outline-none`}
+            className={`${statusObj[sastatus]} focus:outline-none ${roleBasePermissionOne && "appearance-none"}`}
             onChange={(e) => statusHandler("sa", e.target.value)}
             value={sastatus}
+            disabled={roleBasePermissionOne}
           >
             {Object.keys(statusObj).map((status) => (
               <option key={status} value={status}>
@@ -253,6 +254,7 @@ function SingleDeshboardProject({ item, refetch }) {
                 className="border-amber-500 focus:ring-2 focus:ring-amber-500"
                 disabled={roleBasePermissionOne}
               />
+
               <FaCheckSquare
                 onClick={() => {
                   if (date !== item.deli_last_date) dateHandler(date);
@@ -270,7 +272,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={profileHandler}
           value={profileId ?? ""}
-          className="w-full p-2"
+          className={`w-full p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           {profiles?.map((profile) => (
@@ -283,7 +285,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={salesHandler}
           value={salesId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
