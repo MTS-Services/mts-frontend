@@ -1,7 +1,16 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks, FaUser } from "react-icons/fa";
+import {
+  FaChartLine,
+  FaHome,
+  FaMedal,
+  FaProjectDiagram,
+  FaTasks,
+  FaUser,
+} from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
+import { GiTeamUpgrade } from "react-icons/gi";
+import { GrGroup } from "react-icons/gr";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,

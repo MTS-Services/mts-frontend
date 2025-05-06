@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-import ProjectsUplodeForm from "./ProjectsUplodeForm";
-import Search from "../../../components/Search/Search";
-import SecondaryButton from "../../../components/Button/SecondaryButton";
 import ResetButton from "../../../components/Button/ResetButton";
+import SecondaryButton from "../../../components/Button/SecondaryButton";
+import Search from "../../../components/Search/Search";
+import ProjectsUplodeForm from "./ProjectsUplodeForm";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +45,6 @@ const Projects = () => {
   ];
 
   useEffect(() => {
-<<<<<<< HEAD
     const socket = io("https://mtsbackend20-production.up.railway.app/");
 
     socket.on("projectUpdated", (project) => {
@@ -79,10 +78,8 @@ const Projects = () => {
       });
     });
 
-=======
->>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
     const fetchData = async () => {
-      const socket = io("http://192.168.10.47:3000");
+      const socket = io("https://mtsbackend20-production.up.railway.app/");
 
       socket.on("projectUpdated", (project) => {
         console.log("Project updated:", project);
@@ -220,7 +217,6 @@ const Projects = () => {
     }
   };
 
-<<<<<<< HEAD
   const handleOpsStatusChange = async (newStatus, id) => {
     try {
       setTableData((prev) =>
@@ -289,8 +285,6 @@ const Projects = () => {
     return inputDate < firstOfCurrentMonth;
   };
 
-=======
->>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
       {/* Summary Cards */}
@@ -520,14 +514,12 @@ const Projects = () => {
                   </td>
                   {/* Actioin   buttone  */}
 
-<Link
-  to="/dashboard/projectsdetails"
-  className=" px-3 py-2 text-white rounded-lg shadow-md hover:scale-105 m-auto"
->
-  Details
-</Link>
-
-
+                  <Link
+                    to="/dashboard/projectsdetails"
+                    className="m-auto rounded-lg px-3 py-2 text-white shadow-md hover:scale-105"
+                  >
+                    Details
+                  </Link>
 
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (
