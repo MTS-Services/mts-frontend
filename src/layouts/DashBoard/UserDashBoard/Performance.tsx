@@ -52,6 +52,7 @@ const Performance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+<<<<<<< HEAD
         const response = await fetch(
           "https://mtsbackend20-production.up.railway.app/api/project",
           {
@@ -65,6 +66,18 @@ const Performance = () => {
             }),
           },
         );
+=======
+        const response = await fetch("http://192.168.10.47:3000/api/project", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            page: "1",
+            limit: "10",
+          }),
+        });
+>>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
 
         const data = await response.json();
         console.log("API response:", data);
@@ -106,7 +119,11 @@ const Performance = () => {
           {lastQuarter.map(({ title, amount, note }, idx) => (
             <div
               key={idx}
+<<<<<<< HEAD
               className="bg-primary relative w-full rounded-sm p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+=======
+              className="bg-primary border-border-color relative w-full rounded-sm border-2 p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+>>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
             >
               <h2 className="text-sm md:text-xl">{title}</h2>
               <h2 className="text-sm md:text-xl">{amount}</h2>
@@ -143,7 +160,11 @@ const Performance = () => {
           {currentMonth.map(({ title, amount, note }, idx) => (
             <div
               key={idx}
+<<<<<<< HEAD
               className="bg-primary relative w-full rounded-sm p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+=======
+              className="bg-primary border-border-color relative w-full rounded-sm border-2 p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+>>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
             >
               <h2 className="text-sm md:text-xl">{title}</h2>
               <h2 className="text-sm md:text-xl">{amount}</h2>

@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { MdInfoOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-import Search from "../../../components/Search/Search";
 import ProjectsUplodeForm from "./ProjectsUplodeForm";
+import Search from "../../../components/Search/Search";
+import SecondaryButton from "../../../components/Button/SecondaryButton";
+import ResetButton from "../../../components/Button/ResetButton";
 
 const Projects = () => {
   // const [isOpen, setIsOpen] = useState(false);
-
   const [tableData, setTableData] = useState([]);
   const [filter, setFilter] = useState({
     account: "",
@@ -43,24 +44,8 @@ const Projects = () => {
     "Actions",
   ];
 
-  const profileStatusOptions = [
-    { value: "active", label: "Active" },
-    { value: "inactive", label: "Inactive" },
-    { value: "revision", label: "Revision" },
-    { value: "inProgress", label: "In Progress" },
-    { value: "deliveryCompleted", label: "Delivery Completed" },
-  ];
-
-  const operationStatusOptions = [
-    { value: "wip", label: "Wip" },
-    { value: "delivered", label: "Delivered" },
-    { value: "submitted", label: "Submitted" },
-    { value: "clientUpdate", label: "Client Update" },
-    { value: "Revision", label: "Revision" },
-    { value: "cancel ", label: "Cancel " },
-  ];
-
   useEffect(() => {
+<<<<<<< HEAD
     const socket = io("https://mtsbackend20-production.up.railway.app/");
 
     socket.on("projectUpdated", (project) => {
@@ -94,7 +79,25 @@ const Projects = () => {
       });
     });
 
+=======
+>>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
     const fetchData = async () => {
+      const socket = io("http://192.168.10.47:3000");
+
+      socket.on("projectUpdated", (project) => {
+        console.log("Project updated:", project);
+
+        // Update the tableData to only modify the updated project, leaving the others intact
+        setTableData((prevData) =>
+          prevData.map(
+            (row) =>
+              row.id === project.id
+                ? { ...row, ...project } // Merge the updated project data into the existing row
+                : row, // Keep other rows unchanged
+          ),
+        );
+      });
+
       try {
         const response = await fetch(
           "https://mtsbackend20-production.up.railway.app/api/project",
@@ -106,24 +109,9 @@ const Projects = () => {
         );
 
         const data = await response.json();
-        console.log("Response:", data.projects);
-
         if (Array.isArray(data?.projects)) {
-          const today = new Date();
-
-          const sortedProjects = data.projects.sort((a, b) => {
-            const dateA = new Date(a.deli_last_date);
-            const dateB = new Date(b.deli_last_date);
-            const isPastA = dateA < today;
-            const isPastB = dateB < today;
-
-            if (isPastA && isPastB) return dateA - dateB;
-            if (!isPastA && !isPastB) return dateA - dateB;
-            if (isPastA && !isPastB) return -1;
-            if (!isPastA && isPastB) return 1;
-          });
-
-          setTableData(sortedProjects);
+          setTableData(data.projects);
+          console.log(data);
         } else {
           setTableData([]);
         }
@@ -133,11 +121,6 @@ const Projects = () => {
     };
 
     fetchData();
-
-    // Optional: Clean up socket when component unmounts
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   const filteredData = tableData.filter((row) => {
@@ -168,6 +151,9 @@ const Projects = () => {
     ),
   ];
 
+  const operationStatuses = ["Wip", "Completed", "Pending"];
+  const profileStatuses = ["Active", "Inactive", "Revision", "Pending"];
+
   const orderedByOptions = [
     ...new Set(
       tableData.map((row) =>
@@ -180,9 +166,9 @@ const Projects = () => {
 
   const handleEditClick = (row) => {
     if (editRowId === row.id) {
-      //console.log(row.id);
+      console.log(row.id);
 
-      return;
+      return; // already editing this row
     }
 
     setEditRowId(row.id);
@@ -234,6 +220,7 @@ const Projects = () => {
     }
   };
 
+<<<<<<< HEAD
   const handleOpsStatusChange = async (newStatus, id) => {
     try {
       setTableData((prev) =>
@@ -302,6 +289,8 @@ const Projects = () => {
     return inputDate < firstOfCurrentMonth;
   };
 
+=======
+>>>>>>> 48c35f8c532400ef0821136fdee09f945504c385
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10 lg:px-14">
       {/* Summary Cards */}
@@ -326,61 +315,59 @@ const Projects = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center justify-between">
-        <div className="my-4 mt-10 flex w-2/3 flex-wrap items-center gap-4">
-          <select
-            value={filter.account}
-            onChange={(e) => setFilter({ ...filter, account: e.target.value })}
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Account</option>
-            {uniqueAccounts.map((account, index) => (
-              <option key={index} value={account}>
-                {account}
-              </option>
-            ))}
-          </select>
+      <div className="my-4 mt-10 flex justify-between">
+        <div>
+          <div className="flex gap-4">
+            <select
+              value={filter.account}
+              onChange={(e) =>
+                setFilter({ ...filter, account: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Account</option>
+              {uniqueAccounts.map((account, index) => (
+                <option key={index} value={account}>
+                  {account}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={filter.operationStatus}
-            onChange={(e) =>
-              setFilter({ ...filter, operationStatus: e.target.value })
-            }
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Operation Status</option>
+            <select
+              value={filter.operationStatus}
+              onChange={(e) =>
+                setFilter({ ...filter, operationStatus: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Operation Status</option>
+              {operationStatuses.map((status, index) => (
+                <option key={index} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
 
-            {operationStatusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <select
+              value={filter.orderedBy}
+              onChange={(e) =>
+                setFilter({ ...filter, orderedBy: e.target.value })
+              }
+              className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
+            >
+              <option value="">Filter by Ordered by</option>
+              {orderedByOptions.map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={filter.orderedBy}
-            onChange={(e) =>
-              setFilter({ ...filter, orderedBy: e.target.value })
-            }
-            className="border-accent text-accent bg-background w-full max-w-48 rounded-md border px-4 py-2 text-sm"
-          >
-            <option value="">Filter by Ordered by</option>
-            {orderedByOptions.map((name, index) => (
-              <option key={index} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={resetFilters}
-            className="rounded-md bg-red-500 px-4 py-2 text-sm text-white transition duration-300 hover:bg-red-600"
-          >
-            Reset Filters
-          </button>
+            <ResetButton onClick={resetFilters}>Reset</ResetButton>
+          </div>
         </div>
         {/* Search */}
-        <div className="flex w-1/3 justify-end">
+        <div>
           <Search />
         </div>
       </div>
@@ -402,11 +389,7 @@ const Projects = () => {
               filteredData.map((row, i) => (
                 <tr
                   key={i}
-                  className={`text-sm text-white transition-all ${
-                    isLastMonth(row.date)
-                      ? "border-2 border-orange-200 bg-red-500/60"
-                      : "odd:bg-primary even:bg-primary/70 hover:bg-primary/80"
-                  }`}
+                  className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-sm text-white transition-all"
                 >
                   <td className="border-secondary border-r px-2 py-3">
                     {row?.date}
@@ -420,39 +403,32 @@ const Projects = () => {
                     {row?.clientName}
                   </td>
 
-                  <td
-                    className={`border-secondary border-r px-2 py-3 ${
-                      ["cancel", "revision"].includes(
-                        row.ops_status?.toLowerCase().trim(),
-                      )
-                        ? "bg-red-400"
-                        : ""
-                    }`}
-                  >
-                    <select
-                      value={row.ops_status}
-                      onChange={(e) =>
-                        handleOpsStatusChange(e.target.value, row.id)
-                      }
-                      className="focus:bg-primary w-full rounded px-2 py-1 focus:p-0.5"
-                    >
-                      {operationStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                  {/* test selects*********************************  */}
+                  <td className="border-secondary border-r px-2 py-3">
+                    {editRowId === row.id ? (
+                      <select
+                        value={editedRow.ops_status}
+                        onChange={(e) =>
+                          handleInputChange("ops_status", e.target.value)
+                        }
+                        className="w-full rounded px-2 py-1 text-black"
+                      >
+                        <option value="">Select status</option>
+                        {operationStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      row?.ops_status
+                    )}
                   </td>
 
+                  {/* test selectes************************* */}
+
                   <td className="border-secondary border-r px-2 py-3">
-                    <a
-                      href={row?.sheet_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-blue-800"
-                    >
-                      {row?.sheet_link}
-                    </a>
+                    {row?.sheet_link}
                   </td>
 
                   <td className="border-secondary border-r px-2 py-3 capitalize">
@@ -482,26 +458,25 @@ const Projects = () => {
                     )}
                   </td>
 
-                  <td
-                    className={`border-secondary border-r px-2 py-3 ${
-                      ["revision"].includes(row.status?.toLowerCase().trim())
-                        ? "bg-red-400"
-                        : ""
-                    }`}
-                  >
-                    <select
-                      value={row.status}
-                      onChange={(e) =>
-                        handleStatusChange(e.target.value, row.id)
-                      }
-                      className="focus:bg-primary w-full rounded px-2 py-1 focus:p-0.5"
-                    >
-                      {profileStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                  <td className="border-secondary border-r px-2 py-3">
+                    {editRowId === row.id ? (
+                      <select
+                        value={editedRow.status}
+                        onChange={(e) =>
+                          handleInputChange("status", e.target.value)
+                        }
+                        className="w-full rounded px-2 py-1 text-black"
+                      >
+                        <option value="">Select status</option>
+                        {profileStatuses.map((status, index) => (
+                          <option key={index} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      row?.status
+                    )}
                   </td>
                   {/* After Fiverr */}
                   <td className="border-secondary border-r px-2 py-3">
@@ -544,21 +519,37 @@ const Projects = () => {
                     )}
                   </td>
                   {/* Actioin   buttone  */}
+
+<Link
+  to="/dashboard/projectsdetails"
+  className=" px-3 py-2 text-white rounded-lg shadow-md hover:scale-105 m-auto"
+>
+  Details
+</Link>
+
+
+
                   <td className="border-secondary border-r px-2 py-3">
                     {editRowId === row.id ? (
-                      <button
-                        className="rounded bg-green-500 px-2 py-1 text-white"
-                        onClick={() => handleSave(row.id)}
-                      >
+                      // <button
+                      //   className="rounded bg-green-500 px-2 py-1 text-white"
+                      //   onClick={() => handleSave(row.id)}
+                      // >
+                      //   Save
+                      // </button>
+                      <SecondaryButton onClick={() => handleSave(row.id)}>
                         Save
-                      </button>
+                      </SecondaryButton>
                     ) : (
-                      <button
-                        className="rounded bg-yellow-500 px-2 py-1 text-white"
-                        onClick={() => handleEditClick(row)}
-                      >
+                      // <button
+                      //   className="rounded bg-yellow-500 px-2 py-1 text-white"
+                      //   onClick={() => handleEditClick(row)}
+                      // >
+                      //   Edit
+                      // </button>
+                      <SecondaryButton onClick={() => handleEditClick(row)}>
                         Edit
-                      </button>
+                      </SecondaryButton>
                     )}
                   </td>
                 </tr>
@@ -576,7 +567,6 @@ const Projects = () => {
           </tbody>
         </table>
       </div>
-
       <ProjectsUplodeForm />
     </div>
   );

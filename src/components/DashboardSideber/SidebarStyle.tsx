@@ -6,13 +6,14 @@ import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
+import { SlSettings } from "react-icons/sl";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 
 const SidebarStyle = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const { dbUser } = useContext(AuthContext);
 
   console.log("db: ", dbUser);
@@ -26,9 +27,19 @@ const SidebarStyle = () => {
   const sidebarItems = [
     { icon: <FaHome />, label: "Home", path: "/dashboard" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-    { icon: <FaTasks />, label: "TodayTask", path: "todaytask" },
+    { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
+    {
+      icon: <GiTeamUpgrade />,
+      label: "Team Performance",
+      path: "teamperformance",
+    },
+    { icon: <SlSettings />, label: "Operation", path: "operation" },
+
     { icon: <FaUser />, label: "User List", path: "userlist" },
+    { icon: <GrGroup />, label: "Team Distribution", path: "teamtistribution" },
+
+    { icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" },
   ];
 
   const handleLogOut = () => {
@@ -87,7 +98,7 @@ const SidebarStyle = () => {
             </div>
           </Link>
         ))}
-        <div className="border-primary text[4px] flex w-12 w-full flex-wrap gap-2 overflow-hidden border-1 p-2">
+        <div className="border-primary text[4px] flex w-full flex-wrap gap-2 overflow-hidden border-1 p-2">
           <p>
             Role:
             <br /> {dbUser?.role}

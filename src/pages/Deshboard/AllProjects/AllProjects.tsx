@@ -17,7 +17,7 @@ import SingleDeshboardProject from "./SingleDeshboardProject";
 
 function AllProjects() {
   const socket = useSocket();
-  const { data, refetch, loading } = useFetchData(
+  const { data, refetch } = useFetchData(
     "https://mtsbackend20-production.up.railway.app/api/project",
   );
 
@@ -52,7 +52,7 @@ function AllProjects() {
     setSalesMember([...salesSet]);
     setStatus([...statusSet]);
     setProfile([...profileSet]);
-  }, [data]);
+  }, [socket, data]);
 
   useEffect(() => {
     if (!socket) return;

@@ -11,7 +11,7 @@ import { useSalesMembers } from "../../../hooks/useSocketDataUtils";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
 
 function SingleDeshboardProject({ item, refetch }) {
-  const { role, roleBasePermissionOne, roleBasePermissionTwo } =
+  const { roleBasePermissionOne, roleBasePermissionTwo } =
     useContext(AuthContext);
   const socket = useSocket();
   const { theme } = useTheme();
@@ -54,7 +54,7 @@ function SingleDeshboardProject({ item, refetch }) {
 
   const sales = useSalesMembers(socket);
 
-  const { departments, teams, profiles, salesteams } = useSocketData(
+  const { departments, teams, profiles } = useSocketData(
     socket,
     selectedDepartmentId,
     selectedTeamId,
@@ -75,7 +75,7 @@ function SingleDeshboardProject({ item, refetch }) {
     socket.on(eventName, function (teamss) {
       console.log("ttm L", teamss);
     });
-  }, [selectedDepartmentId]);
+  }, [socket, selectedDepartmentId]);
 
   const handleUpdate = (data) => updateProject(item.id, data);
 

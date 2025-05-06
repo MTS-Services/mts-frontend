@@ -2,26 +2,47 @@
 // Static member data
 const punctualityAwards = [
   {
-    name: "Shakil Munshi",
-    position: "Lead Developer",
-    image: "/assits/Rewardspage/profileImg.jpg",
-    award: "Employee of the Month",
+    name: "MD. ASIF FIYAZ SHORON",
+    position: "HR & IT Administrator",
+    image: "/developer zoon/MD. ASIF FIYAZ SHORON.jpg",
+    award: "Punctuality",
     bio: "John is a passionate developer with 5+ years of experience.",
     experience: "5 years"
   },
+  
   {
-    name: "Lubama ",
-    position: "UI/UX Designer",
-    image: "/assits/Rewardspage/r5.png",
-    award: "Most Punctual",
+    name: "md. ali hossain",
+    position: "Punctuality",
+    image: "/developer zoon/md ali hossain.png",
+    award: "Jr. Web Developer",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
   },
+
   {
-    name: "Milon Roy",
-    position: "Project Manager",
-    image: "/assits/Rewardspage/r4.png",
-    award: "On-Time Performer",
+    name: "md. Farhan Sadik ",
+    position: "Jr. Web Developer",
+    image: "/developer zoon/md farhan sadik.JPG",
+    award: "Punctuality",
+    bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
+    experience: "4 years"
+  },
+
+  {
+    name: "TURJOY NANDI ",
+    position: "JR.key account  manager, ",
+    image: "/developer zoon/turjo.jpg",
+    award: "Punctuality",
+    bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
+    experience: "4 years"
+  },
+
+
+  {
+    name: "AFSANA AKTER NIPA",
+    position: "Jr. Web Developer",
+    image: "/developer zoon/ranar-bou.jpg",
+    award: "Punctuality",
     bio: "Alex is known for delivering projects on time with great leadership skills.",
     experience: "6 years"
   }
@@ -29,44 +50,50 @@ const punctualityAwards = [
 
 const PunctualityAwards = () => {
   return (
-    <section className="bg-gradient-to-r text-white mx-auto gap-6  max-w-[900px] lg:py-24 md:py-16 xl:py-24 py-4 px-[10px] md:px-[20px]">
+    <section className=" bg-gradient-to-r-4   text-accent/40  mx-auto gap-6 w-full  max-w-[1400px]  lg:py-24 md:py-16 xl:py-24 py-4 px-[10px] md:px-[20px] ">
 
-         <div className="md:mb-4 mb-4 lg:mb-6">
-  <h4 className="lg:text-4xl overflow-y-auto leading-[67px] xl:text-4xl font-primary text-4xl font-extrabold text-accent">
-    Punctuality Awards  </h4>
+
+   <div className="md:mb-4 mb-4 lg:mb-6 ">
+  <h3 className="lg:text-4xl overflow-y-auto  leading-[67px] xl:text-4xl font-primary text-4xl font-extrabold  text-accent">
+Punctuality Awards
+
+  </h3>
 
   <div className="flex items-center  gap-2 w-[200px]">
     <div className="flex-grow border-t-2 border-primary w-4"></div> {/* Left side of the divider */}
   
   </div>
 </div>
-      <div className="max-w-screen-xl mx-auto text-center">
-     
-
+  <div className=" mx-auto text-center">
+        {/* Section Heading */}
+        
         {/* Cards Container - Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {punctualityAwards.map((member, index) => (
-            <div
-              key={index}
-              className="bg-card p-6 rounded-xl transition-all shadow-box-style shadow-primary"
-            >
-              <div className="flex flex-col items-center justify-center">
-                <img
-                  src={member.image}
-                  alt={`Member ${index + 1}`}
-                  className="w-32 h-32 mb-4 rounded-full border-4 border-white object-cover shadow-box-style shadow-primary"
-                />
-                  <h4 className="text-[24px] font-semibold  mb-2 font-primary  text-primary">{member.name}</h4>
-
-                <p className="text-lg font-medium text-accent mb-2 font-primary">{member.position}</p>
-                {/* <p className="text-[20px] font-medium text-accent  font-primary">{member.award}</p> */}
-
-              </div>
-            </div>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+  {punctualityAwards.map((member, index) => (
+    <div
+      key={index}
+      className="p-6 bg-card rounded-2xl shadow-box-style card shadow-primary transition-all duration-300"
+    >
+      <div className="card-content flex flex-col items-center justify-center">
+        <img
+          src={member.image}
+          alt={`Member ${index + 1}`}
+          className="w-full h-full p-2 mb-4 rounded-full border-4 border-primary object-cover shadow-box-style"
+        />
+        <h4 className="text-[24px] font-semibold mb-2 font-primary text-primary text-shadow-md transform transition-all duration-300">{member.name}</h4>
+        <p className="text-lg font-medium text-accent font-primary">{member.position}</p>
       </div>
+    </div>
+  ))}
+</div>
+
+
+
+      </div>
+
+
     </section>
+
   );
 };
 
