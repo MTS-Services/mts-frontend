@@ -22,18 +22,26 @@ const SalesProject = () => {
 
   const mtsTargets = [
     {
-      title: "Total Sales :",
+      title: "Today Sales :",
       amount: "1000",
       icon: <MdAttachMoney size={24} />,
     },
-    { title: "Cancel :", amount: "4", icon: <MdEdit size={24} /> },
-    { title: "Delivery:", amount: "2", icon: <MdCheckCircle size={24} /> },
+    { title: "Today Cancel :", amount: "4", icon: <MdEdit size={24} /> },
     {
-      title: "Submit :",
+      title: "Today Delivery:",
+      amount: "2",
+      icon: <MdCheckCircle size={24} />,
+    },
+    {
+      title: "Totall Submit :",
       amount: "2",
       icon: <MdArrowCircleDown size={24} />,
     },
-    { title: "Short Time :", amount: "2", icon: <MdAccessTime size={24} /> },
+    {
+      title: "Totall Short Time :",
+      amount: "2",
+      icon: <MdAccessTime size={24} />,
+    },
   ];
 
   const tableHeaders = [
