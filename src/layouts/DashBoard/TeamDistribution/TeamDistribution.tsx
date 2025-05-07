@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import SingleTeamDistribution from "./SingleTeamDistribution"; // adjust path if needed
 
 const TeamDistribution = () => {
   const tableHeaders = [
@@ -16,32 +17,77 @@ const TeamDistribution = () => {
 
   useEffect(() => {
     const data = [
-      ["Alex", "$564", "$233", "$56", "$2", "$56", "$1", "$2"],
-      ["Alex", "$564", "$233", "$56", "$2", "$1", "$1", "$9"],
-      ["Alex", "$564", "$233", "$56", "$2", "$13", "$2", "$2"],
-      ["Alex", "$564", "$233", "$2", "$2", "$1", "$1", "$9"],
-      ["Alex", "$564", "$332", "$3", "$2", "$1", "$1", "$7"],
-      ["Alex", "$564", "$323", "$3", "$2", "$1", "$2", "$3"],
-      ["Alex", "$5634", "$32", "$2", "$2", "$2", "$2", "$2"],
-      ["Alex", "$564", "$332", "$56", "$2", "$1", "$3", "$1"],
+      {
+        clientName: "Alex",
+        id: "1",
+        total: "$564",
+        paid: "$233",
+        due: "$56",
+        discount: "$2",
+        tax: "$56",
+        fee: "$1",
+        misc: "$2",
+      },
+      {
+        clientName: "Blex",
+        id: "2",
+        total: "$764",
+        paid: "$333",
+        due: "$76",
+        discount: "$4",
+        tax: "$66",
+        fee: "$2",
+        misc: "$3",
+      },
+      {
+        clientName: "Clex",
+        id: "3",
+        total: "$864",
+        paid: "$433",
+        due: "$96",
+        discount: "$6",
+        tax: "$76",
+        fee: "$3",
+        misc: "$4",
+      },
+      {
+        clientName: "Dlex",
+        id: "4",
+        total: "$864",
+        paid: "$433",
+        due: "$96",
+        discount: "$6",
+        tax: "$76",
+        fee: "$3",
+        misc: "$4",
+      },
     ];
+
     setTableData(data);
   }, []);
 
-  // টোটাল হিসাব করার ফাংশন
   const calculateColumnTotals = () => {
-    const totals = new Array(tableHeaders.length).fill(null);
+    const totals = [""]; // skip Client Name column
 
-    tableHeaders.forEach((_, index) => {
-      let total = 0;
-      tableData.forEach((row) => {
-        const value = parseFloat(row[index]?.replace("$", "")) || 0;
-        total += value;
+    tableData.forEach((row) => {
+      const values = [
+        parseFloat(row.total?.replace("$", "") || 0),
+        parseFloat(row.paid?.replace("$", "") || 0),
+        parseFloat(row.due?.replace("$", "") || 0),
+        parseFloat(row.discount?.replace("$", "") || 0),
+        parseFloat(row.tax?.replace("$", "") || 0),
+        parseFloat(row.fee?.replace("$", "") || 0),
+        parseFloat(row.misc?.replace("$", "") || 0),
+      ];
+
+      values.forEach((val, i) => {
+        totals[i + 1] = (totals[i + 1] || 0) + val;
       });
-      totals[index] = `$${total.toFixed(2)}`;
     });
 
-    return totals;
+    return totals.map((val) =>
+      typeof val === "number" ? `$${val.toFixed(2)}` : val,
+    );
   };
 
   const totalRow = calculateColumnTotals();
@@ -70,21 +116,33 @@ const TeamDistribution = () => {
             </tr>
           </thead>
           <tbody className="border-2 border-white">
-            {tableData.map((row, rowIndex) => (
+            {tableData.map((item, index) => (
               <tr
-                key={rowIndex}
+                key={index}
                 className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-sm text-white transition-all"
               >
-                {row.map((cell, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={`border-secondary border-r px-2 py-3 ${
-                      colIndex === 0 ? "border-x" : ""
-                    }`}
-                  >
-                    {cell}
-                  </td>
-                ))}
+                <SingleTeamDistribution item={item} />
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.total}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.paid}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.due}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.discount}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.tax}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.fee}
+                </td>
+                <td className="border-secondary border-r px-2 py-3">
+                  {item.misc}
+                </td>
               </tr>
             ))}
           </tbody>
