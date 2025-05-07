@@ -6,6 +6,7 @@ const CelebrationCurtain = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [canTrigger, setCanTrigger] = useState(false);
   const confettiInterval = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     const visited = localStorage.getItem("curtain_shown");
@@ -25,18 +26,25 @@ const CelebrationCurtain = ({ children }) => {
     setTimeout(() => {
       stopCanvasConfetti();
       setShowCurtain(false);
-    }, 10000); // Total: 10s
+    }, 10000); // 10s
   };
 
   const startCanvasConfetti = () => {
+    if (!canvasRef.current) return;
+    const myConfetti = confetti.create(canvasRef.current, {
+      resize: true,
+      useWorker: true,
+    });
+
     const end = Date.now() + 5000;
+
     const interval = setInterval(() => {
       if (Date.now() > end) {
         clearInterval(interval);
         return;
       }
 
-      confetti({
+      myConfetti({
         particleCount: 20,
         angle: 60,
         spread: 55,
@@ -44,7 +52,7 @@ const CelebrationCurtain = ({ children }) => {
         colors: ["#19b3e7", "#4CAF50", "#FFC107", "#E91E63", "#3F51B5"],
       });
 
-      confetti({
+      myConfetti({
         particleCount: 20,
         angle: 120,
         spread: 55,
@@ -65,18 +73,29 @@ const CelebrationCurtain = ({ children }) => {
   if (!showCurtain) return <>{children}</>;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#11284A] text-white">
-      <section className={`relative h-full w-full ${isOpen ? "open" : ""}`}>
-        {/* Trigger Button */}
+    <div className="font-primary fixed inset-0 z-[9999] bg-[#11284A] text-white">
+      {/* Fullscreen Confetti Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none fixed top-0 left-0 z-[10000] h-full w-full"
+      />
+
+      {/* Section with Curtain Background */}
+      <section className="relative -top-[5px] z-[100] h-full w-full bg-[url('./Curtains.png')] bg-cover bg-no-repeat">
         {!isOpen && (
           <button
             onClick={triggerCurtain}
-            className="absolute top-10 left-1/2 z-50 -translate-x-1/2 transform rounded-lg bg-[#19b3e7] px-6 py-3 text-lg font-semibold text-white shadow-lg transition hover:bg-[#148abf]"
+            className="absolute top-1/2 left-1/2 z-[101] -translate-x-1/2 transform rounded-lg bg-[#19b3e7] px-6 py-3 text-7xl text-lg font-semibold text-white shadow-lg transition hover:bg-[#148abf]"
           >
             Let’s Celebrate 🎉
           </button>
         )}
+      </section>
 
+      {/* Section With Animated Curtains & Welcome Text */}
+      <section
+        className={`relative -top-[100vh] h-full w-full ${isOpen ? "open" : ""}`}
+      >
         {/* Welcome Text */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
           <div className="rounded-xl bg-white/10 p-8 shadow-2xl backdrop-blur-md">
