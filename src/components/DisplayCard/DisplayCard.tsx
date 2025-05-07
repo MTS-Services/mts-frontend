@@ -1,7 +1,7 @@
 import { BsQuestionDiamondFill } from "react-icons/bs";
 function DisplayCard({ title, amount, icon: Icon, message }) {
   return (
-    <div className="group relative">
+    <div className="group font-secondary relative">
       <div className="bg-primary border-border-color flex cursor-pointer rounded border-3 px-2 py-3">
         <div className="border-border-color/20 flex items-center border-r-2 pr-2">
           <span className="border-border-color/40 border-2 p-2">

@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { useFetchData } from "../../hooks/useFetchData";
 import Loading from "../Loading/Loading";
 
 const UserListComponent = () => {
@@ -11,6 +11,14 @@ const UserListComponent = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [departments, setDepartments] = useState([]);
+
+  const { data, refetch } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/teamMember",
+    "POST",
+    {
+      limit: "50",
+    },
+  );
 
   useEffect(() => {
     const fetchUsers = async () => {

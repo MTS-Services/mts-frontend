@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { debounce } from "../../../components/utility/debounce";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
 import { useTheme } from "../../../context/ThemeContext";
@@ -23,6 +24,12 @@ function SingleDeshboardProject({ item, refetch }) {
   const [operationComment, setOperationComment] = useState(
     item.opsleader_comments ?? "",
   );
+
+  const [meeting, setMeeting] = useState(
+    item?.sales_comments?.toLowerCase().includes("meeting"),
+  );
+
+  const [cancelStatus, setCancelStatus] = useState(item.status == "cancel");
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
     item.department_id,
@@ -50,6 +57,8 @@ function SingleDeshboardProject({ item, refetch }) {
     setRevision(updatedItem.revision ?? 0);
     setProfileId(updatedItem.profile_id);
     setSalesId(updatedItem.ordered_by);
+    setMeeting(updatedItem?.sales_comments.toLowerCase().includes("meeting"));
+    setCancelStatus(item.status == "cancel");
   };
 
   const sales = useSalesMembers(socket);
@@ -61,21 +70,15 @@ function SingleDeshboardProject({ item, refetch }) {
     item,
     setProjectStates,
   );
-  console.log(item);
+
   useEffect(() => {
     if (success) toast.success("Update Successful");
     if (error) toast.warning("Update Failed");
   }, [success, error, profiles]);
 
   useEffect(() => {
-    socket.emit("getTeamsForDepartment", selectedDepartmentId);
-
-    const eventName = `getTeamName:${selectedDepartmentId}`;
-
-    socket.on(eventName, function (teamss) {
-      console.log("ttm L", teamss);
-    });
-  }, [socket, selectedDepartmentId]);
+    setCancelStatus(item.status === "cancel");
+  }, [item.status]);
 
   const handleUpdate = (data) => updateProject(item.id, data);
 
@@ -111,25 +114,130 @@ function SingleDeshboardProject({ item, refetch }) {
     refetch();
   };
 
-  const commentHandler = (key, valueSetter) => async (e) => {
-    const value = e.target.value;
-    valueSetter(value);
-    await handleUpdate({ [key]: value });
-  };
+  function useDebouncedCommentHandler(handleUpdate) {
+    const debouncedFns = useRef({});
+
+    const getHandler = (key) => {
+      if (!debouncedFns.current[key]) {
+        debouncedFns.current[key] = debounce((value) => {
+          handleUpdate({ [key]: value });
+        }, 1200); // increase debounce delay to 1200ms
+      }
+
+      return debouncedFns.current[key];
+    };
+
+    const commentHandler = (key, valueSetter) => (e) => {
+      const value = e.target.value;
+      valueSetter(value); // instantly updates UI
+      getHandler(key)(value); // debounced backend update
+    };
+
+    return commentHandler;
+  }
+
+  const commentHandler = useDebouncedCommentHandler(handleUpdate);
 
   const statusHandler = async (type, newStatus) => {
-    if (type === "op") {
+    if (type == "op") {
       setOpstatus(newStatus);
       await handleUpdate({ ops_status: newStatus });
     } else {
       setSastatus(newStatus);
       refetch();
-      if (newStatus === "delivered") {
+      if (newStatus == "delivered") {
         await handleUpdate({
           status: newStatus,
           is_delivered: true,
           delivery_date: new Date().toISOString().split("T")[0],
         });
+        refetch();
+        exports.getTodayTask = async (req, res) => {
+          try {
+            const { uid } = req.user;
+            const me = await prisma.team_member.findUnique({
+              where: { uid },
+              include: { team: true },
+            });
+            if (!me || !me.role?.startsWith("operation_"))
+              return res.status(403).json({ error: "Access denied" });
+
+            const rows = await prisma.today_task.findMany({
+              where: {
+                project: { is_delivered: false },
+                ...(me.role === "operation_leader"
+                  ? { team_id: me.team_id }
+                  : { team_member_id: me.id }),
+              },
+              include: {
+                project: { select: { update_at: true, deli_last_date: true } },
+                team_member: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+              orderBy: { project: { update_at: "desc" } },
+            });
+
+            const tasks = Object.values(
+              rows.reduce((acc, row) => {
+                const pid = row.project_id;
+                if (!acc[pid]) {
+                  acc[pid] = {
+                    project_id: pid,
+                    client_name: row.client_name,
+                    expected_finish_time: row.expected_finish_time,
+                    last_update: row.project?.update_at,
+                    deli_last_date: row.project?.deli_last_date,
+                    assign: [],
+                  };
+                }
+
+                const assigneeObj = row.team_member
+                  ? { ...row.team_member, ops_status: row.ops_status }
+                  : {
+                      id: null,
+                      first_name: null,
+                      last_name: null,
+                      email: null,
+                      role: null,
+                      ops_status: row.ops_status,
+                    };
+
+                acc[pid].assign.push(assigneeObj);
+                return acc;
+              }, {}),
+            );
+
+            let teamMembers = [];
+            if (me.role === "operation_leader") {
+              teamMembers = await prisma.team_member.findMany({
+                where: { team_id: me.team_id },
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  role: true,
+                },
+              });
+            }
+
+            return res.json(
+              me.role === "operation_leader"
+                ? { tasks, team_members: teamMembers }
+                : { tasks },
+            );
+          } catch (err) {
+            console.error("getTodayTask →", err);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+        };
       } else if (newStatus === "realrevision") {
         setRevision((prev) => prev + 1);
         await handleUpdate({ status: newStatus, revision: revision + 1 });
@@ -147,15 +255,21 @@ function SingleDeshboardProject({ item, refetch }) {
     delivered: "bg-pink-600",
     submitted: "bg-blue-600",
     nra: "bg-black",
+    cancel: "bg-red-500",
+    client_Update: "bg-blue-900",
   };
 
   return (
     <tr
-      className={`${theme == "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`}
+      className={`${
+        cancelStatus
+          ? "bg-red-500"
+          : `${theme === "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`
+      }`}
     >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.clientName}</p>
-        <p className="p-2"># {item.id}</p>
+        <p className="p-2">{item.order_id}</p>
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
@@ -299,7 +413,9 @@ function SingleDeshboardProject({ item, refetch }) {
         </select>
       </td>
 
-      <td className="border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap">
+      <td
+        className={`${meeting && "bg-red-500"} border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap`}
+      >
         <textarea
           rows="2"
           value={saleComment}
