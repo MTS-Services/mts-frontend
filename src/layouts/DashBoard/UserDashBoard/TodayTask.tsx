@@ -1,4 +1,5 @@
-// ✅ Full updated TodayTask component using secure token + backend response
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import {
   MdAttachMoney,
   MdCheckCircle,
@@ -6,61 +7,45 @@ import {
   MdAccessTime,
   MdArrowCircleDown,
 } from "react-icons/md";
-
-import Cookies from "js-cookie";
-import { use, useEffect, useState } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import SingleTodayTask from "./SingleTodayTask";
-import { set } from "react-hook-form";
 
 const TodayTask = () => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const token =
-    Cookies.get("core") ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJzNVdFaFJoR05BWm1BSjZUNWMyY0dJdHF2QlgyIiwiaWF0IjoxNzQ2NjEyNDU1LCJleHAiOjE3NDY2NTU2NTV9.s53ADiUPCC0ptCz4_HaFMEqodfaBVreM4MeJm2mjQAI";
+  const token = Cookies.get("core");
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://mtsbackend20-production.up.railway.app/api/today-task/",
+          "https://mtsbackend20-production.up.railway.app/api/today-task",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJzNVdFaFJoR05BWm1BSjZUNWMyY0dJdHF2QlgyIiwiaWF0IjoxNzQ2NjEyNDU1LCJleHAiOjE3NDY2NTU2NTV9.s53ADiUPCC0ptCz4_HaFMEqodfaBVreM4MeJm2mjQAI"}`,
+              Authorization: `Bearer ${token}`,
             },
           },
         );
         const result = await response.json();
-
-        console.log("✅ API Raw Response:", result.task);
-        const tasks = Array.isArray(result?.tasks) ? result.tasks : [];
-        console.log("📦 Mapped Table Data:", tasks);
-        setData(tasks);
-        setTableData(tasks);
+        setData(result.tasks || []);
+        setTableData(result.tasks || []);
       } catch (error) {
         console.error("❌ API fetch error:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, []);
+  }, [token]);
 
-  console.log("data:", data);
-  useEffect(() => {
-    console.log("data---:", data);
-  }, []);
   const mtsTargets = [
     {
-      title: "Today Sales :",
+      title: "Today Assign :",
       amount: "1000",
       icon: MdAttachMoney,
       message:
@@ -113,7 +98,6 @@ const TodayTask = () => {
           <p className="text-sm text-gray-500">ID: {item.project_id}</p>
         </div>
       ))}
-
       <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
         {mtsTargets.map((item, index) => (
           <DisplayCard
@@ -125,7 +109,6 @@ const TodayTask = () => {
           />
         ))}
       </div>
-
       <section className="my-7 w-full">
         <div className="w-full overflow-x-auto">
           <table className="w-full border-collapse">
