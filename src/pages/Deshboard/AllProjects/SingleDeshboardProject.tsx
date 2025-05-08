@@ -29,8 +29,6 @@ function SingleDeshboardProject({ item, refetch }) {
     item?.sales_comments?.toLowerCase().includes("meeting"),
   );
 
-  const [cancelStatus, setCancelStatus] = useState(item.status == "cancel");
-
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
     item.department_id,
   );
@@ -43,7 +41,7 @@ function SingleDeshboardProject({ item, refetch }) {
   const [revision, setRevision] = useState(item.revision ?? 0);
 
   const dateInputRef = useRef(null);
-  const { updateProject, error, success } = useUpdateProject();
+  const { updateProject, error, success, reset } = useUpdateProject();
 
   const setProjectStates = (updatedItem) => {
     setSelectedDepartmentId(updatedItem.department_id ?? null);
@@ -58,7 +56,6 @@ function SingleDeshboardProject({ item, refetch }) {
     setProfileId(updatedItem.profile_id);
     setSalesId(updatedItem.ordered_by);
     setMeeting(updatedItem?.sales_comments.toLowerCase().includes("meeting"));
-    setCancelStatus(item.status == "cancel");
   };
 
   const sales = useSalesMembers(socket);
@@ -72,13 +69,16 @@ function SingleDeshboardProject({ item, refetch }) {
   );
 
   useEffect(() => {
-    if (success) toast.success("Update Successful");
-    if (error) toast.warning("Update Failed");
-  }, [success, error, profiles]);
+    if (success) {
+      toast.success("Update Successful");
+      reset(); // prevents duplicate toasts
+    }
 
-  useEffect(() => {
-    setCancelStatus(item.status === "cancel");
-  }, [item.status]);
+    if (error) {
+      toast.warning("Update Failed");
+      reset(); // optional, but avoids lingering error state
+    }
+  }, [success, error, reset]);
 
   const handleUpdate = (data) => updateProject(item.id, data);
 
@@ -255,16 +255,18 @@ function SingleDeshboardProject({ item, refetch }) {
     delivered: "bg-pink-600",
     submitted: "bg-blue-600",
     nra: "bg-black",
-    cancel: "bg-red-500",
+    cancelled: "bg-red-500",
     client_Update: "bg-blue-900",
   };
 
   return (
     <tr
       className={`${
-        cancelStatus
-          ? "bg-red-500"
-          : `${theme === "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`
+        item.status?.toLowerCase() === "cancelled"
+          ? "bg-red-500 text-white"
+          : theme === "light-mode"
+            ? "even:bg-primary/92"
+            : "even:bg-primary/20 odd:bg-primary"
       }`}
     >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">

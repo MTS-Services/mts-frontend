@@ -19,9 +19,9 @@ import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
 import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import OverView from "../pages/Deshboard/OverView/OverView";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -79,10 +79,9 @@ const AppRoutes = createBrowserRouter([
     children: [
       {
         index: true,
-        path: "/dashboard",
-        element: <ChartView />,
+        path: "over-view",
+        element: <OverView />,
       },
-
       {
         path: "projects",
         element: (

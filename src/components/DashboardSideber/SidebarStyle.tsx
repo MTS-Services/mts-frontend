@@ -2,13 +2,12 @@ import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
 import {
   FaChartLine,
-  FaHome,
   FaMedal,
   FaProjectDiagram,
   FaTasks,
   FaUser,
 } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
+import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTeamUpgrade } from "react-icons/gi";
 import { GrGroup } from "react-icons/gr";
 import {
@@ -20,7 +19,6 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
-
 const SidebarStyle = () => {
   const { theme } = useTheme();
   const { dbUser } = useContext(AuthContext);
@@ -34,7 +32,7 @@ const SidebarStyle = () => {
   const location = useLocation();
 
   const sidebarItems = [
-    { icon: <FaHome />, label: "Home", path: "/dashboard" },
+    { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },

@@ -59,6 +59,7 @@ function AllProjects() {
 
     const handleProjectMoneyMetrics = (projectPageCardDetails) => {
       setCalculation(projectPageCardDetails);
+      console.log("cancel-", projectPageCardDetails);
     };
 
     socket.emit("ProjectPageCardDetails");
@@ -67,7 +68,7 @@ function AllProjects() {
     return () => {
       socket.off("projectMoneyMetrics", handleProjectMoneyMetrics);
     };
-  }, [socket]);
+  }, [socket, data]);
 
   const reset = () => {
     setSelectedProfile("");
@@ -134,7 +135,7 @@ function AllProjects() {
     },
     {
       title: "Total Cancelled",
-      amount: calculation?.total_sales,
+      amount: calculation?.cancelled,
       icon: TbDevicesCancel,
       message:
         "This shows the total sales amount in this month by the sales team.",

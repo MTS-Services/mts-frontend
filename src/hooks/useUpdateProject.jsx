@@ -46,10 +46,16 @@ export const useUpdateProject = () => {
     }
   };
 
+  const reset = () => {
+    setSuccess(false);
+    setError(null);
+  };
+
   return {
     updateProject,
     loading,
     error,
     success,
+    reset, // return it
   };
 };
