@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
@@ -7,8 +8,33 @@ import MtsLineChart from "../../../components/Chart/MtsLineChart/MtsLineChart";
 import MtsPIChart from "../../../components/Chart/MtsPIChart/MtsPIChart";
 import MtsProgressBar from "../../../components/Chart/MtsProgressBar/MtsProgressBar";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
+import { useSocket } from "../../../context/SocketContext";
 
 function OverView() {
+  const socket = useSocket();
+  useEffect(() => {
+    if (!socket) return;
+    const dt = async () => {
+      const response = await fetch("http://localhost:3000/api/profile");
+      const result = await response.json();
+      const data = result?.salesData;
+      console.log("dt:", data);
+    };
+
+    dt();
+
+    const handleSalesData = (data) => {
+      console.log("dhukesee");
+
+      // updateSalesChart();
+    };
+
+    socket.on("salesDataEachProfile", handleSalesData);
+
+    return () => {
+      socket.off("salesDataEachProfile", handleSalesData);
+    };
+  }, [socket]);
   const cardData = [
     {
       title: "Team Target",
