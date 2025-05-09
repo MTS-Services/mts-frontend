@@ -5,7 +5,9 @@ import { TbDevicesCancel, TbPointerDollar, TbUserDollar } from "react-icons/tb";
 import MtsBarChar from "../../../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../../../components/Chart/MtsLineChart/MtsLineChart";
 import MtsPIChart from "../../../components/Chart/MtsPIChart/MtsPIChart";
+import MtsProgressBar from "../../../components/Chart/MtsProgressBar/MtsProgressBar";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
+
 function OverView() {
   const cardData = [
     {
@@ -51,9 +53,11 @@ function OverView() {
         "This shows the total amount that need to assign to the operation team by the Project Manager.",
     },
   ];
+
   return (
     <section className="pr-5">
-      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
+      {/* Cards Section */}
+      <div className="flex flex-wrap gap-5">
         {cardData.map((item, index) => (
           <DisplayCard
             key={index}
@@ -65,28 +69,24 @@ function OverView() {
         ))}
       </div>
 
-      {/* <div className="mt-10 flex w-full flex-wrap gap-5">
-        <div className="border-border-color bg-secondary font-primary w-1/2 rounded border-2 p-3 shadow-lg">
+      {/* Chart Row 1 */}
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
           <MtsBarChar />
         </div>
-        <div className="border-border-color bg-secondary font-primary w-1/2 rounded border-2 p-3 shadow-lg">
-          <MtsLineChart />
-        </div>
-      </div>
-      <div className="border-border-color bg-secondary font-primary items-center justify-center rounded border-2 p-3 shadow-lg">
-        <MtsPIChart />
-      </div> */}
-
-      <div className="mt-10 flex flex-row gap-5">
-        <div className="bg-secondary border-border-color font-primary w-full rounded border-2 p-5 shadow-lg">
-          <MtsBarChar />
-        </div>
-        <div className="bg-secondary border-border-color font-primary w-full rounded border-2 p-5 shadow-lg">
+        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
           <MtsPIChart />
         </div>
       </div>
-      <div className="bg-secondary border-border-color font-primary mt-10 rounded border-2 p-5 text-center shadow-lg">
-        <MtsLineChart />
+
+      {/* Chart Row 2 */}
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
+          <MtsLineChart />
+        </div>
+        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
+          <MtsProgressBar />
+        </div>
       </div>
     </section>
   );

@@ -87,7 +87,7 @@ const CelebrationCurtain = ({ children }) => {
             onClick={triggerCurtain}
             className="absolute top-1/2 left-1/2 z-[101] -translate-x-1/2 transform rounded-lg bg-[#19b3e7] px-6 py-3 text-7xl text-lg font-semibold text-white shadow-lg transition hover:bg-[#148abf]"
           >
-            Let’s Celebrate 🎉
+            🎉 Let’s Celebrate 🎉
           </button>
         )}
       </section>
@@ -100,9 +100,13 @@ const CelebrationCurtain = ({ children }) => {
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
           <div className="rounded-xl bg-white/10 p-8 shadow-2xl backdrop-blur-md">
             <h1 className="animate-pulse text-5xl font-bold text-white">
-              🎉 Welcome to Our Website 🎉
+              🎉 Welcome to MTS Coorporate 🎉
             </h1>
-            <p className="mt-4 text-lg">Enjoy the celebration 🎊</p>
+            <p className="mt-4 text-xl">
+              Thank you dear{" "}
+              <span className="text-primary font-extrabold">Kabir Sir</span> and
+              Our MTS family 🎊
+            </p>
           </div>
         </div>
 

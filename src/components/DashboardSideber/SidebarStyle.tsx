@@ -56,7 +56,7 @@ const SidebarStyle = () => {
   };
   return (
     <aside
-      className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 shadow-md shadow-black ${
+      className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 ${theme == "light-mode" ? "" : "border-gray-700"} ${
         isOpen ? "w-48 space-y-3 px-2 py-4" : "w-14 space-y-2 px-2 py-2"
       } flex flex-col justify-between transition-all duration-400 ease-in-out`}
     >

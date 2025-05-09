@@ -1,12 +1,31 @@
-import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
-import { useEffect, useRef } from "react";
+import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
+import { useEffect, useRef, useState } from "react";
 import { Pie } from "react-chartjs-2";
+import { useTheme } from "../../../context/ThemeContext"; // ✅ Import theme
 
 // Register chart components
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const MtsPIChart = () => {
   const chartRef = useRef(null);
+  const [legendPosition, setLegendPosition] = useState("left");
+  const { theme } = useTheme(); // ✅ Use theme context
+
+  // 🎨 Theme-based dynamic colors
+  const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
+  const tooltipBg = theme === "light-mode" ? "#f3f3f3" : "#333333";
+  const tooltipText = theme === "light-mode" ? "#000000" : "#ffffff";
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLegendPosition(window.innerWidth < 768 ? "top" : "left");
+    };
+
+    handleResize(); // Run on mount
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const data = {
     labels: [
@@ -38,31 +57,24 @@ const MtsPIChart = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    cutoutPercentage: 50, // Make it look like a donut chart
-    rotation: -0.5 * Math.PI, // Rotate the chart to start from the top
+    rotation: -0.5 * Math.PI,
     plugins: {
       legend: {
-        position: "left", // Move the legend to the left
+        position: legendPosition,
         labels: {
-          color: "#ffffff",
+          color: textColor,
           font: {
             family: "'Rubik', sans-serif",
-            size: 16, // Larger font size
+            size: 14,
             lineHeight: 1.4,
           },
-          padding: 20, // Adds padding between the legend items (gap)
+          padding: 20,
         },
       },
       tooltip: {
-        backgroundColor: "#333333",
-        titleColor: "#fff",
-        bodyColor: "#fff",
-        titleFont: {
-          family: "'Rubik', sans-serif",
-        },
-        bodyFont: {
-          family: "'Rubik', sans-serif",
-        },
+        backgroundColor: tooltipBg,
+        titleColor: tooltipText,
+        bodyColor: tooltipText,
         callbacks: {
           label: function (tooltipItem) {
             return tooltipItem.label + ": " + tooltipItem.raw + "%";
@@ -71,22 +83,16 @@ const MtsPIChart = () => {
       },
     },
     animation: {
-      animateRotate: true, // Add rotation animation on load
-      animateScale: true, // Add scale animation on load
+      animateRotate: true,
+      animateScale: true,
     },
   };
 
-  useEffect(() => {
-    const chart = chartRef.current;
-
-    return () => {
-      if (chart && chart.chartInstance) {
-        chart.chartInstance.destroy();
-      }
-    };
-  }, []);
-
-  return <Pie ref={chartRef} data={data} options={options} />;
+  return (
+    <div className="relative h-[400px] w-full sm:h-[500px]">
+      <Pie ref={chartRef} data={data} options={options} />
+    </div>
+  );
 };
 
 export default MtsPIChart;

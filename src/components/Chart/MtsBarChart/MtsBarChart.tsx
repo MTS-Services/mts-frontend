@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useTheme } from "../../../context/ThemeContext";
 
 // Register chart.js components
 ChartJS.register(
@@ -26,13 +27,20 @@ function MtsBarChar({
   title = "Revenue Overview",
   className = "",
 }) {
+  const { theme } = useTheme();
+
+  // 🎨 Dynamic Colors Based on Theme
+  const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
+  const gridColor =
+    theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)";
+
   const chartData = {
     labels: labels,
     datasets: [
       {
         label: "Target",
         data: targets,
-        backgroundColor: "#FFB22C", // Blue
+        backgroundColor: "#FFB22C",
         borderRadius: 0,
         borderColor: "#ffffff",
         borderWidth: 2,
@@ -40,7 +48,7 @@ function MtsBarChar({
       {
         label: "Achieved",
         data: achieved,
-        backgroundColor: "#FA812F", // Green
+        backgroundColor: "#FA812F",
         borderRadius: 0,
         borderColor: "#ffffff",
         borderWidth: 2,
@@ -54,14 +62,16 @@ function MtsBarChar({
       legend: {
         position: "top",
         labels: {
-          color: "#ffffff",
-          family: "'Rubik', sans-serif",
+          color: textColor,
+          font: {
+            family: "'Rubik', sans-serif",
+          },
         },
       },
       title: {
         display: true,
         text: title,
-        color: "#ffffff",
+        color: textColor,
         font: {
           family: "'Rubik', sans-serif",
           size: 18,
@@ -76,28 +86,28 @@ function MtsBarChar({
     scales: {
       x: {
         ticks: {
-          color: "#ffffff",
+          color: textColor,
         },
         grid: {
-          color: "rgba(255,255,255,0.2)",
+          color: gridColor,
         },
       },
       y: {
         beginAtZero: true,
         min: 0,
-        max: 2000, // সর্বোচ্চ কত পর্যন্ত যাবে সেটা বলে দাও
+        max: 2000,
         ticks: {
-          color: "#ffffff",
-          stepSize: 200, // এখন 0, 500, 1000, 1500, 2000 দেখাবে
+          color: textColor,
+          stepSize: 200,
         },
         grid: {
-          color: "rgba(255,255,255,0.2)",
+          color: gridColor,
         },
       },
     },
   };
 
-  return <Bar data={chartData} options={chartOptions} />;
+  return <Bar data={chartData} options={chartOptions} className={className} />;
 }
 
 export default MtsBarChar;

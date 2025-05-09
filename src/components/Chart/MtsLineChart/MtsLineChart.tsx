@@ -10,8 +10,9 @@ import {
 } from "chart.js";
 import { useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
+import { useTheme } from "../../../context/ThemeContext"; // ✅ Use your theme context
 
-// Register necessary components
+// Register chart components
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -24,6 +25,12 @@ ChartJS.register(
 
 const MtsLineChart = () => {
   const chartRef = useRef(null);
+  const { theme } = useTheme(); // ✅ Theme from context
+
+  // 🎨 Dynamic colors
+  const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
+  const gridColor =
+    theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)";
 
   const data = {
     labels: ["January", "February", "March", "April", "May"],
@@ -34,9 +41,20 @@ const MtsLineChart = () => {
         borderColor: "#36A2EB",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         tension: 0.4,
-        fill: true,
+        fill: false,
         pointBackgroundColor: "#ffffff",
         pointBorderColor: "#36A2EB",
+        pointRadius: 5,
+      },
+      {
+        label: "Revenue",
+        data: [40, 72, 60, 95, 70],
+        borderColor: "#FF6384",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        tension: 0.4,
+        fill: false,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "#FF6384",
         pointRadius: 5,
       },
     ],
@@ -48,7 +66,7 @@ const MtsLineChart = () => {
       legend: {
         position: "top",
         labels: {
-          color: "#ffffff",
+          color: textColor,
           font: {
             family: "'Rubik', sans-serif",
             size: 14,
@@ -58,8 +76,8 @@ const MtsLineChart = () => {
       },
       title: {
         display: true,
-        text: "Monthly Sales Report",
-        color: "#ffffff",
+        text: "Monthly Sales & Revenue Report",
+        color: textColor,
         font: {
           family: "'Rubik', sans-serif",
           size: 18,
@@ -80,26 +98,26 @@ const MtsLineChart = () => {
     scales: {
       x: {
         ticks: {
-          color: "#ffffff",
+          color: textColor,
           font: {
             family: "'Rubik', sans-serif",
           },
         },
         grid: {
-          color: "rgba(255,255,255,0.1)",
+          color: gridColor,
         },
       },
       y: {
         beginAtZero: true,
         ticks: {
-          color: "#ffffff",
+          color: textColor,
           stepSize: 20,
           font: {
             family: "'Rubik', sans-serif",
           },
         },
         grid: {
-          color: "rgba(255,255,255,0.1)",
+          color: gridColor,
         },
       },
     },
@@ -107,7 +125,6 @@ const MtsLineChart = () => {
 
   useEffect(() => {
     const chart = chartRef.current;
-
     return () => {
       if (chart && chart.chartInstance) {
         chart.chartInstance.destroy();
