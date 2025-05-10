@@ -237,18 +237,6 @@ function AllProjects() {
             )}
             {/* Search.... */}
             <ProjectSearchBox refetch={refetch} />
-            {/* <div className="border-border-color bg-secondary flex items-center justify-between gap-3 rounded border-2 p-2 duration-150 hover:scale-95">
-              <div className="border-border-color/30 flex items-center rounded border bg-white px-2 py-1">
-                <input
-                  type="text"
-                  placeholder="Search project..."
-                  className="text-primary w-full bg-transparent text-sm outline-none"
-                />
-              </div>
-              <div className="border-accent/30 flex items-center gap-2 border-l pl-3">
-                <IoSearchSharp className="cursor-pointer text-lg" />
-              </div>
-            </div> */}
           </div>
         </div>
 

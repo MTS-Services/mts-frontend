@@ -265,7 +265,7 @@ function SingleDeshboardProject({ item, refetch }) {
         item.status?.toLowerCase() === "cancelled"
           ? "bg-red-500 text-white"
           : theme === "light-mode"
-            ? "even:bg-primary/92"
+            ? "even:bg-primary/92 odd:bg-primary"
             : "even:bg-primary/20 odd:bg-primary"
       }`}
     >
