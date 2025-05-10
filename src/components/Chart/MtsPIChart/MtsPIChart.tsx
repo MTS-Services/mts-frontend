@@ -1,17 +1,17 @@
 import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useRef, useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { useTheme } from "../../../context/ThemeContext"; // ✅ Import theme
+import { useTheme } from "../../../context/ThemeContext";
 
-// Register chart components
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
+// Register components
+ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
-const MtsPIChart = () => {
+const MtsPIChart = ({ PiData = [] }) => {
   const chartRef = useRef(null);
   const [legendPosition, setLegendPosition] = useState("left");
-  const { theme } = useTheme(); // ✅ Use theme context
+  const { theme } = useTheme();
 
-  // 🎨 Theme-based dynamic colors
   const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
   const tooltipBg = theme === "light-mode" ? "#f3f3f3" : "#333333";
   const tooltipText = theme === "light-mode" ? "#000000" : "#ffffff";
@@ -20,33 +20,23 @@ const MtsPIChart = () => {
     const handleResize = () => {
       setLegendPosition(window.innerWidth < 768 ? "top" : "left");
     };
-
-    handleResize(); // Run on mount
+    handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const data = {
-    labels: [
-      "Team Target",
-      "Team Delivery",
-      "Team Assigned",
-      "Team Cancelled",
-      "Total Submitted",
-      "Need to Assign",
-    ],
+    labels: PiData.map((item) => item.label),
     datasets: [
       {
-        label: "Team Stats",
-        data: [12, 19, 8, 5, 14, 9],
+        label: "Team Stats (%)",
+        data: PiData.map((item) => parseFloat(item.value)),
         backgroundColor: [
-          "#FFB22C",
-          "#FA812F",
-          "#F3C623",
-          "#CB0404",
-          "#FEF3E2",
-          "#77CDFF",
+          "#00C49F", // Delivery
+          "#8884D8", // Assigned
+          "#FF8042", // Cancelled
+          "#F3C623", // Submitted
+          "#FFB22C", // Carry
         ],
         borderWidth: 2,
         borderColor: "#ffffff",
@@ -77,9 +67,19 @@ const MtsPIChart = () => {
         bodyColor: tooltipText,
         callbacks: {
           label: function (tooltipItem) {
-            return tooltipItem.label + ": " + tooltipItem.raw + "%";
+            return `${tooltipItem.label}: ${tooltipItem.raw.toFixed(1)}%`;
           },
         },
+      },
+      datalabels: {
+        color: textColor,
+        formatter: (value) => value.toFixed(1) + "%",
+        font: {
+          weight: "bold",
+          size: 13,
+        },
+        anchor: "center",
+        align: "center",
       },
     },
     animation: {
@@ -90,7 +90,12 @@ const MtsPIChart = () => {
 
   return (
     <div className="relative h-[400px] w-full sm:h-[500px]">
-      <Pie ref={chartRef} data={data} options={options} />
+      <Pie
+        ref={chartRef}
+        data={data}
+        options={options}
+        plugins={[ChartDataLabels]}
+      />
     </div>
   );
 };

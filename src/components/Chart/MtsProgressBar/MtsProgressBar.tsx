@@ -1,23 +1,16 @@
-import { useTheme } from "../../../context/ThemeContext"; // ✅ Import theme context
+import { useTheme } from "../../../context/ThemeContext";
 
-const MtsProgressBar = () => {
-  const { theme } = useTheme(); // ✅ Get current theme
-
+const MtsProgressBar = ({ title, progressItems }) => {
+  const { theme } = useTheme();
   const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
   const trackColor =
     theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)";
 
-  const progressItems = [
-    { label: "Target", value: 70 },
-    { label: "Delivered", value: 50 },
-    { label: "Assigned", value: 80 },
-    { label: "Cancelled", value: 20 },
-    { label: "Submitted", value: 90 },
-    { label: "Need to Assign", value: 40 },
-  ];
-
   return (
-    <div className="flex flex-col gap-5">
+    <div className="font-primary flex flex-col gap-5">
+      <h1 className="text-bold text-2xl" style={{ color: textColor }}>
+        {title}
+      </h1>
       {progressItems.map((item, index) => (
         <div key={index}>
           <div
@@ -25,7 +18,7 @@ const MtsProgressBar = () => {
             style={{ color: textColor }}
           >
             <span>{item.label}</span>
-            <span>{item.value}%</span>
+            <span>{parseFloat(item.value).toFixed(2)}%</span>
           </div>
           <div
             className="relative h-4 w-full overflow-hidden rounded-full"

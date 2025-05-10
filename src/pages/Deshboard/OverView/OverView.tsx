@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
@@ -7,56 +8,96 @@ import MtsLineChart from "../../../components/Chart/MtsLineChart/MtsLineChart";
 import MtsPIChart from "../../../components/Chart/MtsPIChart/MtsPIChart";
 import MtsProgressBar from "../../../components/Chart/MtsProgressBar/MtsProgressBar";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
+import { useSocket } from "../../../context/SocketContext";
+import { useSocketFetcher } from "../../../hooks/useSocketFetcher";
 
 function OverView() {
+  const socket = useSocket();
+
+  const chartRawData = useSocketFetcher(
+    socket,
+    "TeamChart",
+    null,
+    "eachTeamChart",
+  );
+
+  useEffect(() => {
+    if (chartRawData.length > 0) {
+      console.log("Real-time update received:", chartRawData);
+    }
+    console.log("Real-time update received:", chartRawData);
+  }, [chartRawData]);
+
+  const base = chartRawData?.teamTarget || 1;
+
   const cardData = [
     {
       title: "Team Target",
-      amount: 100,
+      amount: chartRawData?.teamTarget,
       icon: MdGroups,
-      message:
-        "This shows the total carry amount from last month by the operations team.",
+      message: "Total monthly target assigned to the team.",
+    },
+    {
+      title: "Total Carry",
+      amount: chartRawData?.teamTotalCarry,
+      icon: FaHandHoldingDollar,
+      message: "Total carry forward from previous month.",
     },
     {
       title: "Team Delivery",
-      amount: 200,
+      amount: chartRawData?.teamAchievement,
       icon: TbUserDollar,
-      message:
-        "This shows the total assign amount in this month to the operation team by the Project Manager.",
+      message: "Total deliveries completed this month.",
     },
     {
       title: "Team Assigned",
-      amount: 300,
+      amount: chartRawData?.totalAssign,
       icon: BsPersonWorkspace,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
+      message: "Total tasks assigned this month.",
     },
     {
       title: "Team Cancelled",
-      amount: 400,
+      amount: chartRawData?.teamCancelled,
       icon: TbDevicesCancel,
-      message:
-        "This shows the total sales amount in this month by the sales team.",
+      message: "Total cancelled projects this month.",
     },
     {
       title: "Total Submitted",
-      amount: 500,
-      icon: FaHandHoldingDollar,
-      message:
-        "This shows the total sales amount in this month by the sales team.",
+      amount: chartRawData?.submitted,
+      icon: TbPointerDollar,
+      message: "Total tasks submitted by the team.",
+    },
+  ];
+
+  const barChartCardData = chartRawData?.memberTarget;
+  const weeklyAchievementBreakdown = chartRawData?.weeklyAchievementBreakdown;
+
+  const chartData = [
+    {
+      label: "Team Delivery",
+      value: (((chartRawData?.teamAchievement || 0) / base) * 100).toFixed(2),
     },
     {
-      title: "Need to Assign",
-      amount: 1000,
-      icon: TbPointerDollar,
-      message:
-        "This shows the total amount that need to assign to the operation team by the Project Manager.",
+      label: "Team Assigned",
+      value: (((chartRawData?.totalAssign || 0) / base) * 100).toFixed(2),
+    },
+    {
+      label: "Team Cancelled",
+      value: (((chartRawData?.teamCancelled || 0) / base) * 100).toFixed(2),
+    },
+    {
+      label: "Total Submitted",
+      value: (((chartRawData?.submitted || 0) / base) * 100).toFixed(2),
+    },
+    {
+      label: "Total Carry",
+      value: (((chartRawData?.teamTotalCarry || 0) / base) * 100).toFixed(2),
     },
   ];
 
   return (
     <section className="pr-5">
-      {/* Cards Section */}
+      {/* Cards */}
       <div className="flex flex-wrap gap-5">
         {cardData.map((item, index) => (
           <DisplayCard
@@ -69,23 +110,26 @@ function OverView() {
         ))}
       </div>
 
-      {/* Chart Row 1 */}
+      {/* Charts Row 1 */}
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
-          <MtsBarChar />
+        <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+          <MtsBarChar barData={barChartCardData} />
         </div>
         <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
-          <MtsPIChart />
+          <MtsPIChart PiData={chartData} />
         </div>
       </div>
 
-      {/* Chart Row 2 */}
+      {/* Charts Row 2 */}
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
-          <MtsLineChart />
+        <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+          <MtsLineChart lineData={weeklyAchievementBreakdown} />
         </div>
         <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
-          <MtsProgressBar />
+          <MtsProgressBar
+            title="Team Monthly Overview : "
+            progressItems={chartData}
+          />
         </div>
       </div>
     </section>

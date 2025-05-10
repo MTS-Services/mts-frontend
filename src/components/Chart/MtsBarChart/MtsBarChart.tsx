@@ -21,9 +21,7 @@ ChartJS.register(
 );
 
 function MtsBarChar({
-  labels = ["Areefin", "Emon", "Jabed", "Toyob", "Munshi", "Kamrul"],
-  targets = [1800, 1400, 1000, 1000, 1000, 1000],
-  achieved = [1500, 1200, 800, 950, 1000, 900],
+  barData = [],
   title = "Revenue Overview",
   className = "",
 }) {
@@ -33,6 +31,10 @@ function MtsBarChar({
   const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
   const gridColor =
     theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)";
+
+  const labels = barData.map((item) => item.memberName);
+  const targets = barData.map((item) => parseFloat(item.target));
+  const achieved = barData.map((item) => parseFloat(item.earned));
 
   const chartData = {
     labels: labels,
@@ -58,6 +60,11 @@ function MtsBarChar({
 
   const chartOptions = {
     responsive: true,
+    layout: {
+      padding: {
+        top: 0, // more spacing from title/legend
+      },
+    },
     plugins: {
       legend: {
         position: "top",
@@ -66,6 +73,7 @@ function MtsBarChar({
           font: {
             family: "'Rubik', sans-serif",
           },
+          padding: 10, // extra spacing below legend
         },
       },
       title: {
@@ -74,13 +82,26 @@ function MtsBarChar({
         color: textColor,
         font: {
           family: "'Rubik', sans-serif",
-          size: 18,
+          size: 30,
+        },
+        padding: {
+          top: 0,
+          bottom: 20,
         },
       },
       tooltip: {
         backgroundColor: "#000000",
         titleColor: "#ffffff",
         bodyColor: "#ffffff",
+      },
+      datalabels: {
+        color: textColor,
+        anchor: "end",
+        align: "top",
+        font: {
+          weight: "bold",
+          size: 12,
+        },
       },
     },
     scales: {
@@ -94,11 +115,8 @@ function MtsBarChar({
       },
       y: {
         beginAtZero: true,
-        min: 0,
-        max: 2000,
         ticks: {
           color: textColor,
-          stepSize: 200,
         },
         grid: {
           color: gridColor,

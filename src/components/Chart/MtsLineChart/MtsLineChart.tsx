@@ -8,11 +8,11 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
-import { useTheme } from "../../../context/ThemeContext"; // ✅ Use your theme context
+import { useTheme } from "../../../context/ThemeContext";
 
-// Register chart components
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -21,39 +21,44 @@ ChartJS.register(
   Tooltip,
   Legend,
   Title,
+  ChartDataLabels,
 );
 
-const MtsLineChart = () => {
+const MtsLineChart = ({ lineData = [] }) => {
   const chartRef = useRef(null);
-  const { theme } = useTheme(); // ✅ Theme from context
+  const { theme } = useTheme();
 
-  // 🎨 Dynamic colors
   const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
   const gridColor =
     theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)";
+  const labelColor = theme === "light-mode" ? "#111827" : "#f9fafb";
+
+  const labels = lineData.map((item) => item.week);
+  const achievedValues = lineData.map((item) => item.amount);
+  const targetValues = lineData.map((item) => item.target);
 
   const data = {
-    labels: ["January", "February", "March", "April", "May"],
+    labels,
     datasets: [
       {
-        label: "Sales",
-        data: [65, 59, 80, 81, 56],
+        label: "Achieved",
+        data: achievedValues,
         borderColor: "#36A2EB",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         tension: 0.4,
         fill: false,
-        pointBackgroundColor: "#ffffff",
+        pointBackgroundColor: "#36A2EB",
         pointBorderColor: "#36A2EB",
         pointRadius: 5,
       },
       {
-        label: "Revenue",
-        data: [40, 72, 60, 95, 70],
+        label: "Target",
+        data: targetValues,
         borderColor: "#FF6384",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        backgroundColor: "rgba(255, 99, 132, 0.3)",
         tension: 0.4,
         fill: false,
-        pointBackgroundColor: "#ffffff",
+        pointBackgroundColor: "#FF6384",
         pointBorderColor: "#FF6384",
         pointRadius: 5,
       },
@@ -76,7 +81,7 @@ const MtsLineChart = () => {
       },
       title: {
         display: true,
-        text: "Monthly Sales & Revenue Report",
+        text: "Weekly Target vs Achievement",
         color: textColor,
         font: {
           family: "'Rubik', sans-serif",
@@ -87,12 +92,21 @@ const MtsLineChart = () => {
         backgroundColor: "#000000",
         titleColor: "#ffffff",
         bodyColor: "#ffffff",
-        titleFont: {
-          family: "'Rubik', sans-serif",
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label}: ${context.raw}`;
+          },
         },
-        bodyFont: {
-          family: "'Rubik', sans-serif",
+      },
+      datalabels: {
+        color: textColor,
+        font: {
+          weight: "bold",
+          size: 12,
         },
+        anchor: "end",
+        align: "top",
+        formatter: (value) => `${value}`,
       },
     },
     scales: {
@@ -111,7 +125,7 @@ const MtsLineChart = () => {
         beginAtZero: true,
         ticks: {
           color: textColor,
-          stepSize: 20,
+          stepSize: 50,
           font: {
             family: "'Rubik', sans-serif",
           },
@@ -132,7 +146,14 @@ const MtsLineChart = () => {
     };
   }, []);
 
-  return <Line ref={chartRef} data={data} options={options} />;
+  return (
+    <Line
+      ref={chartRef}
+      data={data}
+      options={options}
+      plugins={[ChartDataLabels]}
+    />
+  );
 };
 
 export default MtsLineChart;

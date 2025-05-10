@@ -22,6 +22,8 @@ import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 import OverView from "../pages/Deshboard/OverView/OverView";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
+import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -101,7 +103,14 @@ const AppRoutes = createBrowserRouter([
         path: "projects-old",
         element: <Projects />,
       },
-
+      {
+        path: "ranking-page",
+        element: <ProfileRankingPage />,
+      },
+      {
+        path: "special-order",
+        element: <SpecialOrderPage />,
+      },
       {
         path: "projectsdetails",
         element: <ProjectsDetails />,
