@@ -9,37 +9,41 @@ import {
 } from "react-icons/md";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import SingleTodayTask from "./SingleTodayTask";
+import AssignTeamForm from "./AssignTeamForm";
 
 const TodayTask = () => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   const token = Cookies.get("core");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          "https://mtsbackend20-production.up.railway.app/api/today-task",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://mtsbackend20-production.up.railway.app/api/today-task",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
-        const result = await response.json();
-        setData(result.tasks || []);
-        setTableData(result.tasks || []);
-      } catch (error) {
-        console.error("❌ API fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+        },
+      );
+      const result = await response.json();
+      setData(result.tasks || []);
+      setTableData(result.tasks || []);
+      setTeamMembers(result.team_members || []);
+    } catch (error) {
+      console.error("❌ API fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [token]);
 
@@ -92,12 +96,17 @@ const TodayTask = () => {
 
   return (
     <div className="font-secondary w-full overflow-x-auto p-4">
-      {data?.map((item) => (
-        <div key={item.id} className="mb-4">
-          <h2 className="text-lg font-semibold">{item.client_name}</h2>
-          <p className="text-sm text-gray-500">ID: {item.project_id}</p>
-        </div>
-      ))}
+      {/* ✅ Assign Team Form (Step 2) */}
+      <AssignTeamForm
+        token={token}
+        tasks={data}
+        teamMembers={teamMembers}
+        refreshTasks={() => {
+          setLoading(true);
+          fetchData();
+        }}
+      />
+
       <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
         {mtsTargets.map((item, index) => (
           <DisplayCard
@@ -109,6 +118,7 @@ const TodayTask = () => {
           />
         ))}
       </div>
+
       <section className="my-7 w-full">
         <div className="w-full overflow-x-auto">
           <table className="w-full border-collapse">
