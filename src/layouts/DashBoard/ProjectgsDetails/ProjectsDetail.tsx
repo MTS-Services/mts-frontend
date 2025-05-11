@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import Tippy from "@tippyjs/react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
-import axios from "axios";
+import "tippy.js/dist/tippy.css";
 import Loading from "../../../components/Loading/Loading";
 import { useFetchData } from "../../../hooks/useFetchData";
-import { FaStar } from "react-icons/fa";
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
 const ProjectsDetail = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -17,7 +17,7 @@ const ProjectsDetail = () => {
   const [editedUser, setEditedUser] = useState(null);
 
   const { data, loading: fetchLoading } = useFetchData(
-    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
+    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`,
   );
 
   useEffect(() => {
@@ -33,9 +33,8 @@ const ProjectsDetail = () => {
 
   const handleInputChange = (field, value, source) => {
     if (!editedUser || source !== "user") return;
-    const parsedValue = field === "rating"
-      ? Math.min(5, parseFloat(value || 0))
-      : value;
+    const parsedValue =
+      field === "rating" ? Math.min(5, parseFloat(value || 0)) : value;
 
     setEditedUser((prev) => ({
       ...prev,
@@ -64,7 +63,7 @@ const ProjectsDetail = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setUser((prev) => ({ ...prev, ...updatedData }));
       setIsEditing(false);
@@ -96,12 +95,19 @@ const ProjectsDetail = () => {
   //   </div>
   // );
 
+  const Info = ({
+    label,
+    field,
+    value,
+    source,
+    editable = false,
+    onChange,
+  }) => (
+    <div className="border-accent/40 mb-2 flex flex-wrap items-center gap-x-2 border-b pb-2">
+      <strong className="text-accent font-secondary text-base whitespace-nowrap">
+        {label}:
+      </strong>
 
-
-  const Info = ({ label, field, value, source, editable = false, onChange }) => (
-    <div className="flex flex-wrap items-center gap-x-2 border-b border-accent/40 pb-2 mb-2">
-      <strong className="text-base text-accent whitespace-nowrap font-secondary">{label}:</strong>
-  
       {editable ? (
         <input
           type={field === "rating" ? "number" : "text"}
@@ -110,20 +116,20 @@ const ProjectsDetail = () => {
           min="0"
           max="5"
           onChange={(e) => onChange(field, e.target.value, source)}
-          className="border p-2 font-secondary rounded w-full sm:w-auto text-accent"
+          className="font-secondary text-accent w-full rounded border p-2 sm:w-auto"
         />
       ) : field === "sheet_link" && value ? (
         <a
           href={value}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 font-secondary  underline break-words"
+          className="font-secondary break-words text-blue-500 underline"
         >
           Click to view
         </a>
       ) : field === "project_requirements" && value ? (
         <Tippy content={value} placement="bottom">
-          <span className="truncate cursor-pointer text-base font-secondary text-accent max-w-[200px]">
+          <span className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
             {value}
           </span>
         </Tippy>
@@ -134,9 +140,6 @@ const ProjectsDetail = () => {
       )}
     </div>
   );
-  
-  
-  
 
   if (fetchLoading || loading || !user) return <Loading />;
 
@@ -160,10 +163,26 @@ const ProjectsDetail = () => {
     { label: "Date", field: "date", source: "user" },
     { label: "Ops Status", field: "ops_status", source: "user" },
     { label: "Delivery Last Date", field: "deli_last_date", source: "user" },
-    { label: "After Fiverr Amount", field: "after_fiverr_amount", source: "user" },
-    { label: "After Fiverr Bonus", field: "after_Fiverr_bonus", source: "user" },
-    { label: "Department Name", field: "department_name", source: "department" },
-    { label: "Project Requirements", field: "project_requirements", source: "department" },
+    {
+      label: "After Fiverr Amount",
+      field: "after_fiverr_amount",
+      source: "user",
+    },
+    {
+      label: "After Fiverr Bonus",
+      field: "after_Fiverr_bonus",
+      source: "user",
+    },
+    {
+      label: "Department Name",
+      field: "department_name",
+      source: "department",
+    },
+    {
+      label: "Project Requirements",
+      field: "project_requirements",
+      source: "department",
+    },
     { label: "Team Name", field: "team_name", source: "team" },
   ];
 
@@ -175,47 +194,52 @@ const ProjectsDetail = () => {
 
   return (
     <section className="py-6 sm:py-8 md:py-12">
-      <div className="w-full max-w-9xl mx-auto bg-card p-4 sm:p-6 md:p-8 rounded-xl shadow-md shadow-primary">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap">
+      <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8">
+        <div className="flex flex-col flex-wrap sm:flex-row sm:items-center sm:justify-between">
           <div className="mb-6 sm:mb-0">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-primary text-primary font-bold py-2">
+            <h2 className="font-primary text-primary py-2 text-xl font-bold sm:text-2xl md:text-3xl">
               {user.project_name}
             </h2>
-            <p className="text-accent text-sm font-secondary pb-2">{user.order_id}</p>
+            <p className="text-accent font-secondary pb-2 text-sm">
+              {user.order_id}
+            </p>
 
             {/* ✅ Partial Gradient Rating Stars */}
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, index) => {
-                const fillPercent = Math.min(100, Math.max(0, (user.rating - index) * 100));
+                const fillPercent = Math.min(
+                  100,
+                  Math.max(0, (user.rating - index) * 100),
+                );
                 return (
-                  <div key={index} className="relative w-4 h-4 text-base">
-                    <FaStar className="text-gray-300 absolute inset-0" />
+                  <div key={index} className="relative h-4 w-4 text-base">
+                    <FaStar className="absolute inset-0 text-gray-300" />
                     <FaStar
-                      className="text-yellow-400 absolute inset-0"
+                      className="absolute inset-0 text-yellow-400"
                       style={{
-                        clipPath: `inset(0 ${100 - fillPercent}% 0 0)`
+                        clipPath: `inset(0 ${100 - fillPercent}% 0 0)`,
                       }}
                     />
                   </div>
                 );
               })}
-              <span className="ml-2 text-sm text-accent font-secondary">
+              <span className="text-accent font-secondary ml-2 text-sm">
                 ({parseFloat(user.rating).toFixed(1)})
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row  items-center flex-wrap gap-4">
+          <div className="flex flex-col flex-wrap items-center gap-4 sm:flex-row">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
+              className="text-background bg-primary relative flex items-center overflow-hidden rounded-full px-6 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:text-white hover:shadow-lg hover:before:left-0 active:scale-90 sm:px-8 sm:text-lg md:px-10 lg:px-12"
             >
               {isEditing ? "Cancel" : "Edit Info"}
             </button>
             {isEditing && (
               <button
                 onClick={handleSave}
-                className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
+                className="text-background bg-primary relative flex items-center overflow-hidden rounded-full px-6 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:text-white hover:shadow-lg hover:before:left-0 active:scale-90 sm:px-8 sm:text-lg md:px-10 lg:px-12"
               >
                 Save Changes
               </button>
@@ -223,7 +247,7 @@ const ProjectsDetail = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 mt-8">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-10">
           {groupedFields.map((group, colIdx) => (
             <div key={colIdx}>
               {group.map(({ label, field, source }) => {
@@ -231,8 +255,8 @@ const ProjectsDetail = () => {
                   source === "user"
                     ? editedUser?.[field]
                     : source === "department"
-                    ? editedUser?.department?.[field]
-                    : editedUser?.team?.[field];
+                      ? editedUser?.department?.[field]
+                      : editedUser?.team?.[field];
 
                 return (
                   <Info

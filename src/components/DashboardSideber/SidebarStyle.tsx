@@ -1,20 +1,11 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
-import {
-  FaChartLine,
-  FaMedal,
-  FaProjectDiagram,
-  FaTasks,
-  FaUser,
-} from "react-icons/fa";
+import { FaProjectDiagram, FaUser } from "react-icons/fa";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
-import { GiTeamUpgrade } from "react-icons/gi";
-import { GrGroup } from "react-icons/gr";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
-import { SlSettings } from "react-icons/sl";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
@@ -31,23 +22,29 @@ const SidebarStyle = () => {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
+  // const sidebarItems = [
+  //   { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
+  //   { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
+  //   { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
+  //   { icon: <FaTasks />, label: "Performance", path: "performance" },
+  //   {
+  //     icon: <GiTeamUpgrade />,
+  //     label: "Team Performance",
+  //     path: "teamperformance",
+  //   },
+  //   { icon: <SlSettings />, label: "Operation", path: "operation" },
+
+  //   { icon: <FaUser />, label: "User List", path: "userlist" },
+  //   { icon: <GrGroup  />, label: "Team Distribution", path: "teamtistribution" },
+
+  //   { icon: <FaMedal className="font-primary" />, label: "BestContributors", path: "bestcontributors" },
+  //   { icon: <FaUser  className="font-primary" />, label: "Profile", path: "profile" },
+  // ];
+
   const sidebarItems = [
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-    { icon: <FaChartLine />, label: "Today Task", path: "todaytask" },
-    { icon: <FaTasks />, label: "Performance", path: "performance" },
-    {
-      icon: <GiTeamUpgrade />,
-      label: "Team Performance",
-      path: "teamperformance",
-    },
-    { icon: <SlSettings />, label: "Operation", path: "operation" },
-
     { icon: <FaUser />, label: "User List", path: "userlist" },
-    { icon: <GrGroup  />, label: "Team Distribution", path: "teamtistribution" },
-
-    { icon: <FaMedal className="font-primary" />, label: "BestContributors", path: "bestcontributors" },
-    { icon: <FaUser  className="font-primary" />, label: "Profile", path: "profile" },
   ];
 
   const handleLogOut = () => {
@@ -56,10 +53,8 @@ const SidebarStyle = () => {
     navigate("/");
   };
 
-////// munshi codgin master 
+  ////// munshi codgin master
   const isActive = dbUser?.account_status?.toLowerCase() === "active";
-
-
 
   return (
     <aside
@@ -161,52 +156,57 @@ const SidebarStyle = () => {
         )}
       </div> */}
 
+      <div className="mt-auto flex items-center space-x-4">
+        <Link
+          to={`/dashboard/userprofiledetails/${dbUser?.id}`}
+          className="group relative flex items-center"
+        >
+          <div className="relative">
+            {/* ✅ ইউজার ছবি */}
+            <img
+              src={dbUser?.dp}
+              className="border-primary h-11 w-11 rounded-full border object-cover"
+              alt="user"
+            />
 
-<div className="mt-auto flex items-center space-x-4">
-      <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
-        <div className="relative">
-          {/* ✅ ইউজার ছবি */}
-          <img
-            src={dbUser?.dp}
-            className="w-11 h-11 object-cover rounded-full border border-primary"
-            alt="user"
-          />
-
-          {/* ✅ স্ট্যাটাস ব্যাজ */}
-          <span
-            className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
-              isActive ? "bg-green-500" : "bg-gray-300"
-            }`}
-          />
-        </div>
-
-        {/* ✅ Tooltip (sidebar বন্ধ থাকলে) */}
-        {!isOpen && (
-          <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
-            User Profile
-          </span>
-        )}
-      </Link>
-
-      {/* ✅ Sidebar খোলা থাকলে নাম, designation ও logout */}
-      {isOpen && (
-        <>
-          <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
-            <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
-            <h2 className="font-secondary text-[10px]">
-              {dbUser?.designation || ""}
-            </h2>
-          </Link>
-
-          <div className="hover:text-primary ml-auto cursor-pointer">
-            <FiLogOut onClick={handleLogOut} className="text-[20px]" />
+            {/* ✅ স্ট্যাটাস ব্যাজ */}
+            <span
+              className={`absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white ${
+                isActive ? "bg-green-500" : "bg-gray-300"
+              }`}
+            />
           </div>
-        </>
-      )}
-    </div>
 
-{/* //////// munshi coding and setup this */}
-{/* <div className="mt-auto flex items-center space-x-4">
+          {/* ✅ Tooltip (sidebar বন্ধ থাকলে) */}
+          {!isOpen && (
+            <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+              User Profile
+            </span>
+          )}
+        </Link>
+
+        {/* ✅ Sidebar খোলা থাকলে নাম, designation ও logout */}
+        {isOpen && (
+          <>
+            <Link
+              to={`/dashboard/userprofiledetails/${dbUser?.id}`}
+              className="text-start"
+            >
+              <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+              <h2 className="font-secondary text-[10px]">
+                {dbUser?.designation || ""}
+              </h2>
+            </Link>
+
+            <div className="hover:text-primary ml-auto cursor-pointer">
+              <FiLogOut onClick={handleLogOut} className="text-[20px]" />
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* //////// munshi coding and setup this */}
+      {/* <div className="mt-auto flex items-center space-x-4">
   <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
     <img
       src={`${dbUser?.dp}`}
@@ -235,8 +235,6 @@ const SidebarStyle = () => {
     </>
   )}
 </div> */}
-
-
     </aside>
   );
 };
