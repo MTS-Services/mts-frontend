@@ -257,6 +257,7 @@ function SingleDeshboardProject({ item, refetch }) {
     cancelled: "bg-red-500",
     client_Update: "bg-blue-900",
   };
+  // const navigate = useNavigate();
 
   return (
     <tr

@@ -1,7 +1,8 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import BestContributorsForm from "../components/common/BestContributorsfrom/BestContributorsfrom";
+import Profile from "../components/common/Profile/Profile";
 import DashboardLayout from "../DashboardLayout";
-import BestContributorsForm from "../FormTesting/FinalForm";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
@@ -24,6 +25,7 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
+import UserProfilePage from "../pages/UserProfilePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -112,8 +114,18 @@ const AppRoutes = createBrowserRouter([
         element: <SpecialOrderPage />,
       },
       {
-        path: "projectsdetails",
+        path: "profile",
+        element: <Profile />,
+      },
+
+      {
+        path: "projectsdetails/:id",
         element: <ProjectsDetails />,
+      },
+
+      {
+        path: "userprofiledetails/:id",
+        element: <UserProfilePage />,
       },
 
       {
@@ -142,10 +154,10 @@ const AppRoutes = createBrowserRouter([
         path: "teamperformance",
         element: <TeamPerformancePage />,
       },
-      {
-        path: "userdetails/:id", // <-- :id is dynamic
-        element: <UserDetails />,
-      },
+      // {
+      //   path: "userdetails/:id", // <-- :id is dynamic
+      //   element: <UserDetails />,
+      // },
       {
         path: "bestcontributors",
         element: <BestContributorsForm />,

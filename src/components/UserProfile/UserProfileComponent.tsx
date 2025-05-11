@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";  // Import the Cookies library
-import Loading from "../../Loading/Loading";  // Assume this is a loading spinner component
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Loading/Loading";
 
-const UserInformation = () => {
+const UserProfileComponent = () => {
   const { id } = useParams();  // Get user ID from URL params
   const [user, setUser] = useState(null);
   const [editedUser, setEditedUser] = useState({});
@@ -122,7 +122,7 @@ const UserInformation = () => {
   if (loading) {
     return (
       <div className="text-accent mt-10 text-center text-xl">
-        <Loading />
+        <Loading/>
       </div>
     );
   }
@@ -271,4 +271,6 @@ const UserInformation = () => {
   );
 };
 
-export default UserInformation;
+
+
+export default UserProfileComponent;

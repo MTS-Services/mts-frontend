@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const TeamDistribution = () => {
   const tableHeaders = [
@@ -28,10 +28,8 @@ const TeamDistribution = () => {
     setTableData(data);
   }, []);
 
-  // টোটাল হিসাব করার ফাংশন
   const calculateColumnTotals = () => {
     const totals = new Array(tableHeaders.length).fill(null);
-
     tableHeaders.forEach((_, index) => {
       let total = 0;
       tableData.forEach((row) => {
@@ -40,7 +38,6 @@ const TeamDistribution = () => {
       });
       totals[index] = `$${total.toFixed(2)}`;
     });
-
     return totals;
   };
 
@@ -51,7 +48,7 @@ const TeamDistribution = () => {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className="bg-secondary border border-white text-[16px] text-white">
+            <tr className="bg-secondary border border-accent text-base font-primary text-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
@@ -59,12 +56,16 @@ const TeamDistribution = () => {
                     i === 0 ? "border-x" : ""
                   }`}
                 >
-                  <div className="flex flex-col items-center">
+                  {i === 0 ? (
                     <span className="font-bold">{head}</span>
-                    {i === 0 ? null : (
-                      <span className="text-sm">{totalRow[i]}</span>
-                    )}
-                  </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-1 font-bold">
+                      <span>{head}</span>
+                      <span className="text-sm text-wihtis">
+                        - {totalRow[i]}
+                      </span>
+                    </div>
+                  )}
                 </th>
               ))}
             </tr>
@@ -78,11 +79,16 @@ const TeamDistribution = () => {
                 {row.map((cell, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`border-secondary border-r px-2 py-3 ${
+                    className={`border-secondary border-r px-2 py-3 text-center ${
                       colIndex === 0 ? "border-x" : ""
                     }`}
                   >
-                    {cell}
+                    {/* First two columns as-is, others only amount */}
+                    {colIndex < 2 ? (
+                      <span className="text-white font-semibold">{cell}</span>
+                    ) : (
+                      <span className="text-white font-primary text-sm">{cell}</span>
+                    )}
                   </td>
                 ))}
               </tr>

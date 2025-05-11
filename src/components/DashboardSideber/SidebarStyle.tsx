@@ -44,9 +44,10 @@ const SidebarStyle = () => {
     { icon: <SlSettings />, label: "Operation", path: "operation" },
 
     { icon: <FaUser />, label: "User List", path: "userlist" },
-    { icon: <GrGroup />, label: "Team Distribution", path: "teamtistribution" },
+    { icon: <GrGroup  />, label: "Team Distribution", path: "teamtistribution" },
 
-    { icon: <FaMedal />, label: "BestContributors", path: "bestcontributors" },
+    { icon: <FaMedal className="font-primary" />, label: "BestContributors", path: "bestcontributors" },
+    { icon: <FaUser  className="font-primary" />, label: "Profile", path: "profile" },
   ];
 
   const handleLogOut = () => {
@@ -54,6 +55,12 @@ const SidebarStyle = () => {
     Cookies.remove("core");
     navigate("/");
   };
+
+////// munshi codgin master 
+  const isActive = dbUser?.account_status?.toLowerCase() === "active";
+
+
+
   return (
     <aside
       className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 ${theme == "light-mode" ? "" : "border-gray-700"} ${
@@ -124,7 +131,7 @@ const SidebarStyle = () => {
       <ToggleDarkAndLight isOpen={isOpen} />
 
       {/* User Info */}
-      <div className="mt-auto flex items-center space-x-4">
+      {/* <div className="mt-auto flex items-center space-x-4">
         <div className="group relative flex items-center">
           <img
             src={`${dbUser?.dp}`}
@@ -152,7 +159,84 @@ const SidebarStyle = () => {
             </div>
           </>
         )}
+      </div> */}
+
+
+<div className="mt-auto flex items-center space-x-4">
+      <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
+        <div className="relative">
+          {/* ✅ ইউজার ছবি */}
+          <img
+            src={dbUser?.dp}
+            className="w-11 h-11 object-cover rounded-full border border-primary"
+            alt="user"
+          />
+
+          {/* ✅ স্ট্যাটাস ব্যাজ */}
+          <span
+            className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+              isActive ? "bg-green-500" : "bg-gray-300"
+            }`}
+          />
+        </div>
+
+        {/* ✅ Tooltip (sidebar বন্ধ থাকলে) */}
+        {!isOpen && (
+          <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+            User Profile
+          </span>
+        )}
+      </Link>
+
+      {/* ✅ Sidebar খোলা থাকলে নাম, designation ও logout */}
+      {isOpen && (
+        <>
+          <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
+            <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+            <h2 className="font-secondary text-[10px]">
+              {dbUser?.designation || "Pending.."}
+            </h2>
+          </Link>
+
+          <div className="hover:text-primary ml-auto cursor-pointer">
+            <FiLogOut onClick={handleLogOut} className="text-[20px]" />
+          </div>
+        </>
+      )}
+    </div>
+
+{/* //////// munshi coding and setup this */}
+{/* <div className="mt-auto flex items-center space-x-4">
+  <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
+    <img
+      src={`${dbUser?.dp}`}
+      className={`${isOpen ? "w-11" : "w-11"} border-primary rounded-full border-1`}
+      alt="user"
+    />
+    {!isOpen && (
+      <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+        User Profile
+      </span>
+    )}
+  </Link>
+
+  {isOpen && (
+    <>
+      <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
+        <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+        <h2 className="font-secondary text-[10px]">
+          {`${dbUser?.designation || "Pending.."}`}
+        </h2>
+      </Link>
+
+      <div className="hover:text-primary ml-auto cursor-pointer">
+        <FiLogOut onClick={handleLogOut} className="text-[20px]" />
       </div>
+    </>
+  )}
+</div> */}
+
+
     </aside>
   );
 };

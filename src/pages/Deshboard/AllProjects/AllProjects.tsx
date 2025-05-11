@@ -22,8 +22,7 @@ function AllProjects() {
     "https://mtsbackend20-production.up.railway.app/api/project",
   );
 
-  const { roleBasePermissionOne, roleBasePermissionTwo } =
-    useContext(AuthContext);
+  const { roleBasePermissionOne } = useContext(AuthContext);
   const [team, setTeam] = useState([]);
   const [salesMember, setSalesMember] = useState([]);
   const [status, setStatus] = useState([]);
