@@ -10,6 +10,7 @@ import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
 import { useSalesMembers } from "../../../hooks/useSocketDataUtils";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
+import { Link } from "react-router";
 
 function SingleDeshboardProject({ item, refetch }) {
   const { roleBasePermissionOne, roleBasePermissionTwo } =
@@ -271,7 +272,20 @@ function SingleDeshboardProject({ item, refetch }) {
     >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.clientName}</p>
-        <p className="p-2">{item.order_id}</p>
+
+        {/* <p className="p-2">{item.order_id}</p> */}
+
+         <p  
+   
+        className="p-2"># 
+<Link to={`/dashboard/projectsdetails/${item.id}`} className="text-blue-500 underline">
+  {item.id}
+</Link>
+
+</p>
+
+
+
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
