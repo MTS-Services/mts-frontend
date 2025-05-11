@@ -1,162 +1,178 @@
 import { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+import axios from "axios";
 import Loading from "../../../components/Loading/Loading";
+import { useFetchData } from "../../../hooks/useFetchData";
+import { FaStar } from "react-icons/fa";
 
 const ProjectsDetail = () => {
+  const { id } = useParams();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(null);
 
+  const { data, loading: fetchLoading } = useFetchData(
+    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
+  );
+
   useEffect(() => {
-    // Simulate data fetch for project details
-    const projectData = {
-      id: 1,
-      order_id: "OrderThisMonth1",
-      date: "2024-12-01",
-      project_name: "Project This Month 1",
-      ops_status: "delivered",
-      sales_comments: "Sales Comment for This Month 1",
-      opsleader_comments: "Ops Leader Comment for This Month 1",
-      sheet_link: "http://link-to-sheet-1.com",
-      ordered_by: 2,
-      deli_last_date: "2025-04-16",
-      status: "active",
-      order_amount: "5600",
-      after_fiverr_amount: "4480",
-      bonus: "210",
-      after_Fiverr_bonus: "168",
-      rating: 5,
-      department_id: 2,
-      project_requirements: "Requirements for project 1",
-      profile_id: 2,
-      team_id: null,
-      department: {
-        id: 2,
-        department_name: "plugin",
-        department_target: "5305",
-        department_achieve: "973",
-        department_cancel: "419",
-        department_special_order: "948",
-        department_designation: "Designation 2",
-        project_requirements: "Requirement for department plugin",
-        total_carry: null
-      },
-      team_member: {
-        id: 2,
-         Team_Name: "Mern Team",
-       Leader_Name: "Mern",
-       Total_Team_Member: "123452",
-         Cancel_Projects:"23",
-         Team_Achieve:"$1553",
-          Team_Target:"$34554",
-          Total_Revision: "24",
-         team_id: 3,
-         religion: "Religion",
-         education: "Bachelors",
-         dp: "dp2.jpg",
-         role: "Junior Developer",
-         target: "117",
-        rewards: "1289",
-        rating: "0",
-        account_status: "Active",
-        password: null,
-        designation: "Developer",
-        uid: null,
-        profile: [
-          {
-            id: 2,
-            created_date: "2025-04-13T06:51:34.753Z",
-            profile_name: "Profile 2",
-            order_amount: "845",
-            bonus_amount: "1206",
-            order_count: 1,
-            rank: "85",
-            cancel_count: 9,
-            complete_count: 2,
-            no_rating: 2,
-            profile_target: "7622",
-            department_id: 3,
-            repeat_order: "4867",
-            keywords: "Keyword 2",
-            total_rating: "69"
-          }
-        ]
-      },
-      clientName: "Project This Month 1"
-    };
+    if (data?.project) {
+      const fixedData = {
+        ...data.project,
+        rating: parseFloat(parseFloat(data.project.rating ?? 0).toFixed(1)),
+      };
+      setUser(fixedData);
+      setEditedUser(fixedData);
+    }
+  }, [data]);
 
-    // Simulate an API call delay
-    setTimeout(() => {
-      setUser(projectData);
-      setEditedUser(projectData);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const handleInputChange = (field, value, source) => {
+    if (!editedUser || source !== "user") return;
+    const parsedValue = field === "rating"
+      ? Math.min(5, parseFloat(value || 0))
+      : value;
 
-  const handleInputChange = (field, value) => {
-    setEditedUser((prev) => ({ ...prev, [field]: value }));
+    setEditedUser((prev) => ({
+      ...prev,
+      [field]: parsedValue,
+    }));
   };
 
   const handleSave = async () => {
     try {
       setLoading(true);
-      setTimeout(() => {
-        setUser(editedUser);
-        setIsEditing(false);
-        setLoading(false);
-        toast.success("User information updated successfully!");
-      }, 1000);
+      const token = Cookies.get("core");
+      const updatedData = {};
+      allFields.forEach(({ field, source }) => {
+        if (source === "user" && editableFields.includes(field)) {
+          updatedData[field] =
+            field === "rating"
+              ? parseFloat(parseFloat(editedUser?.[field] ?? 0).toFixed(1))
+              : editedUser?.[field];
+        }
+      });
+      await axios.put(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUser((prev) => ({ ...prev, ...updatedData }));
+      setIsEditing(false);
+      toast.success("Project updated successfully!");
     } catch (error) {
+      console.error("Update error:", error);
+      toast.error("Failed to update project. Try again.");
+    } finally {
       setLoading(false);
-      toast.error("Failed to update user information. Please try again.");
     }
   };
 
-  const Info = ({ label, field, value, editable = false, onChange }) => (
-    <p className="text-base font-light text-accent mb-2 pr-1 font-secondary border-b pb-1 border-accent/20 flex items-center">
-      <strong className="pr-1">{label}:</strong>
+  const Info = ({ label, field, value, source, editable = false, onChange }) => (
+    <div className="flex border-b border-accent/40 pb-2 items-center mb-4">
+      <strong className="text-sm pr-2 text-accent">{label} :</strong>
       {editable ? (
         <input
-          type="text"
-          value={editedUser[field] || ""}
-          onChange={(e) => onChange(field, e.target.value)}
-          className="border p-1 rounded-md"
+          type={field === "rating" ? "number" : "text"}
+          value={value ?? ""}
+          step="0.1"
+          min="0"
+          max="5"
+          onChange={(e) => onChange(field, e.target.value, source)}
+          className="border p-2 rounded w-full max-w-xs text-accent"
         />
       ) : (
-        value
+        <span className="text-accent">{value ?? "-"}</span>
       )}
-    </p>
+    </div>
   );
 
-  if (loading || !user) return <Loading />;
+  if (fetchLoading || loading || !user) return <Loading />;
+
+  const editableFields = [
+    "project_name",
+    "order_id",
+    "sheet_link",
+    "order_amount",
+    "bonus",
+    "rating",
+  ];
+
+  const allFields = [
+    { label: "Project Name", field: "project_name", source: "user" },
+    { label: "Total Revision", field: "revision", source: "user" },
+    { label: "Order ID", field: "order_id", source: "user" },
+    { label: "Sheet Link", field: "sheet_link", source: "user" },
+    { label: "Order Amount", field: "order_amount", source: "user" },
+    { label: "Bonus", field: "bonus", source: "user" },
+    { label: "Rating", field: "rating", source: "user" },
+    { label: "Date", field: "date", source: "user" },
+    { label: "Ops Status", field: "ops_status", source: "user" },
+    { label: "Delivery Last Date", field: "deli_last_date", source: "user" },
+    { label: "After Fiverr Amount", field: "after_fiverr_amount", source: "user" },
+    { label: "After Fiverr Bonus", field: "after_Fiverr_bonus", source: "user" },
+    { label: "Department Name", field: "department_name", source: "department" },
+    { label: "Project Requirements", field: "project_requirements", source: "department" },
+    { label: "Team Name", field: "team_name", source: "team" },
+  ];
+
+  const groupedFields = [
+    allFields.slice(0, 5),
+    allFields.slice(5, 10),
+    allFields.slice(10, 17),
+  ];
 
   return (
-    <section className="lg:py-12 py-8 ">
-      <div className=" mx-auto bg-card p-8 rounded-xl shadow-md shadow-primary">
-        <div className="flex items-center justify-between flex-wrap">
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-         
-            <div>
-              <h2 className="md:text-2xl text-xl font-primary text-primary text-shadow-md">
-                {user.team_member.first_name} <span>{user.team_member.last_name}</span>
-              </h2>
-              <p className="text-accent text-sm capitalize font-secondary">{user.project_name}</p>
+    <section className="py-6 sm:py-8 md:py-12">
+      <div className="w-full max-w-9xl mx-auto bg-card p-4 sm:p-6 md:p-8 rounded-xl shadow-md shadow-primary">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap">
+          <div className="mb-6 sm:mb-0">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-primary text-primary font-bold py-2">
+              {user.project_name}
+            </h2>
+            <p className="text-accent text-sm font-secondary pb-2">{user.order_id}</p>
+
+            {/* ✅ Partial Gradient Rating Stars */}
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, index) => {
+                const fillPercent = Math.min(100, Math.max(0, (user.rating - index) * 100));
+                return (
+                  <div key={index} className="relative w-4 h-4 text-base">
+                    <FaStar className="text-gray-300 absolute inset-0" />
+                    <FaStar
+                      className="text-yellow-400 absolute inset-0"
+                      style={{
+                        clipPath: `inset(0 ${100 - fillPercent}% 0 0)`
+                      }}
+                    />
+                  </div>
+                );
+              })}
+              <span className="ml-2 text-sm text-accent font-secondary">
+                ({parseFloat(user.rating).toFixed(1)})
+              </span>
             </div>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center flex-wrap gap-4">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="py-2 px-6 text-background text-base font-bold rounded-full bg-primary shadow-md hover:scale-105 transition-all"
+              className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
             >
-              {isEditing ? "Cancel" : "Edit User Info"}
+              {isEditing ? "Cancel" : "Edit Info"}
             </button>
             {isEditing && (
               <button
                 onClick={handleSave}
-                className="py-2 px-6 text-background text-base font-bold rounded-full bg-primary shadow-md hover:scale-105 transition-all"
+                className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
               >
                 Save Changes
               </button>
@@ -164,63 +180,32 @@ const ProjectsDetail = () => {
           </div>
         </div>
 
-        {/* Three Columns Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3  gap-10 mt-8">
-          <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4 uppercase">
-              Project Info
-            </h3>
-            {[
-              "clientName", "date", "order_id", "ops_status", "sales_comments", "opsleader_comments", "sheet_link", "deli_last_date", "order_amount", "after_fiverr_amount", "bonus", "after_Fiverr_bonus", "rating"
-            ].map((field) => (
-              <Info
-                key={field}
-                label={field.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                field={field}
-                value={user[field]}
-                editable={isEditing}
-                onChange={handleInputChange}
-              />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 mt-8">
+          {groupedFields.map((group, colIdx) => (
+            <div key={colIdx}>
+              {group.map(({ label, field, source }) => {
+                const value =
+                  source === "user"
+                    ? editedUser?.[field]
+                    : source === "department"
+                    ? editedUser?.department?.[field]
+                    : editedUser?.team?.[field];
 
-          <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4 uppercase">
-              Department Info
-            </h3>
-            {[
-              "department_name", "department_target", "department_achieve", "department_cancel",  "department_designation", "project_requirements"
-            ].map((field) => (
-              <Info
-                key={field}
-                label={field.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                field={field}
-                value={user.department[field]}
-                editable={isEditing}
-                onChange={handleInputChange}
-              />
-            ))}
-          </div>
-
-          <div>
-            <h3 className="text-2xl font-primary border-b pb-1 border-accent/40 text-primary text-shadow-md mb-4 uppercase">
-              Team  Info
-            </h3>
-            {[
-              "Team_Name",  "Leader_Name", "Total_Team_Member","Total_Revision",
-            ].map((field) => (
-              <Info
-                key={field}
-                label={field.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                field={field}
-                value={user.team_member[field]}
-                editable={isEditing}
-                onChange={handleInputChange}
-              />
-            ))}
-          </div>
+                return (
+                  <Info
+                    key={field}
+                    label={label}
+                    field={field}
+                    source={source}
+                    value={value}
+                    editable={isEditing && editableFields.includes(field)}
+                    onChange={handleInputChange}
+                  />
+                );
+              })}
+            </div>
+          ))}
         </div>
-
       </div>
     </section>
   );

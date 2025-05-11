@@ -53,16 +53,19 @@ const TeamPerformance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.10.47:3000/api/project", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "https://mtsbackend20-production.up.railway.app/api/project",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              page: "1",
+              limit: "10",
+            }),
           },
-          body: JSON.stringify({
-            page: "1",
-            limit: "10",
-          }),
-        });
+        );
 
         const data = await response.json();
         console.log("API response:", data);

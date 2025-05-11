@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import{ useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import { toast, ToastContainer } from 'react-toastify';

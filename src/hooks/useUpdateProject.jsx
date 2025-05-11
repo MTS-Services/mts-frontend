@@ -1,5 +1,7 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /**
  * Custom hook to update a project by ID.
@@ -9,16 +11,26 @@ export const useUpdateProject = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const token = Cookies.get("core");
 
   const updateProject = async (projectId, data) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
+
     try {
       const response = await axios.put(
-        `http://192.168.10.47:3000/api/project/${parseInt(projectId)}`,
-        data,
+        `https://mtsbackend20-production.up.railway.app/api/project/${parseInt(projectId)}`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
+
+      console.log(data);
 
       if (!(data.opsleader_comments || data.sales_comments)) {
         setSuccess(true);
@@ -27,6 +39,7 @@ export const useUpdateProject = () => {
       console.log("Update success:", response.data);
     } catch (err) {
       console.error("Update failed:", err);
+      toast.warning("Erro: Check console");
       setError(err);
     } finally {
       setLoading(false);

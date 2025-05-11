@@ -1,34 +1,33 @@
-import React, { useState } from "react";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import React, { useEffect, useState } from "react";
 import {
+  MdAccessTime,
   MdAttachMoney,
   MdCheckCircle,
   MdEdit,
-  MdAccessTime,
 } from "react-icons/md";
 import { PiMicrosoftTeamsLogoLight } from "react-icons/pi";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"; // Import Adapter for date-fns
 
-// StatsDisplay Part
 interface MtsTarget {
   title: string;
   amount: string;
   icon: React.ReactNode;
 }
 
+interface ProjectRow {
+  clientName: string;
+  amount: string;
+  timeline: string | null;
+  assign: string;
+  finishTime: string;
+  opsStatus: string;
+}
+
 const mtsTargets: MtsTarget[] = [
-  {
-    title: "Today Delivery :",
-    amount: "0",
-    icon: <MdAttachMoney size={24} />,
-  },
+  { title: "Today Delivery :", amount: "0", icon: <MdAttachMoney size={24} /> },
   { title: "Today Revision :", amount: "8", icon: <MdEdit size={24} /> },
-  {
-    title: "Submitted :",
-    amount: "2",
-    icon: <MdCheckCircle size={24} />,
-  },
+  { title: "Submitted :", amount: "2", icon: <MdCheckCircle size={24} /> },
   { title: "Short Time :", amount: "7", icon: <MdAccessTime size={24} /> },
   {
     title: "Meeting :",
@@ -37,118 +36,93 @@ const mtsTargets: MtsTarget[] = [
   },
 ];
 
-// ProjectTable Part
-interface ProjectRow {
-  clientName: string;
-  dollarAmount: string;
-  timeline: string | null;
-  assign: string;
-  finishTime: string;
-  status: string;
-}
-
 const teamMembers = ["John", "Sarah", "Alex", "Emma", "Kamrul"];
 
 const Dashboard: React.FC = () => {
-  const [projects, setProjects] = useState<ProjectRow[]>([
-    {
-      clientName: "",
-      dollarAmount: "",
-      timeline: null,
-      assign: "",
-      finishTime: "",
-      status: "Select Status",
-    },
-    {
-      clientName: "",
-      dollarAmount: "",
-      timeline: null,
-      assign: "",
-      finishTime: "",
-      status: "Select Status",
-    },
-    {
-      clientName: "",
-      dollarAmount: "",
-      timeline: null,
-      assign: "",
-      finishTime: "",
-      status: "Select Status",
-    },
-    {
-      clientName: "",
-      dollarAmount: "",
-      timeline: null,
-      assign: "",
-      finishTime: "",
-      status: "Select Status",
-    },
-    {
-      clientName: "",
-      dollarAmount: "",
-      timeline: null,
-      assign: "",
-      finishTime: "",
-      status: "Select Status",
-    },
-  ]);
+  const [projects, setProjects] = useState<ProjectRow[]>([]);
 
-  // Handle change in fields
+  const fetchProjects = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (!user.id) {
+        console.warn("User ID not found in localStorage.");
+        return;
+      }
+
+      const res = await fetch(
+        `https://mtsbackend20-production.up.railway.app/api/project/showallStatusRevisionProjects/${user.id}`,
+      );
+      const data = await res.json();
+      console.log("API Response:", data);
+
+      interface ApiProject {
+        clientName?: string;
+        after_fiverr_amount?: string;
+        delivery_date?: string;
+        ops_status?: string;
+      }
+
+      const mapped = data.projects.map((p: ApiProject) => ({
+        clientName: p.clientName || "",
+        amount: p.after_fiverr_amount || "",
+        timeline: p.delivery_date
+          ? new Date(p.delivery_date).toLocaleDateString("en-US")
+          : null,
+        assign: "",
+        finishTime: "",
+        opsStatus: p.ops_status || "Pending",
+      }));
+      setProjects(mapped);
+    } catch (err) {
+      console.error("Failed to fetch projects", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
   const handleChange = (
     index: number,
     field: keyof ProjectRow,
     value: string | null,
   ) => {
-    const updatedProjects = [...projects];
-    updatedProjects[index][field] = value || "";
-
-    // Extract Dollar from Client Name
-    if (field === "clientName" && value) {
-      const match = value.match(/(\d+)\$|\$(\d+)/);
-      if (match) {
-        updatedProjects[index]["dollarAmount"] = match[1] || match[2];
-      } else {
-        updatedProjects[index]["dollarAmount"] = "";
-      }
-    }
-
-    setProjects(updatedProjects);
+    const updated = [...projects];
+    updated[index][field] = value || "";
+    setProjects(updated);
   };
 
-  // Get today's date
   const todayDate = new Date().toLocaleDateString("en-US");
 
-  // Sum of dollar amounts for today's "Done" status
   const todayDeliveryAmount = projects
-    .filter(
-      (project) => project.timeline === todayDate && project.status === "Done",
-    )
-    .reduce((sum, project) => sum + parseFloat(project.dollarAmount || "0"), 0)
+    .filter((p) => p.timeline === todayDate && p.opsStatus === "delivered")
+    .reduce((sum, p) => sum + parseFloat(p.amount || "0"), 0)
     .toFixed(2);
 
-  // Function to determine status color
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Done":
-        return "bg-green-500 text-white";
-      case "Pending":
-        return "bg-yellow-500 text-white";
-      case "WIP":
-        return "bg-blue-500 text-white";
+    const base = "w-full rounded p-2";
+    switch (status.toLowerCase()) {
+      case "done":
+      case "delivered":
+        return `${base} bg-green-500 text-white`;
+      case "pending":
+        return `${base} bg-yellow-500 text-white`;
+      case "wip":
+        return `${base} bg-blue-500 text-white`;
       default:
-        return "bg-gray-400 text-white";
+        return `${base} bg-gray-400 text-white`;
     }
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <div className="bg-background min-h-screen w-full px-6 py-10 sm:px-4 md:px-10 lg:px-14">
-        {/* Stats Section */}
-        <div className="mb-10 flex flex-wrap items-start justify-between gap-4">
-          {mtsTargets.map(({ title, amount, icon }, idx) => (
+      <div className="bg-background min-h-screen w-full px-4 py-8 sm:px-6 md:px-10 lg:px-14">
+        {/* Stats Display */}
+        <div className="mb-8 flex flex-wrap gap-4">
+          {mtsTargets.map(({ title, amount, icon }, i) => (
             <div
-              key={idx}
-              className="bg-primary relative w-full rounded-sm border-2 p-4 md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
+              key={i}
+              className="bg-primary flex h-28 w-full flex-col justify-between rounded-sm border-2 p-4 sm:w-[48%] md:w-[30%] lg:w-[20%] xl:w-[14%]"
             >
               <div className="flex items-center gap-2">
                 {icon}
@@ -163,107 +137,117 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Project Table Section */}
-        <div className="mt-10 overflow-x-auto">
+        {/* Project Table */}
+        <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-left">
             <thead>
               <tr className="bg-secondary text-accent border-border-color border text-[16px]">
-                <th className="border-border-color border px-2 py-3">
-                  Client Name
-                </th>
-                <th className="border-border-color border px-2 py-3">Dollar</th>
-                <th className="border-border-color border px-2 py-3">
-                  Timeline
-                </th>
-                <th className="border-border-color border px-2 py-3">Assign</th>
-                <th className="border-border-color border px-2 py-3">
-                  Expect Finish Time
-                </th>
-                <th className="border-border-color border px-2 py-3">Status</th>
+                {[
+                  "Client Name",
+                  "Amount",
+                  "Timeline",
+                  "Assign",
+                  "Expect Finish Time",
+                  "Ops Status",
+                ].map((head, i) => (
+                  <th key={i} className="border-border-color border px-2 py-3">
+                    {head}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="border-2 border-white">
-              {projects.map((project, index) => (
+            <tbody>
+              {projects.map((p, i) => (
                 <tr
-                  key={index}
-                  className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-accent text-sm transition-all"
+                  key={i}
+                  className="text-accent odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-sm transition-all"
                 >
+                  {/* Client Name */}
                   <td className="border-secondary border-r px-2 py-3">
                     <input
                       type="text"
-                      value={project.clientName}
+                      value={p.clientName}
                       onChange={(e) =>
-                        handleChange(index, "clientName", e.target.value)
+                        handleChange(i, "clientName", e.target.value)
                       }
                       placeholder="Client Name"
-                      className="w-full rounded p-2 text-black" // Removed border styling
+                      className="w-full rounded p-2 text-black"
                     />
                   </td>
+
+                  {/* Amount */}
                   <td className="border-secondary border-r px-2 py-3">
                     <input
                       type="text"
-                      value={project.dollarAmount}
+                      value={p.amount}
                       onChange={(e) =>
-                        handleChange(index, "dollarAmount", e.target.value)
+                        handleChange(i, "amount", e.target.value)
                       }
-                      placeholder="Dollar Amount"
-                      className="w-full rounded p-2 text-black" // Removed border styling
+                      placeholder="Amount"
+                      className="w-full rounded p-2 text-black"
                     />
                   </td>
+
+                  {/* Timeline */}
                   <td className="border-secondary border-r px-2 py-3">
                     <DatePicker
-                      selected={
-                        project.timeline ? new Date(project.timeline) : null
-                      }
+                      value={p.timeline ? new Date(p.timeline) : null}
                       onChange={(date) =>
                         handleChange(
-                          index,
+                          i,
                           "timeline",
-                          date ? date.toLocaleDateString("en-US") : null,
+                          date?.toLocaleDateString("en-US") ?? null,
                         )
                       }
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full rounded p-2"
+                      slotProps={{
+                        textField: { size: "small", fullWidth: true },
+                      }}
                     />
                   </td>
+
+                  {/* Assign */}
                   <td className="border-secondary border-r px-2 py-3">
                     <select
-                      value={project.assign}
+                      value={p.assign}
                       onChange={(e) =>
-                        handleChange(index, "assign", e.target.value)
+                        handleChange(i, "assign", e.target.value)
                       }
-                      className="bg-primary px-2 py-1 text-white"
+                      className="bg-primary w-full rounded px-2 py-1 text-white"
                     >
                       <option value="">Select Team Member</option>
-                      {teamMembers.map((member) => (
-                        <option key={member} value={member}>
-                          {member}
+                      {teamMembers.map((m) => (
+                        <option key={m} value={m}>
+                          {m}
                         </option>
                       ))}
                     </select>
                   </td>
+
+                  {/* Finish Time */}
                   <td className="border-secondary border-r px-2 py-3">
                     <input
                       type="time"
-                      value={project.finishTime}
+                      value={p.finishTime}
                       onChange={(e) =>
-                        handleChange(index, "finishTime", e.target.value)
+                        handleChange(i, "finishTime", e.target.value)
                       }
                       className="w-full rounded p-2 text-black"
                     />
                   </td>
+
+                  {/* Ops Status */}
                   <td className="border-border-color border-r px-2 py-3">
                     <select
-                      value={project.status}
+                      value={p.opsStatus}
                       onChange={(e) =>
-                        handleChange(index, "status", e.target.value)
+                        handleChange(i, "opsStatus", e.target.value)
                       }
-                      className={`w-full rounded p-2 ${getStatusColor(project.status)}`}
+                      className={getStatusColor(p.opsStatus)}
                     >
                       <option value="Select Status">Select Status</option>
-                      <option value="Done">Done</option>
-                      <option value="Pending">Pending</option>
-                      <option value="WIP">WIP</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="pending">Pending</option>
+                      <option value="wip">WIP</option>
                     </select>
                   </td>
                 </tr>

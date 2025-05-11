@@ -1,28 +1,34 @@
-import { useState } from "react";
+import Cookies from "js-cookie";
+import React, { useContext, useState } from "react";
 import {
+  FaChartLine,
   FaHome,
+  FaMedal,
   FaProjectDiagram,
   FaTasks,
   FaUser,
-  FaChartLine,
-  FaMedal,
 } from "react-icons/fa";
-import { GiTeamUpgrade } from "react-icons/gi";
-
 import { FiLogOut } from "react-icons/fi";
-import { Link, useLocation } from "react-router";
-import { useTheme } from "../../context/ThemeContext";
+import { GiTeamUpgrade } from "react-icons/gi";
+import { GrGroup } from "react-icons/gr";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
-import { GrGroup } from "react-icons/gr";
-
-import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 import { SlSettings } from "react-icons/sl";
+import { Link, useLocation, useNavigate } from "react-router";
+import { AuthContext } from "../../context/AuthProvider";
+import { useTheme } from "../../context/ThemeContext";
+import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 
 const SidebarStyle = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
+  const { dbUser } = useContext(AuthContext);
+
+  console.log("db: ", dbUser);
+
+  const { logOutUser } = React.useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
@@ -43,7 +49,20 @@ const SidebarStyle = () => {
     { icon: <GrGroup  />, label: "Team Distribution", path: "teamtistribution" },
 
     { icon: <FaMedal className="font-primary" />, label: "BestContributors", path: "bestcontributors" },
+    { icon: <FaUser  className="font-primary" />, label: "Profile", path: "profile" },
   ];
+
+  const handleLogOut = () => {
+    logOutUser();
+    Cookies.remove("core");
+    navigate("/");
+  };
+
+////// munshi codgin master 
+  const isActive = dbUser?.account_status?.toLowerCase() === "active";
+
+
+
   return (
     <aside
       className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 shadow-md shadow-black ${
@@ -71,7 +90,7 @@ const SidebarStyle = () => {
       </div>
 
       {/* Sidebar Items */}
-      <nav>
+      <nav className="font-secondary">
         {sidebarItems.map((item, index) => (
           <Link
             to={item.path}
@@ -95,16 +114,29 @@ const SidebarStyle = () => {
             </div>
           </Link>
         ))}
+        <div className="border-primary text[4px] flex w-full flex-wrap gap-2 overflow-hidden border-1 p-2">
+          <p>
+            Role:
+            <br /> {dbUser?.role}
+          </p>
+          <br />
+          <p>
+            Email:
+            <br />
+            {dbUser?.email}
+          </p>
+          <br />
+        </div>
       </nav>
 
       {/* Light/Dark Toggle */}
       <ToggleDarkAndLight isOpen={isOpen} />
 
       {/* User Info */}
-      <div className="mt-auto flex items-center space-x-4">
+      {/* <div className="mt-auto flex items-center space-x-4">
         <div className="group relative flex items-center">
           <img
-            src="/user_profile.png"
+            src={`${dbUser?.dp}`}
             className={`${
               isOpen ? "w-11" : "w-11"
             } border-primary rounded-full border-1`}
@@ -119,15 +151,94 @@ const SidebarStyle = () => {
         {isOpen && (
           <>
             <div className="text-start">
-              <h2 className="text-[14px] font-primary">Masud Rana</h2>
-              <h2 className="text-[10px] font-primary">Web Developer</h2>
+              <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+              <h2 className="font-secondary text-[10px]">{`${
+                dbUser?.designation || "Pending.."
+              }`}</h2>
             </div>
-            <div className="ml-auto">
-              <FiLogOut className="text-[20px]" />
+            <div className="hover:text-primary ml-auto cursor-pointer">
+              <FiLogOut onClick={handleLogOut} className="text-[20px]" />
             </div>
           </>
         )}
+      </div> */}
+
+
+<div className="mt-auto flex items-center space-x-4">
+      <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
+        <div className="relative">
+          {/* ✅ ইউজার ছবি */}
+          <img
+            src={dbUser?.dp}
+            className="w-11 h-11 object-cover rounded-full border border-primary"
+            alt="user"
+          />
+
+          {/* ✅ স্ট্যাটাস ব্যাজ */}
+          <span
+            className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+              isActive ? "bg-green-500" : "bg-gray-300"
+            }`}
+          />
+        </div>
+
+        {/* ✅ Tooltip (sidebar বন্ধ থাকলে) */}
+        {!isOpen && (
+          <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+            User Profile
+          </span>
+        )}
+      </Link>
+
+      {/* ✅ Sidebar খোলা থাকলে নাম, designation ও logout */}
+      {isOpen && (
+        <>
+          <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
+            <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+            <h2 className="font-secondary text-[10px]">
+              {dbUser?.designation || "Pending.."}
+            </h2>
+          </Link>
+
+          <div className="hover:text-primary ml-auto cursor-pointer">
+            <FiLogOut onClick={handleLogOut} className="text-[20px]" />
+          </div>
+        </>
+      )}
+    </div>
+
+{/* //////// munshi coding and setup this */}
+{/* <div className="mt-auto flex items-center space-x-4">
+  <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="group relative flex items-center">
+    <img
+      src={`${dbUser?.dp}`}
+      className={`${isOpen ? "w-11" : "w-11"} border-primary rounded-full border-1`}
+      alt="user"
+    />
+    {!isOpen && (
+      <span className="bg-primary text-accent absolute left-14 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+        User Profile
+      </span>
+    )}
+  </Link>
+
+  {isOpen && (
+    <>
+      <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
+        <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
+        <h2 className="font-secondary text-[10px]">
+          {`${dbUser?.designation || "Pending.."}`}
+        </h2>
+      </Link>
+
+      <div className="hover:text-primary ml-auto cursor-pointer">
+        <FiLogOut onClick={handleLogOut} className="text-[20px]" />
       </div>
+    </>
+  )}
+</div> */}
+
+
     </aside>
   );
 };

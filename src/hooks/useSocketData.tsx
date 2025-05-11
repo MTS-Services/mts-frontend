@@ -15,11 +15,12 @@ export const useSocketData = (
     "getDepartmentName",
   );
 
+  const departmentIdStr = String(departmentId || "");
   const teams = useSocketFetcher(
     socket,
     "getTeamsForDepartment",
     departmentId,
-    `getTeamName:${departmentId}`,
+    `getTeamName:${departmentIdStr}`,
   );
 
   const salesteams = useSocketFetcher(

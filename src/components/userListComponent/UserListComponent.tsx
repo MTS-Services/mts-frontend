@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
+import Cookies from "js-cookie";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import { Link } from "react-router-dom";
+import { FaBuilding, FaGenderless } from "react-icons/fa";
 
 const UserListComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,13 +13,23 @@ const UserListComponent = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [departments, setDepartments] = useState([]);
+  const token = Cookies.get("core");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.post("http://192.168.10.47:3000/api/teamMember", {
-          limit: "50",
-        });
+        const res = await axios.post(
+          "https://mtsbackend20-production.up.railway.app/api/teamMember",
+          {
+            limit: "50",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const members = res.data.teamMembers;
         setUserData(members);
@@ -81,48 +93,54 @@ const UserListComponent = () => {
   return (
     <div className="w-full overflow-x-auto py-10 sm:px-4 bg-background min-h-screen lg:px-14 md:px-10 px-6">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between w-full">
-        {/* Search Bar */}
-        <div className="w-full md:w-1/2">
-          <div className="font-secondary relative mx-auto w-full max-w-md md:mx-0">
+        <div className="border-border-color bg-secondary flex items-center justify-between gap-3 rounded border-2 p-2 duration-150 hover:scale-95">
+          <div className="border-border-color/30 flex items-center rounded border bg-white px-2 py-1">
             <input
               type="text"
-              placeholder="Search by user..."
-              className="border-accent focus:ring-primary focus:border-primary text-accent bg-background w-full rounded-full border py-2 pr-4 pl-11 text-sm shadow-md transition duration-300 focus:ring-2 focus:outline-none sm:text-base"
+              placeholder="Search project..."
+              className="text-primary w-full bg-transparent text-sm outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FiSearch className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-lg sm:text-xl" />
           </div>
         </div>
 
-        {/* Filters */}
         <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <select
-            value={selectedGender}
-            onChange={(e) => setSelectedGender(e.target.value)}
-            className="font-secondary border-accent text-accent bg-background focus:ring-primary focus:border-primary w-full max-w-48 rounded-md border px-4 py-2 text-sm shadow-sm transition focus:ring-2 focus:outline-none sm:w-44"
-          >
-            <option value="">Select Male or Female</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
+          <div className="bg-primary border-border-color flex rounded border-2 p-2">
+            <div className="bg-primary border-border-color/30 flex items-center border-r-1 pr-2">
+              <FaGenderless className="text-2xl" />
+            </div>
+            <select
+              className="bg-primary font-secondary border-border-color/40 mr-2 ml-3 border px-3 focus:outline-0"
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+            >
+              <option value="">Select Male or Female</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
 
-          <select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="font-secondary border-accent text-accent bg-background focus:ring-primary focus:border-primary w-full max-w-48 rounded-md border px-4 py-2 text-sm shadow-sm transition focus:ring-2 focus:outline-none sm:w-44"
-          >
-            <option value="">Select Department</option>
-            {departments.map((dept, index) => (
-              <option key={index} value={dept.toLowerCase()}>
-                {dept}
-              </option>
-            ))}
-          </select>
+          <div className="bg-primary border-border-color flex rounded border-2 p-2">
+            <div className="bg-primary border-border-color/30 flex items-center border-r-1 pr-2">
+              <FaBuilding className="text-2xl" />
+            </div>
+            <select
+              className="bg-primary font-secondary border-border-color/40 mr-2 ml-3 border px-3 focus:outline-0"
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept, index) => (
+                <option key={index} value={dept.toLowerCase()}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Table */}
       <div className="mt-10 overflow-x-auto">
         {loading ? (
           <div className="text-center text-gray-500"><Loading /></div>
@@ -145,19 +163,29 @@ const UserListComponent = () => {
                     key={i}
                     className="border-b border-accent/40 font-secondary text-accent hover:text-white text-sm hover:bg-primary"
                   >
-                    <td className="flex items-center justify-center px-2 py-1">
-                      <div className="h-12 w-12 overflow-hidden rounded-full">
-                        <img
-                          className="w-full h-full object-cover"
-                          src={user.dp?.trim() ? user.dp : "/assits/Rewardspage/profileImg.jpg"}
-                          alt="avatar"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/assits/Rewardspage/profileImg.jpg";
-                          }}
-                        />
-                      </div>
-                    </td>
+                 <td className="flex items-center justify-center px-2 py-1 relative">
+  <div className="h-12 w-12 rounded-full relative">
+    <img
+      className="w-full h-full object-cover rounded-full"
+      src={user.dp?.trim() ? user.dp : "/assits/Rewardspage/profileImg.jpg"}
+      alt="avatar"
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "/assits/Rewardspage/profileImg.jpg";
+      }}
+    />
+    {/* 🟢 Active / ⚪ Inactive Dot */}
+    <span
+      className={`absolute bottom-0 right-0 z-20 h-3 w-3 rounded-full border-2 border-white ${
+        user.account_status?.toLowerCase() === "active"
+          ? "bg-green-500"
+          : "bg-gray-300"
+      }`}
+    />
+  </div>
+</td>
+
+
                     <td className="px-1 font-light py-2">{user.first_name || "N/A"}</td>
                     <td className="px-1 font-light py-2">{user.email || "N/A"}</td>
                     <td className="px-1 font-light py-2">{user.number || "N/A"}</td>
@@ -167,7 +195,7 @@ const UserListComponent = () => {
                     <td className="px-1 font-light py-2">{user.education || "N/A"}</td>
                     <td className="px-1 font-light py-2">
                       <Link to={`/dashboard/userdetails/${user.id}`}>
-                        <button className="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/80">
+                        <button className="flex items-center relative border-white border py-2 px-2 sm:px-2 md:px-4 uppercase lg:px-4 font-medium text-white text-base sm:text-sm font-primary rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0">
                           View Info
                         </button>
                       </Link>
