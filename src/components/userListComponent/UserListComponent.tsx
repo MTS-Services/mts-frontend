@@ -1,7 +1,8 @@
+import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { FaBuilding, FaGenderless } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useFetchData } from "../../hooks/useFetchData";
 import Loading from "../Loading/Loading";
 
 const UserListComponent = () => {
@@ -11,15 +12,8 @@ const UserListComponent = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [departments, setDepartments] = useState([]);
-  const token = Cookies.get("core");
 
-  const { data, refetch } = useFetchData(
-    "https://mtsbackend20-production.up.railway.app/api/teamMember",
-    "POST",
-    {
-      limit: "50",
-    },
-  );
+  const token = Cookies.get("core");
 
   useEffect(() => {
     const fetchUsers = async () => {
