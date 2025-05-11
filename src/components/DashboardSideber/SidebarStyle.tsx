@@ -34,7 +34,7 @@ const SidebarStyle = () => {
   const sidebarItems = [
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-    { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
+    { icon: <FaChartLine />, label: "Today Task", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
     {
       icon: <GiTeamUpgrade />,

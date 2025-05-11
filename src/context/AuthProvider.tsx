@@ -43,12 +43,15 @@ const roleBaseTwo = [
   "ceo",
 ];
 
+const roleBaseThree = ["operation_leader"];
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [roleBasePermissionOne, setRoleBasePermissionOne] = useState(null);
   const [roleBasePermissionTwo, setRoleBasePermissionTwo] = useState(null);
+  const [roleBasePermissionThree, setRoleBasePermissionThree] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -90,6 +93,10 @@ const AuthProvider = ({ children }) => {
             setRoleBasePermissionOne(
               roleBaseOne.includes(res.data?.teamMember?.role),
             );
+
+            setRoleBasePermissionThree(
+              roleBaseThree.includes(res.data?.teamMember?.role),
+            );
             setRoleBasePermissionTwo(
               roleBaseTwo.includes(res.data?.teamMember?.role),
             );
@@ -125,6 +132,7 @@ const AuthProvider = ({ children }) => {
     dbUser,
     roleBasePermissionOne,
     roleBasePermissionTwo,
+    roleBasePermissionThree,
   };
 
   return (
