@@ -2,31 +2,36 @@ import { useState } from "react";
 import PrimaryButton from "../../../components/Button/PrimaryButton";
 import CustomSelect from "./CustomSelect";
 
-const AssignTeamForm = ({ token, tasks, teamMembers, refreshTasks }) => {
-  const [selectedProject, setSelectedProject] = useState("");
+const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
+  const [selectedProject, setSelectedProject] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
   const handleAssign = async (e) => {
     e.preventDefault();
     if (!selectedProject || selectedMembers.length === 0) return;
 
+    const teamIds = selectedMembers.map((m) => parseInt(m.value));
+
     try {
-      const res = await fetch("/api/today-task/assign", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        "https://mtsbackend20-production.up.railway.app/api/today-task/assign",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            project_id: selectedProject.project_id,
+            team_member_ids: teamIds,
+          }),
         },
-        body: JSON.stringify({
-          project_id: selectedProject,
-          team_member_ids: selectedMembers.map((m) => parseInt(m.value)),
-        }),
-      });
+      );
       const data = await res.json();
       alert(data.message || "Team members assigned!");
-      setSelectedProject("");
+      setSelectedProject(null);
       setSelectedMembers([]);
-      refreshTasks();
+      refreshTasks(); // <-- Refetch data to update table
     } catch (err) {
       console.error("Assign failed:", err);
     }
@@ -34,9 +39,10 @@ const AssignTeamForm = ({ token, tasks, teamMembers, refreshTasks }) => {
 
   const getUnassignedMembers = () => {
     const assignedIds = new Set(
-      (tasks.find((t) => t.project_id === selectedProject)?.assign || [])
-        .map((a) => a.id)
-        .filter((id) => id !== null),
+      (
+        tasks.find((t) => t.project_id === selectedProject?.project_id)
+          ?.assign || []
+      ).map((a) => a.id),
     );
     return teamMembers.filter((member) => !assignedIds.has(member.id));
   };
@@ -56,12 +62,15 @@ const AssignTeamForm = ({ token, tasks, teamMembers, refreshTasks }) => {
         Select Project
       </label>
       <select
-        value={selectedProject}
+        value={selectedProject?.project_id || ""}
         onChange={(e) => {
-          setSelectedProject(e.target.value);
+          const selected = data.find(
+            (item) => item.project_id === parseInt(e.target.value),
+          );
+          setSelectedProject(selected || null);
           setSelectedMembers([]);
         }}
-        className="bg-primary border-border-color mb-4 flex w-150 cursor-pointer flex-wrap gap-5 rounded p-2 px-2 py-3"
+        className="bg-primary border-border-color mb-4 w-150 rounded p-2 py-3"
       >
         <option value="">-- Select a Project --</option>
         {tasks.map((t) => (
@@ -85,8 +94,8 @@ const AssignTeamForm = ({ token, tasks, teamMembers, refreshTasks }) => {
             placeholder="Select team members..."
           />
 
-          <div className="flex justify-start">
-            <PrimaryButton type="submit">Assign</PrimaryButton>
+          <div className="mt-4 flex justify-start">
+            <PrimaryButton>Assign</PrimaryButton>
           </div>
         </>
       )}

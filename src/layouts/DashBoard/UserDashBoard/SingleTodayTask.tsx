@@ -44,68 +44,70 @@ const SingleTodayTask = ({ item, index, onTimeChange }) => {
   const lastUpdate = item.last_update
     ? new Date(item.last_update).toLocaleString()
     : "N/A";
-  const assignTo = item.assign?.[0]?.first_name
-    ? `${item.assign[0].first_name} ${item.assign[0].last_name}`
-    : "Unassigned";
+  const assignTo = Array.isArray(item.assign)
+    ? item.assign.map((person) => person.first_name).join(" , ")
+    : "N/A";
   const deliveryLastDate = item.deli_last_date
     ? new Date(item.deli_last_date).toLocaleDateString()
     : "N/A";
 
   return (
-    <tr
-      className={`${
-        theme === "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"
-      } odd:bg-primary`}
-    >
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{clientName}</p>
-        <p className="p-2">#{projectId}</p>
-      </td>
-
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{lastUpdate}</p>
-      </td>
-
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{assignTo}</p>
-      </td>
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <div className="p-2">
-          <input
-            type="time"
-            value={time}
-            onChange={(e) => {
-              setTime(e.target.value);
-              onTimeChange && onTimeChange(index, e.target.value);
-            }}
-            className="w-full border-none bg-transparent p-1 text-white outline-none"
-            style={{
-              appearance: "none",
-              WebkitAppearance: "none",
-              MozAppearance: "none",
-            }}
-          />
-        </div>
-      </td>
-
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <select
-          className={`${statusObj[opstatus]} w-full p-6 focus:outline-none`}
-          onChange={handleOpStatusChange}
-          value={opstatus}
+    <>
+      {item.id && (
+        <tr
+          className={`${
+            theme === "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"
+          } odd:bg-primary`}
         >
-          {Object.keys(statusObj).map((status) => (
-            <option key={status} value={status}>
-              {status.toUpperCase()}
-            </option>
-          ))}
-        </select>
-      </td>
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <p className="p-2">{clientName}</p>
+            <p className="p-2">#{projectId}</p>
+          </td>
 
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{deliveryLastDate}</p>
-      </td>
-    </tr>
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <p className="p-2">{lastUpdate}</p>
+          </td>
+
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <p className="p-2">{item.first_name}</p>
+          </td>
+
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <div className="p-2">
+              <input
+                type="time"
+                value={time}
+                onChange={handleTimeChange}
+                className="w-full border-none bg-transparent p-1 text-white outline-none"
+                style={{
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                }}
+              />
+            </div>
+          </td>
+
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <select
+              className={`${statusObj[opstatus]} w-full p-6 focus:outline-none`}
+              onChange={handleOpStatusChange}
+              value={opstatus}
+            >
+              {Object.keys(statusObj).map((status) => (
+                <option key={status} value={status}>
+                  {status.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </td>
+
+          <td className="border text-left text-sm font-semibold whitespace-nowrap">
+            <p className="p-2">{deliveryLastDate}</p>
+          </td>
+        </tr>
+      )}
+    </>
   );
 };
 

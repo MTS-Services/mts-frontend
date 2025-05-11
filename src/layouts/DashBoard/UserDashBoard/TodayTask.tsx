@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
   MdAttachMoney,
@@ -10,15 +10,19 @@ import {
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import SingleTodayTask from "./SingleTodayTask";
 import AssignTeamForm from "./AssignTeamForm";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const TodayTask = () => {
+  const { roleBasePermissionThree } = useContext(AuthContext);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
+  const [td, setTd] = useState([]);
 
   const token = Cookies.get("core");
 
+  // ✅ API fetch
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -33,9 +37,11 @@ const TodayTask = () => {
         },
       );
       const result = await response.json();
+
       setData(result.tasks || []);
       setTableData(result.tasks || []);
       setTeamMembers(result.team_members || []);
+      console.log("✅ API Result: ", result.tasks);
     } catch (error) {
       console.error("❌ API fetch error:", error);
     } finally {
@@ -43,9 +49,17 @@ const TodayTask = () => {
     }
   };
 
+  // ✅ Load data on token
   useEffect(() => {
     fetchData();
   }, [token]);
+
+  // ✅ Process td after tableData loaded
+  useEffect(() => {
+    const tds = tableData.flatMap((item) => item.assign || []);
+    setTd(tds);
+    console.log("✅ Processed td:", tds);
+  }, [tableData]);
 
   const mtsTargets = [
     {
@@ -97,16 +111,20 @@ const TodayTask = () => {
   return (
     <div className="font-secondary w-full overflow-x-auto p-4">
       {/* ✅ Assign Team Form (Step 2) */}
-      <AssignTeamForm
-        token={token}
-        tasks={data}
-        teamMembers={teamMembers}
-        refreshTasks={() => {
-          setLoading(true);
-          fetchData();
-        }}
-      />
+      {roleBasePermissionThree && (
+        <AssignTeamForm
+          data={data}
+          token={token}
+          tasks={data}
+          teamMembers={teamMembers}
+          refreshTasks={() => {
+            setLoading(true);
+            fetchData();
+          }}
+        />
+      )}
 
+      {/* ✅ Summary Cards */}
       <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
         {mtsTargets.map((item, index) => (
           <DisplayCard
@@ -119,6 +137,7 @@ const TodayTask = () => {
         ))}
       </div>
 
+      {/* ✅ Table Section */}
       <section className="my-7 w-full">
         <div className="w-full overflow-x-auto">
           <table className="w-full border-collapse">
@@ -144,8 +163,8 @@ const TodayTask = () => {
                     ⏳ Loading...
                   </td>
                 </tr>
-              ) : tableData.length > 0 ? (
-                tableData.map((item, index) => (
+              ) : td.length > 0 ? (
+                td.map((item, index) => (
                   <SingleTodayTask key={index} index={index} item={item} />
                 ))
               ) : (
