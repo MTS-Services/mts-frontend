@@ -9,6 +9,7 @@ import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
 import { useSalesMembers } from "../../../hooks/useSocketDataUtils";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
+import { Link, useNavigate } from "react-router";
 
 function SingleDeshboardProject({ item, refetch }) {
   const { roleBasePermissionOne, roleBasePermissionTwo } =
@@ -148,15 +149,34 @@ function SingleDeshboardProject({ item, refetch }) {
     submitted: "bg-blue-600",
     nra: "bg-black",
   };
+  // const navigate = useNavigate();
 
   return (
     <tr
+    
       className={`${theme == "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`}
     >
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{item.clientName}</p>
-        <p className="p-2"># {item.id}</p>
+      <td
+        className="border text-left text-sm font-semibold whitespace-nowrap">
+        <p className="p-2"><a href={item.sheet_link} target="blank"> {item.clientName}</a></p>
+
+
+        {/* // using single  projects datils  link ----  */}
+              {/* onClick={() => navigate('/dashboard/projectsdetails')} */}
+        <p  
+   
+        className="p-2"># 
+<Link to={`/dashboard/projectsdetails/${item.id}`} className="text-blue-500 underline">
+  {item.id}
+</Link>
+
+</p>
+
       </td>
+
+
+
+
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <select
@@ -189,7 +209,9 @@ function SingleDeshboardProject({ item, refetch }) {
         </select>
       </td>
 
-      <td className="border text-left text-sm font-semibold whitespace-nowrap">
+      <td 
+      
+      className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.order_amount}</p>
         <p className="p-2">{item.after_fiverr_amount}</p>
       </td>

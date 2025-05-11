@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "../DashboardLayout";
-import BestContributorsForm from "../FormTesting/FinalForm";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
@@ -10,7 +9,7 @@ import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
 import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";   
 import MainLayOut from "../MainLayOut";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
@@ -21,6 +20,9 @@ import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
+import BestContributorsForm from "../components/common/BestContributorsfrom/BestContributorsfrom";
+import Profile from "../components/common/Profile/Profile";
+import UserProfilePage from "../pages/UserProfilePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -96,11 +98,21 @@ const AppRoutes = createBrowserRouter([
         path: "projects-old",
         element: <Projects />,
       },
+         {
+         path: "profile",
+         element: <Profile/>
+      },
 
       {
-        path: "projectsdetails",
+        path: "projectsdetails/:id",
         element: <ProjectsDetails />,
       },
+
+      {
+        path: "userprofiledetails/:id",
+        element:<UserProfilePage/>      },
+
+
 
       {
         path: "todaytask",
@@ -114,6 +126,7 @@ const AppRoutes = createBrowserRouter([
         path: "bestcontributor",
         element: <BestContributors />,
       },
+   
 
       {
         path: "userlist",
@@ -128,10 +141,10 @@ const AppRoutes = createBrowserRouter([
         path: "teamperformance",
         element: <TeamPerformancePage />,
       },
-      {
-        path: "userdetails/:id", // <-- :id is dynamic
-        element: <UserDetails />,
-      },
+      // {
+      //   path: "userdetails/:id", // <-- :id is dynamic
+      //   element: <UserDetails />,
+      // },
       {
         path: "bestcontributors",
         element: <BestContributorsForm />,
