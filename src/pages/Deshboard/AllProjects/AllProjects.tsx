@@ -1,5 +1,4 @@
 import { BsPersonWorkspace } from "react-icons/bs";
-import { FaFileInvoiceDollar } from "react-icons/fa";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { FiPlusSquare } from "react-icons/fi";
 import { MdGroups, MdResetTv } from "react-icons/md";
@@ -14,6 +13,7 @@ import SelectFilter from "../../../components/SelectFilter/SelectFilter";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
 import { useFetchData } from "../../../hooks/useFetchData";
+import { useSocketFetcher } from "../../../hooks/useSocketFetcher";
 import SingleDeshboardProject from "./SingleDeshboardProject";
 
 function AllProjects() {
@@ -58,12 +58,9 @@ function AllProjects() {
 
   useEffect(() => {
     if (!socket) return;
-
     const handleProjectMoneyMetrics = (projectPageCardDetails) => {
       setCalculation(projectPageCardDetails);
-      console.log("cancel-", projectPageCardDetails);
     };
-
     socket.emit("ProjectPageCardDetails");
     socket.on("projectMoneyMetrics", handleProjectMoneyMetrics);
 
@@ -71,6 +68,13 @@ function AllProjects() {
       socket.off("projectMoneyMetrics", handleProjectMoneyMetrics);
     };
   }, [socket, data]);
+
+  const chartRawData = useSocketFetcher(
+    socket,
+    "TeamChart",
+    null,
+    "eachTeamChart",
+  );
 
   const reset = () => {
     setSelectedProfile("");
@@ -115,46 +119,40 @@ function AllProjects() {
 
   const cardData = [
     {
+      title: "Total Target",
+      amount: chartRawData?.teamTarget,
+      icon: MdGroups,
+      message: "Total monthly target assigned to the team.",
+    },
+    {
       title: "Total Carry",
-      amount: calculation?.total_carry,
-      icon: FaFileInvoiceDollar,
-      message:
-        "This shows the total carry amount from last month by the operations team.",
+      amount: chartRawData?.teamTotalCarry,
+      icon: FaHandHoldingDollar,
+      message: "Total carry forward from previous month.",
     },
     {
-      title: "Total Assign",
-      amount: calculation?.total_assign,
+      title: "Total Delivery",
+      amount: chartRawData?.teamAchievement,
       icon: TbUserDollar,
-      message:
-        "This shows the total assign amount in this month to the operation team by the Project Manager.",
+      message: "Total deliveries completed this month.",
     },
     {
-      title: "Total Operation",
-      amount: calculation?.total_operations,
+      title: "Total Assigned",
+      amount: chartRawData?.totalAssign,
       icon: BsPersonWorkspace,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
+      message: "Total tasks assigned this month.",
     },
     {
       title: "Total Cancelled",
-      amount: calculation?.cancelled,
+      amount: chartRawData?.teamCancelled,
       icon: TbDevicesCancel,
-      message:
-        "This shows the total sales amount in this month by the sales team.",
+      message: "Total cancelled projects this month.",
     },
     {
-      title: "Total Sales",
-      amount: calculation?.total_sales,
-      icon: FaHandHoldingDollar,
-      message:
-        "This shows the total sales amount in this month by the sales team.",
-    },
-    {
-      title: "Need to Assign",
-      amount: calculation?.need_to_assign,
+      title: "Total Submitted",
+      amount: chartRawData?.submitted,
       icon: TbPointerDollar,
-      message:
-        "This shows the total amount that need to assign to the operation team by the Project Manager.",
+      message: "Total tasks submitted by the team.",
     },
   ];
 

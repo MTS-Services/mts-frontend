@@ -1,6 +1,5 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSocket } from "../../context/SocketContext.js";
 import {
@@ -14,19 +13,6 @@ function AddProjectForm({ setShowModal, refetch }) {
   const departments = useDepartmentNames(socket);
   const profiles = useProfileNames(socket);
   const sales = useSalesMembers(socket);
-
-  useEffect(() => {
-    const handleProjectCreated = (project) => {
-      console.log("🔔 New project created:", project);
-      refetch(); // Optional: যদি অন্য ইউজারও রিয়েলটাইমে দেখতে চায়
-    };
-
-    socket.on("projectCreated", handleProjectCreated);
-
-    return () => {
-      socket.off("projectCreated", handleProjectCreated); // cleanup
-    };
-  }, [socket]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,12 +36,14 @@ function AddProjectForm({ setShowModal, refetch }) {
       if (res.status === 200 || res.status === 201) {
         toast.success("Project added successfully");
         setShowModal(false);
+        refetch();
       }
     } catch (error) {
       toast.error("Failed to add project");
       console.error(error);
     }
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-xl">

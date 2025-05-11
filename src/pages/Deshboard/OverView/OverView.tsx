@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
@@ -21,12 +20,12 @@ function OverView() {
     "eachTeamChart",
   );
 
-  useEffect(() => {
-    if (chartRawData.length > 0) {
-      console.log("Real-time update received:", chartRawData);
-    }
-    console.log("Real-time update received:", chartRawData);
-  }, [chartRawData]);
+  // useEffect(() => {
+  //   if (chartRawData.length > 0) {
+  //     console.log("Real-time update received:", chartRawData);
+  //   }
+
+  // }, [chartRawData]);
 
   const base = chartRawData?.teamTarget || 1;
 
