@@ -21,6 +21,7 @@ function AddProjectForm({ setShowModal, refetch }) {
     try {
       const token = Cookies.get("core");
       console.log(data);
+
       const res = await axios.post(
         "https://mtsbackend20-production.up.railway.app/api/project/create",
         data,
@@ -34,14 +35,15 @@ function AddProjectForm({ setShowModal, refetch }) {
 
       if (res.status === 200 || res.status === 201) {
         toast.success("Project added successfully");
-        refetch?.(); // refetch only if provided
         setShowModal(false);
+        refetch();
       }
     } catch (error) {
       toast.error("Failed to add project");
       console.error(error);
     }
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-xl">
@@ -128,6 +130,26 @@ function AddProjectForm({ setShowModal, refetch }) {
             ))}
             {/* ডায়নামিক ডেটা চাইলে এখানে map করতে পারো */}
           </select>
+
+          <p className="text-secondary py-2">Complete Requirements:</p>
+          <span className="text-secondary inline-block pb-4">
+            Yes
+            <input
+              className="ml-2 px-2"
+              type="radio"
+              value="Yes"
+              name="project_requirements"
+            />
+          </span>
+          <span className="text-secondary inline-block px-2 pb-4">
+            No
+            <input
+              className="ml-2 px-2"
+              type="radio"
+              value="No"
+              name="project_requirements"
+            />
+          </span>
 
           <button
             type="submit"

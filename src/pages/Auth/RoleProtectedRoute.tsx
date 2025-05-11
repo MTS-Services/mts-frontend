@@ -18,6 +18,8 @@ const RoleProtectedRoute = ({ children, allowedRoles = [] }) => {
   }
 
   if (!allowedRoles.includes(role)) {
+    console.log("role", role);
+
     toast.error("Access denied");
     return <Navigate to="/" replace />;
   }

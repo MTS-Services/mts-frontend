@@ -50,7 +50,7 @@ const LoginForm: React.FC = () => {
           } else if (role === "operation_member") {
             navigate("/dashboard/");
           } else {
-            navigate("/"); // default
+            navigate("/dashboard/over-view");
           }
         } else {
           toast.error("Login failed. No token returned.");

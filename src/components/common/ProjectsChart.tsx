@@ -1,13 +1,13 @@
-import { Bar } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
-} from 'chart.js';
+} from "chart.js";
+import { useEffect, useRef } from "react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -16,74 +16,83 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
-const ProjectsChart = (props) => {
-  const {
-    data,
-    title = '',
-    label = 'Dataset lebel',
-    // backgroundColor,
-    // borderColor,
-    borderWidth = 1,
-    borderRadius = 4,
-    yAxisTitle = '',
-    xAxisTitle = '',
-    chartWidth = '',
-    className = '',
-  } = props;
+const ProjectsChart = ({
+  data,
+  title = "",
+  label = "Dataset label",
+  borderWidth = 1,
+  borderRadius = 4,
+  yAxisTitle = "",
+  xAxisTitle = "",
+  chartWidth = "",
+  className = "",
+}) => {
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
 
-  // Format data for ChartJS
-  const chartData = {
-    labels: data.map((item) => item.name),
-    datasets: [
-      {
-        label: label,
-        data: data.map((item) => item.amount),
-        backgroundColor: '#aaaaaaaa',
-        borderColor: '#a5f3eb',
-        borderWidth: borderWidth,
-        borderRadius: borderRadius,
-      },
+  useEffect(() => {
+    const ctx = canvasRef.current.getContext("2d");
 
-      // Other datasets can be added here if needed
-      // ...
-    ],
-  };
+    // Destroy previous instance before re-creating
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
+    chartRef.current = new ChartJS(ctx, {
+      type: "bar",
+      data: {
+        labels: data.map((item) => item.name),
+        datasets: [
+          {
+            label,
+            data: data.map((item) => item.amount),
+            backgroundColor: "#aaaaaaaa",
+            borderColor: "#a5f3eb",
+            borderWidth,
+            borderRadius,
+          },
+        ],
       },
-      title: {
-        display: true,
-        text: title,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: yAxisTitle,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: !!title,
+            text: title,
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: !!yAxisTitle,
+              text: yAxisTitle,
+            },
+          },
+          x: {
+            title: {
+              display: !!xAxisTitle,
+              text: xAxisTitle,
+            },
+          },
         },
       },
-      x: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: xAxisTitle,
-        },
-      },
-    },
-  };
+    });
+
+    return () => {
+      chartRef.current?.destroy();
+    };
+  }, [data, title, label, borderWidth, borderRadius, yAxisTitle, xAxisTitle]);
 
   return (
     <div style={{ width: chartWidth }} className={className}>
-      <Bar data={chartData} options={options} />
+      <canvas ref={canvasRef} />
     </div>
   );
 };

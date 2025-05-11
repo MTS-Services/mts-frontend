@@ -1,7 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
+import { Link } from "react-router";
 import { toast } from "react-toastify";
+import { debounce } from "../../../components/utility/debounce";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
 import { useTheme } from "../../../context/ThemeContext";
@@ -24,6 +26,10 @@ function SingleDeshboardProject({ item, refetch }) {
     item.opsleader_comments ?? "",
   );
 
+  const [meeting, setMeeting] = useState(
+    item?.sales_comments?.toLowerCase().includes("meeting"),
+  );
+
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
     item.department_id,
   );
@@ -36,7 +42,7 @@ function SingleDeshboardProject({ item, refetch }) {
   const [revision, setRevision] = useState(item.revision ?? 0);
 
   const dateInputRef = useRef(null);
-  const { updateProject, error, success } = useUpdateProject();
+  const { updateProject, error, success, reset } = useUpdateProject();
 
   const setProjectStates = (updatedItem) => {
     setSelectedDepartmentId(updatedItem.department_id ?? null);
@@ -50,6 +56,7 @@ function SingleDeshboardProject({ item, refetch }) {
     setRevision(updatedItem.revision ?? 0);
     setProfileId(updatedItem.profile_id);
     setSalesId(updatedItem.ordered_by);
+    setMeeting(updatedItem?.sales_comments.toLowerCase().includes("meeting"));
   };
 
   const sales = useSalesMembers(socket);
@@ -61,21 +68,18 @@ function SingleDeshboardProject({ item, refetch }) {
     item,
     setProjectStates,
   );
-  console.log(item);
-  useEffect(() => {
-    if (success) toast.success("Update Successful");
-    if (error) toast.warning("Update Failed");
-  }, [success, error, profiles]);
 
   useEffect(() => {
-    socket.emit("getTeamsForDepartment", selectedDepartmentId);
+    if (success) {
+      toast.success("Update Successful");
+      reset();
+    }
 
-    const eventName = `getTeamName:${selectedDepartmentId}`;
-
-    socket.on(eventName, function (teamss) {
-      console.log("ttm L", teamss);
-    });
-  }, [socket, selectedDepartmentId]);
+    if (error) {
+      toast.warning("Update Failed");
+      reset();
+    }
+  }, [success, error, reset]);
 
   const handleUpdate = (data) => updateProject(item.id, data);
 
@@ -111,25 +115,129 @@ function SingleDeshboardProject({ item, refetch }) {
     refetch();
   };
 
-  const commentHandler = (key, valueSetter) => async (e) => {
-    const value = e.target.value;
-    valueSetter(value);
-    await handleUpdate({ [key]: value });
-  };
+  function useDebouncedCommentHandler(handleUpdate) {
+    const debouncedFns = useRef({});
+
+    const getHandler = (key) => {
+      if (!debouncedFns.current[key]) {
+        debouncedFns.current[key] = debounce((value) => {
+          handleUpdate({ [key]: value });
+        }, 1200);
+      }
+
+      return debouncedFns.current[key];
+    };
+
+    const commentHandler = (key, valueSetter) => (e) => {
+      const value = e.target.value;
+      valueSetter(value);
+      getHandler(key)(value);
+    };
+    return commentHandler;
+  }
+
+  const commentHandler = useDebouncedCommentHandler(handleUpdate);
 
   const statusHandler = async (type, newStatus) => {
-    if (type === "op") {
+    if (type == "op") {
       setOpstatus(newStatus);
       await handleUpdate({ ops_status: newStatus });
     } else {
       setSastatus(newStatus);
       refetch();
-      if (newStatus === "delivered") {
+      if (newStatus == "delivered") {
         await handleUpdate({
           status: newStatus,
           is_delivered: true,
           delivery_date: new Date().toISOString().split("T")[0],
         });
+        refetch();
+        exports.getTodayTask = async (req, res) => {
+          try {
+            const { uid } = req.user;
+            const me = await prisma.team_member.findUnique({
+              where: { uid },
+              include: { team: true },
+            });
+            if (!me || !me.role?.startsWith("operation_"))
+              return res.status(403).json({ error: "Access denied" });
+
+            const rows = await prisma.today_task.findMany({
+              where: {
+                project: { is_delivered: false },
+                ...(me.role === "operation_leader"
+                  ? { team_id: me.team_id }
+                  : { team_member_id: me.id }),
+              },
+              include: {
+                project: { select: { update_at: true, deli_last_date: true } },
+                team_member: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+              orderBy: { project: { update_at: "desc" } },
+            });
+
+            const tasks = Object.values(
+              rows.reduce((acc, row) => {
+                const pid = row.project_id;
+                if (!acc[pid]) {
+                  acc[pid] = {
+                    project_id: pid,
+                    client_name: row.client_name,
+                    expected_finish_time: row.expected_finish_time,
+                    last_update: row.project?.update_at,
+                    deli_last_date: row.project?.deli_last_date,
+                    assign: [],
+                  };
+                }
+
+                const assigneeObj = row.team_member
+                  ? { ...row.team_member, ops_status: row.ops_status }
+                  : {
+                      id: null,
+                      first_name: null,
+                      last_name: null,
+                      email: null,
+                      role: null,
+                      ops_status: row.ops_status,
+                    };
+
+                acc[pid].assign.push(assigneeObj);
+                return acc;
+              }, {}),
+            );
+
+            let teamMembers = [];
+            if (me.role === "operation_leader") {
+              teamMembers = await prisma.team_member.findMany({
+                where: { team_id: me.team_id },
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  role: true,
+                },
+              });
+            }
+
+            return res.json(
+              me.role === "operation_leader"
+                ? { tasks, team_members: teamMembers }
+                : { tasks },
+            );
+          } catch (err) {
+            console.error("getTodayTask →", err);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+        };
       } else if (newStatus === "realrevision") {
         setRevision((prev) => prev + 1);
         await handleUpdate({ status: newStatus, revision: revision + 1 });
@@ -147,15 +255,31 @@ function SingleDeshboardProject({ item, refetch }) {
     delivered: "bg-pink-600",
     submitted: "bg-blue-600",
     nra: "bg-black",
+    cancelled: "bg-red-500",
+    client_Update: "bg-blue-900",
   };
+  // const navigate = useNavigate();
 
   return (
     <tr
-      className={`${theme == "light-mode" ? "even:bg-primary/92" : "even:bg-primary/20"} odd:bg-primary`}
+      className={`${
+        item.status?.toLowerCase() === "cancelled"
+          ? "bg-red-500 text-white"
+          : theme === "light-mode"
+            ? "even:bg-primary/92 odd:bg-primary"
+            : "even:bg-primary/20 odd:bg-primary"
+      }`}
     >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.clientName}</p>
-        <p className="p-2"># {item.id}</p>
+
+        {/* <p className="p-2">{item.order_id}</p> */}
+
+        <p className="p-2">
+          <Link to={`/dashboard/projectsdetails/${item.id}`}>
+            {item.order_id}
+          </Link>
+        </p>
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
@@ -175,7 +299,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={teamHandler}
           value={selectedTeamId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
@@ -217,9 +341,10 @@ function SingleDeshboardProject({ item, refetch }) {
         >
           SA :
           <select
-            className={`${statusObj[sastatus]} focus:outline-none`}
+            className={`${statusObj[sastatus]} focus:outline-none ${roleBasePermissionOne && "appearance-none"}`}
             onChange={(e) => statusHandler("sa", e.target.value)}
             value={sastatus}
+            disabled={roleBasePermissionOne}
           >
             {Object.keys(statusObj).map((status) => (
               <option key={status} value={status}>
@@ -237,10 +362,13 @@ function SingleDeshboardProject({ item, refetch }) {
       >
         <div className="p-2">
           {show ? (
-            <div className="w-full" onClick={() => setShow(false)}>
+            <div
+              className="w-full"
+              onClick={() => !roleBasePermissionOne && setShow(false)}
+            >
               <div className="flex cursor-pointer items-center justify-between">
                 {date}
-                <FiCalendar className="h-5 w-5" />
+                {!roleBasePermissionOne && <FiCalendar className="h-5 w-5" />}
               </div>
             </div>
           ) : (
@@ -253,6 +381,7 @@ function SingleDeshboardProject({ item, refetch }) {
                 className="border-amber-500 focus:ring-2 focus:ring-amber-500"
                 disabled={roleBasePermissionOne}
               />
+
               <FaCheckSquare
                 onClick={() => {
                   if (date !== item.deli_last_date) dateHandler(date);
@@ -270,7 +399,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={profileHandler}
           value={profileId ?? ""}
-          className="w-full p-2"
+          className={`w-full p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           {profiles?.map((profile) => (
@@ -283,7 +412,7 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={salesHandler}
           value={salesId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
           disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
@@ -297,7 +426,9 @@ function SingleDeshboardProject({ item, refetch }) {
         </select>
       </td>
 
-      <td className="border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap">
+      <td
+        className={`${meeting && "bg-red-500"} border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap`}
+      >
         <textarea
           rows="2"
           value={saleComment}
