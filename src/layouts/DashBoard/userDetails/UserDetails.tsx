@@ -1,4 +1,3 @@
-import EmployeeSummary from '../../../components/userListComponent/EmployeeSummary/EmployeeSummary';
 import UserInformation from '../../../components/userListComponent/UserDetailsComponent/UserInformation';
 
 function UserDetails() {
@@ -6,7 +5,7 @@ function UserDetails() {
     <div className="">
       {/* dd  */}
       <UserInformation/>
-      <EmployeeSummary></EmployeeSummary>
+      {/* <EmployeeSummary></EmployeeSummary> */}
     </div>
   );
 }

@@ -1,15 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
+import { Link } from "react-router";
 import { toast } from "react-toastify";
+import { debounce } from "../../../components/utility/debounce";
+import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
+import { useTheme } from "../../../context/ThemeContext";
 import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
+import { useSalesMembers } from "../../../hooks/useSocketDataUtils";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
 
 function SingleDeshboardProject({ item, refetch }) {
+  const { roleBasePermissionOne, roleBasePermissionTwo } =
+    useContext(AuthContext);
+  const socket = useSocket();
+  const { theme } = useTheme();
   const { days, hours } = useCurrentTime(item.deli_last_date);
-
   const [date, setDate] = useState(item.deli_last_date);
   const [extension, setExtension] = useState(item.extension ?? 0);
   const [show, setShow] = useState(true);
@@ -17,19 +25,24 @@ function SingleDeshboardProject({ item, refetch }) {
   const [operationComment, setOperationComment] = useState(
     item.opsleader_comments ?? "",
   );
+
+  const [meeting, setMeeting] = useState(
+    item?.sales_comments?.toLowerCase().includes("meeting"),
+  );
+
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
     item.department_id,
   );
   const [selectedTeamId, setSelectedTeamId] = useState(item?.team_id);
+
   const [profileId, setProfileId] = useState(item?.profile_id);
   const [salesId, setSalesId] = useState(item?.ordered_by);
   const [opstatus, setOpstatus] = useState(item.ops_status ?? "nra");
   const [sastatus, setSastatus] = useState(item.status ?? "nra");
   const [revision, setRevision] = useState(item.revision ?? 0);
 
-  const socket = useSocket();
   const dateInputRef = useRef(null);
-  const { updateProject, error, success } = useUpdateProject();
+  const { updateProject, error, success, reset } = useUpdateProject();
 
   const setProjectStates = (updatedItem) => {
     setSelectedDepartmentId(updatedItem.department_id ?? null);
@@ -43,9 +56,12 @@ function SingleDeshboardProject({ item, refetch }) {
     setRevision(updatedItem.revision ?? 0);
     setProfileId(updatedItem.profile_id);
     setSalesId(updatedItem.ordered_by);
+    setMeeting(updatedItem?.sales_comments.toLowerCase().includes("meeting"));
   };
 
-  const { departments, teams, profiles, salesteams } = useSocketData(
+  const sales = useSalesMembers(socket);
+
+  const { departments, teams, profiles } = useSocketData(
     socket,
     selectedDepartmentId,
     selectedTeamId,
@@ -54,9 +70,16 @@ function SingleDeshboardProject({ item, refetch }) {
   );
 
   useEffect(() => {
-    if (success) toast.success("Update Successful");
-    if (error) toast.warning("Update Failed");
-  }, [success, error, profiles]);
+    if (success) {
+      toast.success("Update Successful");
+      reset();
+    }
+
+    if (error) {
+      toast.warning("Update Failed");
+      reset();
+    }
+  }, [success, error, reset]);
 
   const handleUpdate = (data) => updateProject(item.id, data);
 
@@ -92,24 +115,129 @@ function SingleDeshboardProject({ item, refetch }) {
     refetch();
   };
 
-  const commentHandler = (key, valueSetter) => async (e) => {
-    const value = e.target.value;
-    valueSetter(value);
-    await handleUpdate({ [key]: value });
-  };
+  function useDebouncedCommentHandler(handleUpdate) {
+    const debouncedFns = useRef({});
+
+    const getHandler = (key) => {
+      if (!debouncedFns.current[key]) {
+        debouncedFns.current[key] = debounce((value) => {
+          handleUpdate({ [key]: value });
+        }, 1200);
+      }
+
+      return debouncedFns.current[key];
+    };
+
+    const commentHandler = (key, valueSetter) => (e) => {
+      const value = e.target.value;
+      valueSetter(value);
+      getHandler(key)(value);
+    };
+    return commentHandler;
+  }
+
+  const commentHandler = useDebouncedCommentHandler(handleUpdate);
 
   const statusHandler = async (type, newStatus) => {
-    if (type === "op") {
+    if (type == "op") {
       setOpstatus(newStatus);
       await handleUpdate({ ops_status: newStatus });
     } else {
       setSastatus(newStatus);
-      if (newStatus === "delivered") {
+      refetch();
+      if (newStatus == "delivered") {
         await handleUpdate({
           status: newStatus,
           is_delivered: true,
           delivery_date: new Date().toISOString().split("T")[0],
         });
+        refetch();
+        exports.getTodayTask = async (req, res) => {
+          try {
+            const { uid } = req.user;
+            const me = await prisma.team_member.findUnique({
+              where: { uid },
+              include: { team: true },
+            });
+            if (!me || !me.role?.startsWith("operation_"))
+              return res.status(403).json({ error: "Access denied" });
+
+            const rows = await prisma.today_task.findMany({
+              where: {
+                project: { is_delivered: false },
+                ...(me.role === "operation_leader"
+                  ? { team_id: me.team_id }
+                  : { team_member_id: me.id }),
+              },
+              include: {
+                project: { select: { update_at: true, deli_last_date: true } },
+                team_member: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+              orderBy: { project: { update_at: "desc" } },
+            });
+
+            const tasks = Object.values(
+              rows.reduce((acc, row) => {
+                const pid = row.project_id;
+                if (!acc[pid]) {
+                  acc[pid] = {
+                    project_id: pid,
+                    client_name: row.client_name,
+                    expected_finish_time: row.expected_finish_time,
+                    last_update: row.project?.update_at,
+                    deli_last_date: row.project?.deli_last_date,
+                    assign: [],
+                  };
+                }
+
+                const assigneeObj = row.team_member
+                  ? { ...row.team_member, ops_status: row.ops_status }
+                  : {
+                      id: null,
+                      first_name: null,
+                      last_name: null,
+                      email: null,
+                      role: null,
+                      ops_status: row.ops_status,
+                    };
+
+                acc[pid].assign.push(assigneeObj);
+                return acc;
+              }, {}),
+            );
+
+            let teamMembers = [];
+            if (me.role === "operation_leader") {
+              teamMembers = await prisma.team_member.findMany({
+                where: { team_id: me.team_id },
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  role: true,
+                },
+              });
+            }
+
+            return res.json(
+              me.role === "operation_leader"
+                ? { tasks, team_members: teamMembers }
+                : { tasks },
+            );
+          } catch (err) {
+            console.error("getTodayTask →", err);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+        };
       } else if (newStatus === "realrevision") {
         setRevision((prev) => prev + 1);
         await handleUpdate({ status: newStatus, revision: revision + 1 });
@@ -127,20 +255,39 @@ function SingleDeshboardProject({ item, refetch }) {
     delivered: "bg-pink-600",
     submitted: "bg-blue-600",
     nra: "bg-black",
+    cancelled: "bg-red-500",
+    client_Update: "bg-blue-900",
   };
+  // const navigate = useNavigate();
 
   return (
-    <tr className="odd:bg-primary text-accent even:bg-primary/20">
+    <tr
+      className={`${
+        item.status?.toLowerCase() === "cancelled"
+          ? "bg-red-500 text-white"
+          : theme === "light-mode"
+            ? "even:bg-primary/92 odd:bg-primary"
+            : "even:bg-primary/20 odd:bg-primary"
+      }`}
+    >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <p className="p-2">{item.clientName}</p>
-        <p className="p-2"># {item.id}</p>
+
+        {/* <p className="p-2">{item.order_id}</p> */}
+
+        <p className="p-2">
+          <Link to={`/dashboard/projectsdetails/${item.id}`}>
+            {item.order_id}
+          </Link>
+        </p>
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
         <select
           onChange={departmentHandler}
           value={selectedDepartmentId ?? ""}
-          className="w-full p-2"
+          className={`w-full p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
+          disabled={roleBasePermissionOne}
         >
           {departments?.map((d) => (
             <option key={d.id} value={d.id} className="bg-primary">
@@ -152,7 +299,8 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={teamHandler}
           value={selectedTeamId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
+          disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
             Select Team
@@ -171,12 +319,15 @@ function SingleDeshboardProject({ item, refetch }) {
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className={`${statusObj[opstatus]} flex justify-evenly p-2`}>
+        <p
+          className={`${statusObj[opstatus]} flex ${roleBasePermissionTwo ? "gap-1 pl-6" : "justify-evenly"} p-2`}
+        >
           OP :
           <select
-            className={`${statusObj[opstatus]} focus:outline-none`}
+            className={`${statusObj[opstatus]} focus:outline-none ${roleBasePermissionTwo && "appearance-none"}`}
             onChange={(e) => statusHandler("op", e.target.value)}
             value={opstatus}
+            disabled={roleBasePermissionTwo}
           >
             {Object.keys(statusObj).map((status) => (
               <option key={status} value={status}>
@@ -190,9 +341,10 @@ function SingleDeshboardProject({ item, refetch }) {
         >
           SA :
           <select
-            className={`${statusObj[sastatus]} focus:outline-none`}
+            className={`${statusObj[sastatus]} focus:outline-none ${roleBasePermissionOne && "appearance-none"}`}
             onChange={(e) => statusHandler("sa", e.target.value)}
             value={sastatus}
+            disabled={roleBasePermissionOne}
           >
             {Object.keys(statusObj).map((status) => (
               <option key={status} value={status}>
@@ -210,10 +362,13 @@ function SingleDeshboardProject({ item, refetch }) {
       >
         <div className="p-2">
           {show ? (
-            <div className="w-full" onClick={() => setShow(false)}>
-              <div className="text-accent flex cursor-pointer items-center justify-between">
+            <div
+              className="w-full"
+              onClick={() => !roleBasePermissionOne && setShow(false)}
+            >
+              <div className="flex cursor-pointer items-center justify-between">
                 {date}
-                <FiCalendar className="h-5 w-5" />
+                {!roleBasePermissionOne && <FiCalendar className="h-5 w-5" />}
               </div>
             </div>
           ) : (
@@ -224,7 +379,9 @@ function SingleDeshboardProject({ item, refetch }) {
                 type="date"
                 onChange={(e) => setDate(e.target.value)}
                 className="border-amber-500 focus:ring-2 focus:ring-amber-500"
+                disabled={roleBasePermissionOne}
               />
+
               <FaCheckSquare
                 onClick={() => {
                   if (date !== item.deli_last_date) dateHandler(date);
@@ -242,7 +399,8 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={profileHandler}
           value={profileId ?? ""}
-          className="w-full p-2"
+          className={`w-full p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
+          disabled={roleBasePermissionOne}
         >
           {profiles?.map((profile) => (
             <option key={profile.id} value={profile.id} className="bg-primary">
@@ -254,23 +412,27 @@ function SingleDeshboardProject({ item, refetch }) {
         <select
           onChange={salesHandler}
           value={salesId ?? ""}
-          className="border-accent/20 w-full border-t-1 p-2"
+          className={`border-accent/20 w-full border-t-1 p-2 pl-5 ${roleBasePermissionOne && "appearance-none"}`}
+          disabled={roleBasePermissionOne}
         >
           <option className="bg-primary" value="">
             Select Team
           </option>
-          {salesteams?.map((sales) => (
-            <option key={sales.id} value={sales.id} className="bg-primary">
-              {sales.team_name}
+          {sales?.map((sale) => (
+            <option key={sale.id} value={sale.id} className="bg-primary">
+              {sale.name}
             </option>
           ))}
         </select>
       </td>
 
-      <td className="border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap">
+      <td
+        className={`${meeting && "bg-red-500"} border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap`}
+      >
         <textarea
           rows="2"
           value={saleComment}
+          disabled={roleBasePermissionOne}
           onChange={commentHandler("sales_comments", setSaleComment)}
           className="w-full border-transparent p-2 focus:border-blue-500 focus:outline-none"
         />
@@ -279,6 +441,7 @@ function SingleDeshboardProject({ item, refetch }) {
       <td className="border px-2 py-1 text-left text-sm font-semibold whitespace-nowrap">
         <textarea
           rows="2"
+          disabled={roleBasePermissionTwo}
           value={operationComment}
           onChange={commentHandler("opsleader_comments", setOperationComment)}
           className="w-full border-transparent p-2 focus:border-blue-500 focus:outline-none"

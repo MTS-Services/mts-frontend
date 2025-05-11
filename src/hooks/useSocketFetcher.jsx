@@ -1,31 +1,31 @@
 import { useEffect, useState } from "react";
 
-/**
- * Reusable socket data fetcher hook.
- */
 export const useSocketFetcher = (
   socket,
   emitEvent,
   emitPayload,
-  listenEvent,
+  listenEventKey,
 ) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    if (!socket || !emitEvent || !listenEvent) return;
+    if (!socket || !emitEvent || !listenEventKey) return;
+
+    const eventName =
+      typeof listenEventKey === "function" ? listenEventKey() : listenEventKey;
 
     socket.emit(emitEvent, emitPayload);
 
     const handler = (response) => {
-      setData(response);
+      setData(response || []);
     };
 
-    socket.on(listenEvent, handler);
+    socket.on(eventName, handler);
 
     return () => {
-      socket.off(listenEvent, handler);
+      socket.off(eventName, handler);
     };
-  }, [socket, emitEvent, emitPayload, listenEvent]);
+  }, [socket, emitEvent, emitPayload, listenEventKey]);
 
   return data;
 };

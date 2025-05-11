@@ -15,11 +15,12 @@ export const useSocketData = (
     "getDepartmentName",
   );
 
+  const departmentIdStr = String(departmentId || "");
   const teams = useSocketFetcher(
     socket,
     "getTeamsForDepartment",
     departmentId,
-    `getTeamName:${departmentId}`,
+    `getTeamName:${departmentIdStr}`,
   );
 
   const salesteams = useSocketFetcher(
@@ -31,7 +32,6 @@ export const useSocketData = (
 
   const [profiles, setProfiles] = useState([]);
 
-  // 🔁 Get ALL profiles once (no ID needed)
   useEffect(() => {
     if (!socket) return;
 

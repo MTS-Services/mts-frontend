@@ -12,7 +12,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socketIo = io("http://192.168.10.47:3000", {
+    const socketIo = io("https://mtsbackend20-production.up.railway.app/", {
       transports: ["websocket"],
     });
 
