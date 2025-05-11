@@ -48,7 +48,7 @@ const TeamDistribution = () => {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[1000px] text-left">
           <thead>
-            <tr className="bg-secondary border border-accent text-base font-primary text-white">
+            <tr className="bg-secondary border-accent font-primary border text-base text-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
@@ -61,7 +61,7 @@ const TeamDistribution = () => {
                   ) : (
                     <div className="flex items-center justify-center gap-1 font-bold">
                       <span>{head}</span>
-                      <span className="text-sm text-wihtis">
+                      <span className="text-wihtis text-sm">
                         - {totalRow[i]}
                       </span>
                     </div>
@@ -85,9 +85,11 @@ const TeamDistribution = () => {
                   >
                     {/* First two columns as-is, others only amount */}
                     {colIndex < 2 ? (
-                      <span className="text-white font-semibold">{cell}</span>
+                      <span className="font-semibold text-white">{cell}</span>
                     ) : (
-                      <span className="text-white font-primary text-sm">{cell}</span>
+                      <span className="font-primary text-sm text-white">
+                        {cell}
+                      </span>
                     )}
                   </td>
                 ))}
