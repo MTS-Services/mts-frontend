@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSocket } from "../../context/SocketContext.js";
 import {
@@ -14,6 +15,19 @@ function AddProjectForm({ setShowModal, refetch }) {
   const profiles = useProfileNames(socket);
   const sales = useSalesMembers(socket);
 
+  useEffect(() => {
+    const handleProjectCreated = (project) => {
+      console.log("🔔 New project created:", project);
+      refetch(); // Optional: যদি অন্য ইউজারও রিয়েলটাইমে দেখতে চায়
+    };
+
+    socket.on("projectCreated", handleProjectCreated);
+
+    return () => {
+      socket.off("projectCreated", handleProjectCreated); // cleanup
+    };
+  }, [socket]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = new FormData(e.target);
@@ -21,6 +35,7 @@ function AddProjectForm({ setShowModal, refetch }) {
     try {
       const token = Cookies.get("core");
       console.log(data);
+
       const res = await axios.post(
         "https://mtsbackend20-production.up.railway.app/api/project/create",
         data,
@@ -34,7 +49,6 @@ function AddProjectForm({ setShowModal, refetch }) {
 
       if (res.status === 200 || res.status === 201) {
         toast.success("Project added successfully");
-        refetch?.(); // refetch only if provided
         setShowModal(false);
       }
     } catch (error) {
