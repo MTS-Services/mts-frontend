@@ -32,7 +32,6 @@ export const useSocketData = (
 
   const [profiles, setProfiles] = useState([]);
 
-  // 🔁 Get ALL profiles once (no ID needed)
   useEffect(() => {
     if (!socket) return;
 

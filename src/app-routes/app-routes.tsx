@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import BestContributorsForm from "../components/common/BestContributorsfrom/BestContributorsfrom";
+import Profile from "../components/common/Profile/Profile";
 import DashboardLayout from "../DashboardLayout";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
@@ -9,19 +11,20 @@ import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
 import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
-import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";   
+import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import MainLayOut from "../MainLayOut";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
 import RegisterView from "../pages/auth/RegisterView";
 import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
+import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
+import OverView from "../pages/Deshboard/OverView/OverView";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-import ChartView from "./../layouts/DashBoard/UserDashBoard/chart/ChartView";
-import BestContributorsForm from "../components/common/BestContributorsfrom/BestContributorsfrom";
-import Profile from "../components/common/Profile/Profile";
+import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
+import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UserProfilePage from "../pages/UserProfilePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
@@ -38,7 +41,11 @@ const AppRoutes = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: (
+          <CelebrationCurtain>
+            <Home />
+          </CelebrationCurtain>
+        ),
       },
       {
         path: "/login",
@@ -76,10 +83,9 @@ const AppRoutes = createBrowserRouter([
     children: [
       {
         index: true,
-        path: "/dashboard",
-        element: <ChartView />,
+        path: "over-view",
+        element: <OverView />,
       },
-
       {
         path: "projects",
         element: (
@@ -88,6 +94,7 @@ const AppRoutes = createBrowserRouter([
               "sales_member",
               "operation_member",
               "operation_leader",
+              "sales_leader",
             ]}
           >
             <AllProjects />
@@ -98,9 +105,17 @@ const AppRoutes = createBrowserRouter([
         path: "projects-old",
         element: <Projects />,
       },
-         {
-         path: "profile",
-         element: <Profile/>
+      {
+        path: "ranking-page",
+        element: <ProfileRankingPage />,
+      },
+      {
+        path: "special-order",
+        element: <SpecialOrderPage />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
 
       {
@@ -110,9 +125,8 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "userprofiledetails/:id",
-        element:<UserProfilePage/>      },
-
-
+        element: <UserProfilePage />,
+      },
 
       {
         path: "todaytask",
@@ -126,7 +140,6 @@ const AppRoutes = createBrowserRouter([
         path: "bestcontributor",
         element: <BestContributors />,
       },
-   
 
       {
         path: "userlist",

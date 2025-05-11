@@ -1,13 +1,12 @@
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import "swiper/css/effect-fade"; // Smooth fade effect
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/effect-fade"; // Smooth fade effect
-import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "./herosection.css"; // Custom CSS for additional styles
 
 const products = [
-
   {
     id: 1,
     image: "/assits/hero/b1.JPG",
@@ -16,7 +15,7 @@ const products = [
     discountPrice: "welcome to",
   },
 
-   {
+  {
     id: 2,
     image: "/assits/hero/b9.JPG",
     title: "High Quality IT Solutions for Startup",
@@ -31,7 +30,6 @@ const products = [
     discountPrice: "welcome to",
   },
 
- 
   {
     id: 4,
     image: "/assits/hero/b6.JPG",
@@ -43,8 +41,8 @@ const products = [
 
 const HeroSection = () => {
   return (
-    <div className="flex items-center  justify-center max-w-[1440px] mx-auto px-[20pxs]">
-      <div className="w-full px-2.5">
+    <div className="mx-auto flex max-w-[1440px] items-center justify-center">
+      <div className="border-primary m-8 w-full rounded-xl border-3">
         <Swiper
           modules={[Navigation, Pagination, Autoplay, EffectFade]} // Added EffectFade
           effect="fade" // Enables fade transition
@@ -63,10 +61,9 @@ const HeroSection = () => {
         >
           {products.map((product) => (
             <SwiperSlide key={product.id}>
-              <div className="relative flex items-center justify-center overflow-hidden rounded-lg  shadow-md">
+              <div className="relative flex items-center justify-center overflow-hidden rounded-lg shadow-md">
                 <div
-                  className="h-[250px] w-full mt-4 md:mt-8   bg-cover bg-center transition-all duration-1000 ease-in-out 
-                  sm:h-[400px] md:h-[500px] lg:h-[600px]"
+                  className="h-[250px] w-full bg-cover bg-center transition-all duration-1000 ease-in-out sm:h-[400px] md:h-[500px] lg:h-[600px]"
                   style={{
                     backgroundImage: `url(${product.image})`,
                     backgroundSize: "cover", // Ensure the image covers the container

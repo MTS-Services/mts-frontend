@@ -2,13 +2,12 @@ import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
 import {
   FaChartLine,
-  FaHome,
   FaMedal,
   FaProjectDiagram,
   FaTasks,
   FaUser,
 } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
+import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTeamUpgrade } from "react-icons/gi";
 import { GrGroup } from "react-icons/gr";
 import {
@@ -20,7 +19,6 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
-
 const SidebarStyle = () => {
   const { theme } = useTheme();
   const { dbUser } = useContext(AuthContext);
@@ -34,7 +32,7 @@ const SidebarStyle = () => {
   const location = useLocation();
 
   const sidebarItems = [
-    { icon: <FaHome />, label: "Home", path: "/dashboard" },
+    { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
     { icon: <FaTasks />, label: "Performance", path: "performance" },
@@ -65,7 +63,7 @@ const SidebarStyle = () => {
 
   return (
     <aside
-      className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 shadow-md shadow-black ${
+      className={`bg-background text-accent hover:text-accent z-1 min-h-screen border-r-1 border-gray-700 ${theme == "light-mode" ? "" : "border-gray-700"} ${
         isOpen ? "w-48 space-y-3 px-2 py-4" : "w-14 space-y-2 px-2 py-2"
       } flex flex-col justify-between transition-all duration-400 ease-in-out`}
     >

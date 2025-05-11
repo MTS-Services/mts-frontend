@@ -129,6 +129,26 @@ function AddProjectForm({ setShowModal, refetch }) {
             {/* ডায়নামিক ডেটা চাইলে এখানে map করতে পারো */}
           </select>
 
+          <p className="text-secondary py-2">Complete Requirements:</p>
+          <span className="text-secondary inline-block pb-4">
+            Yes
+            <input
+              className="ml-2 px-2"
+              type="radio"
+              value="Yes"
+              name="project_requirements"
+            />
+          </span>
+          <span className="text-secondary inline-block px-2 pb-4">
+            No
+            <input
+              className="ml-2 px-2"
+              type="radio"
+              value="No"
+              name="project_requirements"
+            />
+          </span>
+
           <button
             type="submit"
             className="font-secondary bg-primary w-full rounded px-4 py-2 text-white hover:bg-blue-700"
