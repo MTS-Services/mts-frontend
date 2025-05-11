@@ -71,12 +71,12 @@ function SingleDeshboardProject({ item, refetch }) {
   useEffect(() => {
     if (success) {
       toast.success("Update Successful");
-      reset(); // prevents duplicate toasts
+      reset();
     }
 
     if (error) {
       toast.warning("Update Failed");
-      reset(); // optional, but avoids lingering error state
+      reset();
     }
   }, [success, error, reset]);
 
@@ -121,7 +121,7 @@ function SingleDeshboardProject({ item, refetch }) {
       if (!debouncedFns.current[key]) {
         debouncedFns.current[key] = debounce((value) => {
           handleUpdate({ [key]: value });
-        }, 1200); // increase debounce delay to 1200ms
+        }, 1200);
       }
 
       return debouncedFns.current[key];
@@ -129,10 +129,9 @@ function SingleDeshboardProject({ item, refetch }) {
 
     const commentHandler = (key, valueSetter) => (e) => {
       const value = e.target.value;
-      valueSetter(value); // instantly updates UI
-      getHandler(key)(value); // debounced backend update
+      valueSetter(value);
+      getHandler(key)(value);
     };
-
     return commentHandler;
   }
 
@@ -354,10 +353,13 @@ function SingleDeshboardProject({ item, refetch }) {
       >
         <div className="p-2">
           {show ? (
-            <div className="w-full" onClick={() => setShow(false)}>
+            <div
+              className="w-full"
+              onClick={() => !roleBasePermissionOne && setShow(false)}
+            >
               <div className="flex cursor-pointer items-center justify-between">
                 {date}
-                <FiCalendar className="h-5 w-5" />
+                {!roleBasePermissionOne && <FiCalendar className="h-5 w-5" />}
               </div>
             </div>
           ) : (

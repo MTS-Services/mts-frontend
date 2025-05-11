@@ -6,11 +6,12 @@ import { MdGroups, MdResetTv } from "react-icons/md";
 import { RiUserFill } from "react-icons/ri";
 import { TbDevicesCancel, TbPointerDollar, TbUserDollar } from "react-icons/tb";
 
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import AddProjectForm from "../../../components/AddProjectForm/AddProjectForm";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import ProjectSearchBox from "../../../components/ProjectSearchBox/ProjectSearchBox";
 import SelectFilter from "../../../components/SelectFilter/SelectFilter";
+import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
 import { useFetchData } from "../../../hooks/useFetchData";
 import SingleDeshboardProject from "./SingleDeshboardProject";
@@ -21,6 +22,8 @@ function AllProjects() {
     "https://mtsbackend20-production.up.railway.app/api/project",
   );
 
+  const { roleBasePermissionOne, roleBasePermissionTwo } =
+    useContext(AuthContext);
   const [team, setTeam] = useState([]);
   const [salesMember, setSalesMember] = useState([]);
   const [status, setStatus] = useState([]);
@@ -220,24 +223,25 @@ function AllProjects() {
               <button className="cursor-pointer px-2">Reset</button>
             </div>
           </div>
-
-          <div className="font-secondary flex items-center justify-end gap-5">
-            <div
-              onClick={() => setShowModal(true)}
-              className="border-border-color bg-secondary flex cursor-pointer flex-wrap rounded border-2 p-2 duration-150 hover:scale-95"
-            >
-              <div className="border-border-color/30 flex items-center border-r-1 pr-2">
-                <FiPlusSquare className="cursor-pointer" />
+          {!roleBasePermissionOne && (
+            <div className="font-secondary flex items-center justify-end gap-5">
+              <div
+                onClick={() => setShowModal(true)}
+                className="border-border-color bg-secondary flex cursor-pointer flex-wrap rounded border-2 p-2 duration-150 hover:scale-95"
+              >
+                <div className="border-border-color/30 flex items-center border-r-1 pr-2">
+                  <FiPlusSquare className="cursor-pointer" />
+                </div>
+                <button className="cursor-pointer px-2">Add New Project</button>
               </div>
-              <button className="cursor-pointer px-2">Add New Project</button>
-            </div>
 
-            {showModal && (
-              <AddProjectForm setShowModal={setShowModal} refetch={refetch} />
-            )}
-            {/* Search.... */}
-            <ProjectSearchBox refetch={refetch} />
-          </div>
+              {showModal && (
+                <AddProjectForm setShowModal={setShowModal} refetch={refetch} />
+              )}
+              {/* Search.... */}
+              <ProjectSearchBox refetch={refetch} />
+            </div>
+          )}
         </div>
 
         <section className="my-7 w-full">
