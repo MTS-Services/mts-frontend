@@ -194,7 +194,7 @@ const SidebarStyle = () => {
           <Link to={`/dashboard/userprofiledetails/${dbUser?.id}`} className="text-start">
             <h2 className="font-primary text-[14px]">{dbUser?.first_name}</h2>
             <h2 className="font-secondary text-[10px]">
-              {dbUser?.designation || "Pending.."}
+              {dbUser?.designation || ""}
             </h2>
           </Link>
 

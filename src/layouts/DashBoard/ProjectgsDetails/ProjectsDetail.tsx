@@ -7,7 +7,8 @@ import axios from "axios";
 import Loading from "../../../components/Loading/Loading";
 import { useFetchData } from "../../../hooks/useFetchData";
 import { FaStar } from "react-icons/fa";
-
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 const ProjectsDetail = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -76,9 +77,31 @@ const ProjectsDetail = () => {
     }
   };
 
+  // const Info = ({ label, field, value, source, editable = false, onChange }) => (
+  //   <div className="flex break-words whitespace-normal max-w-full border-b border-accent/40 pb-2 items-center mb-4">
+  //     <strong className="text-sm pr-2 break-words whitespace-normal max-w-full text-accent">{label} :</strong>
+  //     {editable ? (
+  //       <input
+  //         type={field === "rating" ? "number" : "text"}
+  //         value={value ?? ""}
+  //         step="0.1"
+  //         min="0"
+  //         max="5"
+  //         onChange={(e) => onChange(field, e.target.value, source)}
+  //         className="border p-2 rounded w-full break-words whitespace-normal max-w-full text-accent"
+  //       />
+  //     ) : (
+  //       <span className="text-accent break-words whitespace-normal max-w-full">{value ?? "-"}</span>
+  //     )}
+  //   </div>
+  // );
+
+
+
   const Info = ({ label, field, value, source, editable = false, onChange }) => (
-    <div className="flex border-b border-accent/40 pb-2 items-center mb-4">
-      <strong className="text-sm pr-2 text-accent">{label} :</strong>
+    <div className="flex flex-wrap items-center gap-x-2 border-b border-accent/40 pb-2 mb-2">
+      <strong className="text-base text-accent whitespace-nowrap font-secondary">{label}:</strong>
+  
       {editable ? (
         <input
           type={field === "rating" ? "number" : "text"}
@@ -87,13 +110,33 @@ const ProjectsDetail = () => {
           min="0"
           max="5"
           onChange={(e) => onChange(field, e.target.value, source)}
-          className="border p-2 rounded w-full max-w-xs text-accent"
+          className="border p-2 font-secondary rounded w-full sm:w-auto text-accent"
         />
+      ) : field === "sheet_link" && value ? (
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 font-secondary  underline break-words"
+        >
+          Click to view
+        </a>
+      ) : field === "project_requirements" && value ? (
+        <Tippy content={value} placement="bottom">
+          <span className="truncate cursor-pointer text-base font-secondary text-accent max-w-[200px]">
+            {value}
+          </span>
+        </Tippy>
       ) : (
-        <span className="text-accent">{value ?? "-"}</span>
+        <span className="text-accent font-secondary text-base break-words">
+          {value ?? "-"}
+        </span>
       )}
     </div>
   );
+  
+  
+  
 
   if (fetchLoading || loading || !user) return <Loading />;
 
@@ -162,7 +205,7 @@ const ProjectsDetail = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row  items-center flex-wrap gap-4">
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"

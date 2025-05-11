@@ -55,10 +55,10 @@ const UserProfileComponent = () => {
           religion: fetchedUser.religion || "",
           department_name: fetchedUser?.team?.department?.department_name || "",
           role: fetchedUser.role || "N/A",
-          status: fetchedUser.status || "Active",
-          joined: fetchedUser.joining_date || "N/A",
-          last_login: fetchedUser.last_login || "N/A",
-          access_level: fetchedUser.access_level || "User",
+          // status: fetchedUser.status || "Active",
+          // joined: fetchedUser.joining_date || "N/A",
+          // last_login: fetchedUser.last_login || "N/A",
+          // access_level: fetchedUser.access_level || "User",
         };
 
         console.log("this is a testing data in the fild and user ",userData)
@@ -122,7 +122,7 @@ const UserProfileComponent = () => {
   if (loading) {
     return (
       <div className="text-accent mt-10 text-center text-xl">
-        <Loading/>
+        <Loading />
       </div>
     );
   }
@@ -131,36 +131,66 @@ const UserProfileComponent = () => {
     return <div className="mt-10 text-center text-red-500">Data not found</div>;
   }
 
-  const Info = ({ label, field, value, editable = false, onChange }) => (
-    <p className="text-accent font-secondary border-accent/20 mb-2  flex items-center border-b pr-1  pb-2 text-xl font-light">
-      <strong className="pr-1 font-primary text-base text-xl">{label}:</strong>
-      {editable ? (
-        // <input
-        //   type="text"
-        //   value={editedUser[field] || ""}
-        //   onChange={(e) => onChange(field, e.target.value)}
-        //   className="rounded-md border p-1 font-secondary"
-        // />
+//   const Info = ({ label, field, value, editable = false, onChange }) => (
+//     <p className="text-accent font-secondary border-accent/20 mb-2  flex items-center border-b pr-1  pb-2 text-xl font-light">
+//       <strong className="pr-1 font-primary text-base text-xl">{label}:</strong>
+//       {editable ? (
+//         // <input
+//         //   type="text"
+//         //   value={editedUser[field] || ""}
+//         //   onChange={(e) => onChange(field, e.target.value)}
+//         //   className="rounded-md border p-1 font-secondary"
+//         // />
 
 
-<input
-  type="text"
-  name={field}
-  autoComplete="off"
-  value={editedUser?.[field] ?? ""}
-  onChange={(e) => {
-    e.stopPropagation(); // 🛑 Prevent parent focus loss
-    onChange(field, e.target.value);
-  }}
-  className="rounded-md border p-1 font-secondary w-full bg-background focus:outline-none"
-/>
+// <input
+//   type="text"
+//   name={field}
+//   autoComplete="off"
+//   value={editedUser?.[field] ?? ""}
+//   onChange={(e) => {
+//     e.stopPropagation(); // 🛑 Prevent parent focus loss
+//     onChange(field, e.target.value);
+//   }}
+//   className="rounded-md border p-1 font-secondary w-full bg-background focus:outline-none"
+// />
 
 
-      ) : (
-        value
-      )}
-    </p>
-  );
+//       ) : (
+//         value
+//       )}
+//     </p>
+//   );
+// munshi coding test 
+
+const Info = ({ label, field, value, editable = false, onChange }) => (
+  <div className="flex flex-wrap items-start border-b border-accent/20 pb-2 mb-2">
+    {/* Label */}
+    <strong className="text-base text-accent font-primary mr-2 whitespace-nowrap">
+      {label}:
+    </strong>
+
+    {/* Value */}
+    {editable ? (
+      <input
+        type="text"
+        name={field}
+        autoComplete="off"
+        value={editedUser?.[field] ?? ""}
+        onChange={(e) => onChange(field, e.target.value)}
+        className="text-base rounded-md border p-1 font-secondary w-full sm:w-auto bg-background focus:outline-none"
+      />
+    ) : (
+      <span className="text-base text-accent break-words whitespace-normal font-secondary">
+        {value}
+      </span>
+    )}
+  </div>
+);
+
+
+
+
 
   return (
     <section className="py-8 lg:py-12">
@@ -217,7 +247,7 @@ const UserProfileComponent = () => {
             <h3 className="font-primary border-accent/40 text-primary mb-4 border-b pb-1 uppercase text-2xl text-shadow-md">
               Personal Info
             </h3>
-            {["Email", "Number", "Present Address", "Permanent Address", "Gender", "Blood Group", "relationship", "Education", "Religion"].map((label) => (
+            {["Email", "Number", "Present Address", "Permanent Address", "Gender", "Blood Group", "relationship", "Religion"].map((label) => (
               <Info 
                 key={label}
                 label={label}
@@ -235,7 +265,7 @@ const UserProfileComponent = () => {
             </h3>
           <div className="text-2xl">
               
-            {["Department_name", "Role", "Location", "Manager", "Status", "Joined", "Last Login", "Access Level"].map((label) => (
+            {["Department_name", "Role", "Education"].map((label) => (
               <Info
                 key={label}
                 label={label}
@@ -270,6 +300,8 @@ const UserProfileComponent = () => {
     </section>
   );
 };
+
+
 
 
 

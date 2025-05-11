@@ -65,8 +65,9 @@ const OrderPageScreenshot = () => {
           </div>
         </div>
       )}
+      
 
-      {/* Login Info Cards */}
+      {/* Login/ Info Cards */}
   
   <div className='grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 m-auto'>
   {/* Client Login */}

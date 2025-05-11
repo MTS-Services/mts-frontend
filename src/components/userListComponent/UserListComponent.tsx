@@ -168,7 +168,7 @@ const UserListComponent = () => {
                     key={i}
                     className="border-accent/40 font-secondary text-accent hover:bg-primary border-b text-sm hover:text-white"
                   >
-                    <td className="relative flex items-center justify-center px-2 py-1">
+                    <td className="relative flex items-center justify-center px-2 py-2">
                       <div className="relative h-12 w-12 rounded-full">
                         <img
                           className="h-full w-full rounded-full object-cover"
