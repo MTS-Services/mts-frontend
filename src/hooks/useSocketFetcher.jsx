@@ -4,7 +4,7 @@ export const useSocketFetcher = (
   socket,
   emitEvent,
   emitPayload,
-  listenEventKey, // string, not dynamic template
+  listenEventKey,
 ) => {
   const [data, setData] = useState([]);
 

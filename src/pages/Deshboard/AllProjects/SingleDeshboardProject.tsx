@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
+import { Link } from "react-router";
 import { toast } from "react-toastify";
 import { debounce } from "../../../components/utility/debounce";
 import { AuthContext } from "../../../context/AuthProvider";
@@ -10,7 +11,6 @@ import { useCurrentTime } from "../../../hooks/useCurrentTime";
 import { useSocketData } from "../../../hooks/useSocketData";
 import { useSalesMembers } from "../../../hooks/useSocketDataUtils";
 import { useUpdateProject } from "../../../hooks/useUpdateProject";
-import { Link } from "react-router";
 
 function SingleDeshboardProject({ item, refetch }) {
   const { roleBasePermissionOne, roleBasePermissionTwo } =
@@ -275,17 +275,11 @@ function SingleDeshboardProject({ item, refetch }) {
 
         {/* <p className="p-2">{item.order_id}</p> */}
 
-         <p  
-   
-        className="p-2"># 
-<Link to={`/dashboard/projectsdetails/${item.id}`} className="text-blue-500 underline">
-  {item.id}
-</Link>
-
-</p>
-
-
-
+        <p className="p-2">
+          <Link to={`/dashboard/projectsdetails/${item.id}`}>
+            {item.order_id}
+          </Link>
+        </p>
       </td>
 
       <td className="border text-left text-sm font-semibold whitespace-nowrap">

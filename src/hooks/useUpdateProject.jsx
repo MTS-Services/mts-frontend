@@ -30,15 +30,10 @@ export const useUpdateProject = () => {
         },
       );
 
-      console.log(data);
-
       if (!(data.opsleader_comments || data.sales_comments)) {
         setSuccess(true);
       }
-
-      console.log("Update success:", response.data);
     } catch (err) {
-      console.error("Update failed:", err);
       toast.warning("Erro: Check console");
       setError(err);
     } finally {

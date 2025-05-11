@@ -1,6 +1,6 @@
 import confetti from "canvas-confetti";
-import { useEffect, useRef, useState } from "react";
 
+import { useEffect, useRef, useState } from "react";
 const CelebrationCurtain = ({ children }) => {
   const [showCurtain, setShowCurtain] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +16,7 @@ const CelebrationCurtain = ({ children }) => {
     }
   }, []);
 
-  const triggerCurtain = () => {
+  const triggerCurtain = async () => {
     if (!canTrigger) return;
 
     localStorage.setItem("curtain_shown", "true");
