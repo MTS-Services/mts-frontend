@@ -53,13 +53,15 @@ const UserInformation = () => {
           guardian_number: fetchedUser.guardian_number || "",
           guardian_address: fetchedUser.guardian_address || "",
           religion: fetchedUser.religion || "",
-          department_name: fetchedUser?.team?.department?.department_name || "",
+          department_name: fetchedUser?.department?.department_name || "",
           role: fetchedUser.role || "N/A",
           // status: fetchedUser.status || "Active",
           // joined: fetchedUser.joining_date || "N/A",
           // last_login: fetchedUser.last_login || "N/A",
           // access_level: fetchedUser.access_level || "User",
         };
+
+        console.log( "this sis tepartment part",userData.department_name)
 
         console.log("this is a testing data in the fild and user ",userData)
         setUser(userData);
