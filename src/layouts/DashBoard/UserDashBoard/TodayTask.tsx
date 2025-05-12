@@ -11,6 +11,7 @@ import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import SingleTodayTask from "./SingleTodayTask";
 import AssignTeamForm from "./AssignTeamForm";
 import { AuthContext } from "../../../context/AuthProvider";
+import ReassignTeamForm from "./ReassignTeamForm";
 
 const TodayTask = () => {
   const { roleBasePermissionThree } = useContext(AuthContext);
@@ -112,16 +113,22 @@ const TodayTask = () => {
     <div className="font-secondary w-full overflow-x-auto p-4">
       {/* ✅ Assign Team Form (Step 2) */}
       {roleBasePermissionThree && (
-        <AssignTeamForm
-          data={data}
-          token={token}
-          tasks={data}
-          teamMembers={teamMembers}
-          refreshTasks={() => {
-            setLoading(true);
-            fetchData();
-          }}
-        />
+        <>
+          <AssignTeamForm
+            data={data}
+            token={token}
+            tasks={data}
+            teamMembers={teamMembers}
+            refreshTasks={fetchData}
+          />
+          <ReassignTeamForm
+            data={data}
+            token={token}
+            tasks={data}
+            teamMembers={teamMembers}
+            refreshTasks={fetchData}
+          />
+        </>
       )}
 
       {/* ✅ Summary Cards */}
