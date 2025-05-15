@@ -26,6 +26,7 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UserProfilePage from "../pages/UserProfilePage";
+import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -108,6 +109,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "ranking-page",
         element: <ProfileRankingPage />,
+      },
+      {
+        path: "create-team",
+        element: <TeamCreate/>,
       },
       {
         path: "special-order",
