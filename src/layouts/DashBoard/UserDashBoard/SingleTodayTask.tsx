@@ -1,32 +1,62 @@
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 
-const SingleTodayTask = ({ item, index, onTimeChange }) => {
+const SingleTodayTask = ({ item }) => {
   const { theme } = useTheme();
 
-  const initialStatus = item.assign?.[0]?.ops_status || "revision";
+  const initialStatus =
+    item.ops_status || item.assign?.[0]?.ops_status || "revision";
+  const initialTime = item.expected_finish_time || "";
+
   const [opstatus, setOpStatus] = useState(initialStatus);
-  const [time, setTime] = useState(
-    item.expected_finish_time?.split(" ")[0] || "",
-  );
-  const [period, setPeriod] = useState(
-    item.expected_finish_time?.split(" ")[1] || "AM",
-  );
+  const [time, setTime] = useState(initialTime);
+  const [originalTime, setOriginalTime] = useState(initialTime);
 
+  // ✅ Backend update function
+  const updateTask = async (updatedStatus, updatedTime) => {
+    if (!item.id) return;
+
+    const payload = {
+      id: item.today_task_id,
+      ops_status: updatedStatus,
+      expected_finish_time: updatedTime,
+    };
+
+    console.log("📤 Sending to API:", payload);
+
+    try {
+      const res = await fetch(
+        "https://mtsbackend20-production.up.railway.app/api/today-task/update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const data = await res.json();
+      console.log("✅ API response:", data);
+      setOriginalTime(updatedTime); // lock new value
+    } catch (err) {
+      console.error("❌ Update failed:", err);
+    }
+  };
+
+  // ✅ Handle status change
   const handleOpStatusChange = (e) => {
-    setOpStatus(e.target.value);
+    const newStatus = e.target.value;
+    setOpStatus(newStatus);
+    updateTask(newStatus, time || originalTime);
   };
 
-  const handleTimeChange = (e) => {
-    const value = e.target.value;
-    setTime(value);
-    onTimeChange && onTimeChange(index, `${value} ${period}`);
-  };
-
-  const handlePeriodChange = (e) => {
-    const value = e.target.value;
-    setPeriod(value);
-    onTimeChange && onTimeChange(index, `${time} ${value}`);
+  // ✅ Handle time change + blur
+  const handleTimeChange = (e) => setTime(e.target.value);
+  const handleTimeBlur = () => {
+    if (time && time !== originalTime) {
+      updateTask(opstatus, time);
+    }
   };
 
   const statusObj = {
@@ -72,12 +102,14 @@ const SingleTodayTask = ({ item, index, onTimeChange }) => {
             <p className="p-2">{item.first_name}</p>
           </td>
 
+          {/* ✅ Editable & Fixed Expect Finish Time */}
           <td className="border text-left text-sm font-semibold whitespace-nowrap">
             <div className="p-2">
               <input
                 type="time"
                 value={time}
                 onChange={handleTimeChange}
+                onBlur={handleTimeBlur}
                 className="w-full border-none bg-transparent p-1 text-white outline-none"
                 style={{
                   appearance: "none",
@@ -88,9 +120,10 @@ const SingleTodayTask = ({ item, index, onTimeChange }) => {
             </div>
           </td>
 
+          {/* ✅ Editable Status */}
           <td className="border text-left text-sm font-semibold whitespace-nowrap">
             <select
-              className={`${statusObj[opstatus]} w-full p-6 focus:outline-none`}
+              className={`${statusObj[opstatus]} w-full p-6 text-white focus:outline-none`}
               onChange={handleOpStatusChange}
               value={opstatus}
             >

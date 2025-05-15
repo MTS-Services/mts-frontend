@@ -111,7 +111,7 @@ const TodayTask = () => {
 
   return (
     <div className="font-secondary w-full overflow-x-auto p-4">
-      {/* ✅ Assign Team Form (Step 2) */}
+      {/* ✅ Assign Team Form */}
       {roleBasePermissionThree && (
         <>
           <AssignTeamForm
@@ -131,7 +131,7 @@ const TodayTask = () => {
         </>
       )}
 
-      {/* ✅ Summary Cards hello */}
+      {/* ✅ Summary Cards */}
       <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
         {mtsTargets.map((item, index) => (
           <DisplayCard
@@ -172,7 +172,7 @@ const TodayTask = () => {
                 </tr>
               ) : td.length > 0 ? (
                 td.map((item, index) => (
-                  <SingleTodayTask key={index} index={index} item={item} />
+                  <SingleTodayTask key={index} item={item} />
                 ))
               ) : (
                 <tr>
