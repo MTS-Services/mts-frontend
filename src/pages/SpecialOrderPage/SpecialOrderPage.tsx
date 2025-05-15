@@ -1,46 +1,100 @@
+import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSocket } from "../../context/SocketContext";
+import { useFetchData } from "../../hooks/useFetchData";
+import { useProfileNames } from "../../hooks/useSocketDataUtils";
 
 function SpecialOrderPage() {
-  const [orders, setOrders] = useState([]);
+  const [datas, setDatas] = useState([]);
+  const socket = useSocket();
+  const profiles = useProfileNames(socket);
+
+  const { data, loading, refetch } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/profile/projectSpecialOrder/",
+  );
+
+  useEffect(() => {
+    const fetchedOrders = Array.isArray(data) ? data : (data?.orders ?? []);
+
+    setDatas(fetchedOrders);
+  }, [data]);
+
   const [formData, setFormData] = useState({
-    profile: "",
-    amount: "",
-    deliveryDate: "",
-    clientname: "",
+    profile_id: "",
+    special_order_amount: "",
+    delivery_date: "",
+    client_name: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setOrders((prev) => [...prev, formData]);
-    setFormData({ profile: "", amount: "", deliveryDate: "", clientname: "" });
+    try {
+      const token = Cookies.get("core");
+      await axios.post(
+        "https://mtsbackend20-production.up.railway.app/api/profile/projectSpecialOrder/create",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success("Special order added successfully");
+      refetch();
+      setFormData({
+        profile_id: "",
+        special_order_amount: "",
+        delivery_date: "",
+        client_name: "",
+      });
+    } catch (error) {
+      toast.error("Failed to add special order");
+      console.error(error);
+    }
   };
 
-  const handleDelete = (index) => {
-    const updated = [...orders];
-    updated.splice(index, 1);
-    setOrders(updated);
+  const handleDelete = async (id: number) => {
+    try {
+      const token = Cookies.get("core");
+      await axios.delete(
+        `https://mtsbackend20-production.up.railway.app/api/profile/projectSpecialOrder/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success("Order deleted successfully");
+      refetch();
+    } catch (error) {
+      toast.error("Failed to delete order");
+      console.error(error);
+    }
   };
 
-  const handleEdit = (index) => {
-    const selected = orders[index];
-    setFormData(selected);
-    handleDelete(index);
+  const handleEdit = (order: any) => {
+    setFormData({
+      profile_id: order.profile?.id || "",
+      special_order_amount: order.special_order_amount || "",
+      delivery_date: order.delivery_date || "",
+      client_name: order.client_name || "",
+    });
   };
-
-  useEffect(() => {
-    fetch("/data.json")
-      .then((res) => res.json())
-      .then((data) => setOrders(data))
-      .catch(() => {});
-  }, []);
 
   return (
     <div className="bg-background font-primary flex min-h-screen flex-col items-center justify-center space-y-10 p-4 md:p-6">
+      <ToastContainer />
       <div className="bg-background border-primary w-full max-w-2xl rounded-lg border p-6 shadow-lg md:p-8">
         <h2 className="text-accent font-primary mb-6 text-center text-2xl font-bold md:text-3xl">
           Create Special Order
@@ -52,16 +106,18 @@ function SpecialOrderPage() {
               Profile
             </label>
             <select
-              name="profile"
-              value={formData.profile}
+              name="profile_id"
+              value={formData.profile_id}
               onChange={handleChange}
               className="bg-background/90 text-accent border-accent/50 w-full rounded border p-3"
               required
             >
               <option value="">Select Profile</option>
-              <option value="Basic">Basic</option>
-              <option value="Premium">Premium</option>
-              <option value="Enterprise">Enterprise</option>
+              {profiles.map((prof) => (
+                <option key={prof.id} value={prof.id}>
+                  {prof.profile_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -71,8 +127,8 @@ function SpecialOrderPage() {
             </label>
             <input
               type="number"
-              name="amount"
-              value={formData.amount}
+              name="special_order_amount"
+              value={formData.special_order_amount}
               onChange={handleChange}
               className="bg-background/90 text-accent border-accent/50 w-full rounded border p-3"
               required
@@ -85,8 +141,8 @@ function SpecialOrderPage() {
             </label>
             <input
               type="date"
-              name="deliveryDate"
-              value={formData.deliveryDate}
+              name="delivery_date"
+              value={formData.delivery_date}
               onChange={handleChange}
               className="bg-background/90 text-accent border-accent/50 w-full rounded border p-3"
               required
@@ -100,8 +156,8 @@ function SpecialOrderPage() {
             </label>
             <input
               type="text"
-              name="clientname"
-              value={formData.clientname}
+              name="client_name"
+              value={formData.client_name}
               onChange={handleChange}
               className="bg-background/90 text-accent border-accent/50 w-full rounded border p-3"
               required
@@ -117,12 +173,13 @@ function SpecialOrderPage() {
         </form>
       </div>
 
-      {/* Full-width Order List */}
       <div className="bg-secondary border-primary w-full max-w-7xl rounded-lg border p-4 shadow-md md:p-6">
         <h3 className="text-primary font-primary mb-4 text-center text-xl font-bold md:text-2xl">
           Order List
         </h3>
-        {orders.length === 0 ? (
+        {loading ? (
+          <p className="text-primary text-center">Loading...</p>
+        ) : !Array.isArray(datas) || datas.length === 0 ? (
           <p className="text-primary text-center">No orders yet.</p>
         ) : (
           <div className="overflow-x-auto">
@@ -150,35 +207,35 @@ function SpecialOrderPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order, index) => (
+                {datas.map((order, index) => (
                   <tr
-                    key={index}
+                    key={order.id}
                     className="odd:bg-secondary even:bg-background text-accent"
                   >
                     <td className="border-primary border px-4 py-2">
                       {index + 1}
                     </td>
                     <td className="border-primary border px-4 py-2">
-                      {order.profile}
+                      {order.profile?.profile_name ?? "N/A"}
                     </td>
                     <td className="border-primary border px-4 py-2">
-                      {order.amount}
+                      {order.special_order_amount}
                     </td>
                     <td className="border-primary border px-4 py-2">
-                      {order.deliveryDate}
+                      {order.delivery_date}
                     </td>
                     <td className="border-primary border px-4 py-2">
-                      {order.clientname}
+                      {order.client_name}
                     </td>
                     <td className="border-primary space-x-2 border px-4 py-2">
                       <button
-                        onClick={() => handleEdit(index)}
+                        onClick={() => handleEdit(order)}
                         className="rounded bg-blue-500 px-3 py-1 text-white transition duration-150 hover:bg-blue-600"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(index)}
+                        onClick={() => handleDelete(order.id)}
                         className="rounded bg-red-500 px-3 py-1 text-white transition duration-150 hover:bg-red-600"
                       >
                         Delete

@@ -119,7 +119,7 @@ function AllProjects() {
 
   const cardData = [
     {
-      title: "Total Target",
+      title: "Team Target",
       amount: chartRawData?.teamTarget,
       icon: MdGroups,
       message: "Total monthly target assigned to the team.",
@@ -131,19 +131,19 @@ function AllProjects() {
       message: "Total carry forward from previous month.",
     },
     {
-      title: "Total Delivery",
+      title: "Team Delivery",
       amount: chartRawData?.teamAchievement,
       icon: TbUserDollar,
       message: "Total deliveries completed this month.",
     },
     {
-      title: "Total Assigned",
+      title: "Team Assigned",
       amount: chartRawData?.totalAssign,
       icon: BsPersonWorkspace,
       message: "Total tasks assigned this month.",
     },
     {
-      title: "Total Cancelled",
+      title: "Team Cancelled",
       amount: chartRawData?.teamCancelled,
       icon: TbDevicesCancel,
       message: "Total cancelled projects this month.",
