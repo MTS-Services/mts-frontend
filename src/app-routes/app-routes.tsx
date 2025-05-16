@@ -27,6 +27,7 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
+import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
@@ -126,6 +127,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "special-order",
         element: <SpecialOrderPage />,
+      },
+      {
+        path: "update-message",
+        element: <UpdateMessage />,
       },
       {
         path: "profile",

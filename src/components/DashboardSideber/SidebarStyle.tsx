@@ -60,6 +60,7 @@ const SidebarStyle = () => {
     { icon: <FaUser />, label: "User List", path: "userlist" },
     { icon: <FaPeopleCarry />, label: "Team Create", path: "create-team" },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
+    { icon: <FaAward />, label: "Update", path: "update-message" },
   ];
 
   const handleLogOut = () => {
