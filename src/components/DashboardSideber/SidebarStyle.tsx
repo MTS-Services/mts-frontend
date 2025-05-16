@@ -1,15 +1,22 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
+import { BsFileEarmarkBarGraph } from "react-icons/bs";
 import { FaPeopleCarry, FaProjectDiagram, FaUser } from "react-icons/fa";
+import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
+import { GrWorkshop } from "react-icons/gr";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
+import { MdBookmarkAdd, MdSafetyDivider } from "react-icons/md";
+import { PiRankingFill } from "react-icons/pi";
+import { RiTeamFill } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
+
 const SidebarStyle = () => {
   const { theme } = useTheme();
   const { dbUser } = useContext(AuthContext);
@@ -22,32 +29,37 @@ const SidebarStyle = () => {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
-  // const sidebarItems = [
-  //   { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
-  //   { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
-  //   { icon: <FaChartLine />, label: "Sales Project", path: "todaytask" },
-  //   { icon: <FaTasks />, label: "Performance", path: "performance" },
-  //   {
-  //     icon: <GiTeamUpgrade />,
-  //     label: "Team Performance",
-  //     path: "teamperformance",
-  //   },
-  //   { icon: <SlSettings />, label: "Operation", path: "operation" },
-
-  //   { icon: <FaUser />, label: "User List", path: "userlist" },
-  //   { icon: <GrGroup  />, label: "Team Distribution", path: "teamtistribution" },
-
-  //   { icon: <FaMedal className="font-primary" />, label: "BestContributors", path: "bestcontributors" },
-  //   { icon: <FaUser  className="font-primary" />, label: "Profile", path: "profile" },
-  // ];
-
   const sidebarItems = [
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
 
-    { icon: <FaUser />, label: "User List", path: "userlist" },
-    { icon: <FaPeopleCarry />, label: "Team Create", path: "create-team" }
+    { icon: <GrWorkshop />, label: "Today Task", path: "todaytask" },
+    {
+      icon: <MdBookmarkAdd />,
+      label: "Add Awards",
+      path: "bestcontributors",
+    },
+    {
+      icon: <RiTeamFill />,
+      label: "Team Perform",
+      path: "teamperformance",
+    },
+    {
+      icon: <FaPersonArrowUpFromLine />,
+      label: "Self Perform",
+      path: "performance",
+    },
+    { icon: <MdSafetyDivider />, label: "Distribution", path: "distribution" },
+    {
+      icon: <BsFileEarmarkBarGraph />,
+      label: "Special Order",
+      path: "special-order",
+    },
 
+    { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
+    { icon: <FaUser />, label: "User List", path: "userlist" },
+    { icon: <FaPeopleCarry />, label: "Team Create", path: "create-team" },
+    { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
 
   const handleLogOut = () => {

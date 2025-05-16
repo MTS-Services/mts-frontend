@@ -1,6 +1,20 @@
+import axios from "axios";
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSocket } from "../../context/SocketContext";
+import { useFetchData } from "../../hooks/useFetchData";
+import { useProfileNames } from "../../hooks/useSocketDataUtils";
 
 function ProfileRankingPage() {
+  const socket = useSocket();
+  const profiles = useProfileNames(socket);
+
+  const { data } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/profile/ranking",
+  );
+
   const [formData, setFormData] = useState({
     profileName: "",
     keywordEntries: [{ keyword: "", rankingNumber: "", rankingRow: "" }],
@@ -32,15 +46,68 @@ function ProfileRankingPage() {
     setFormData((prev) => ({ ...prev, keywordEntries: updated }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted: ", formData);
-    setFormData({
-      profileName: "",
-      keywordEntries: [{ keyword: "", rankingNumber: "", rankingRow: "" }],
-    });
+
+    if (!formData.profileName) {
+      toast.error("Please select a profile");
+      return;
+    }
+
+    // Prepare payload in backend-expected format
+    const payload = {
+      profileName: formData.profileName,
+      rankings: formData.keywordEntries.map((entry) => ({
+        keywords: entry.keyword,
+        row: Number(entry.rankingRow) || 0,
+        rankingPage: entry.rankingNumber, // assuming rankingNumber is 'page' value?
+      })),
+    };
+
+    try {
+      const token = Cookies.get("core");
+      await axios.post(
+        "https://mtsbackend20-production.up.railway.app/api/profile/ranking/create",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success("Ranking info submitted successfully");
+      setFormData({
+        profileName: "",
+        keywordEntries: [{ keyword: "", rankingNumber: "", rankingRow: "" }],
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Failed to submit ranking info");
+    }
   };
 
+  function groupByProfile(datas) {
+    const grouped = {};
+
+    datas.forEach((item) => {
+      const profileName = item.profile?.profile_name || "Unknown";
+
+      if (!grouped[profileName]) {
+        grouped[profileName] = {
+          profileName,
+          keywords: [],
+          ranks: [],
+        };
+      }
+
+      grouped[profileName].keywords.push(item.keywords);
+      grouped[profileName].ranks.push(`${item.ranking_page}.${item.row}`); // অথবা item.rank যদি থাকে
+    });
+
+    return Object.values(grouped);
+  }
+  console.log("da", groupByProfile(data?.profiles));
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-6">
       <div className="bg-background border-primary w-full max-w-3xl rounded-lg border p-8 shadow-lg">
@@ -54,16 +121,18 @@ function ProfileRankingPage() {
               Profile Name
             </label>
             <select
-              name="profileName"
+              name="profile_name"
               value={formData.profileName}
               onChange={handleProfileChange}
               className="bg-background/90 text-accent border-accent/50 w-full rounded border p-3"
               required
             >
               <option value="">Select Profile</option>
-              <option value="Basic">Basic</option>
-              <option value="Premium">Premium</option>
-              <option value="Enterprise">Enterprise</option>
+              {profiles.map((prof) => (
+                <option key={prof.id} value={prof.profile_name}>
+                  {prof.profile_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -85,9 +154,9 @@ function ProfileRankingPage() {
                 />
               </div>
               <div>
-                <label className="text-accent mb-1 block">Ranking Number</label>
+                <label className="text-accent mb-1 block">Ranking Page</label>
                 <input
-                  type="number"
+                  type="text"
                   value={entry.rankingNumber}
                   onChange={(e) =>
                     handleKeywordChange(index, "rankingNumber", e.target.value)
@@ -132,12 +201,13 @@ function ProfileRankingPage() {
 
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700"
+            className="w-full cursor-pointer rounded-md bg-blue-600 py-3 font-semibold text-white transition duration-200 hover:scale-95 hover:bg-blue-700"
           >
             Submit Ranking Info
           </button>
         </form>
       </div>
+      <div>{}</div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -9,10 +10,14 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
+  const token = Cookies.get("core");
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     const socketIo = io("https://mtsbackend20-production.up.railway.app/", {
+      auth: {
+        token: token,
+      },
       transports: ["websocket"],
     });
 
