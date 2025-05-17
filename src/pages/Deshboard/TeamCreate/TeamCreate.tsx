@@ -24,6 +24,7 @@ interface User {
 const TeamCreate = () => {
   const token = Cookies.get("core");
   const socket = useSocket();
+  console.log(socket,"this is socket")
   const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
 
   const [formData, setFormData] = useState({
