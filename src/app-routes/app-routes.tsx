@@ -26,6 +26,7 @@ import Distribution from "../pages/Distribution/Distribution";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
+import Promotion from "../pages/Promotion/Promotion";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
@@ -115,6 +116,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "ranking-page",
         element: <ProfileRankingPage />,
+      },
+      {
+        path: "promotion-add",
+        element: <Promotion />,
       },
       {
         path: "create-team",

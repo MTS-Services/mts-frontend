@@ -90,7 +90,7 @@ function ProfileRankingPage() {
   function groupByProfile(datas) {
     const grouped = {};
 
-    datas.forEach((item) => {
+    datas?.forEach((item) => {
       const profileName = item.profile?.profile_name || "Unknown";
 
       if (!grouped[profileName]) {
