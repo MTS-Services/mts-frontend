@@ -5,6 +5,7 @@ import Profile from "../components/common/Profile/Profile";
 import DashboardLayout from "../DashboardLayout";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
+import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
