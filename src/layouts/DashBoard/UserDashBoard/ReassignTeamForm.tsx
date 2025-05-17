@@ -4,62 +4,82 @@ import CustomSelect from "./CustomSelect";
 
 const ReassignTeamForm = ({
   data,
-  token,
   tasks,
   teamMembers,
+  token,
   refreshTasks,
 }) => {
   const [selectedProject, setSelectedProject] = useState(null);
-  const [assignedMembers, setAssignedMembers] = useState([]);
+  const [assignedList, setAssignedList] = useState([]);
   const [reassignList, setReassignList] = useState([]);
 
-  // ✅ Load assigned members when project changes
+  // ✅ Load assigned members (email based)
   useEffect(() => {
-    if (!selectedProject) return;
+    if (!selectedProject) {
+      setAssignedList([]);
+      return;
+    }
 
-    const currentTask = tasks.find(
-      (t) => t.project_id === selectedProject.project_id,
+    const selectedTasks = tasks.filter(
+      (task) => task.project_id === selectedProject.project_id,
     );
-    const currentAssigned = currentTask?.assign || [];
 
-    const preparedList = currentAssigned
-      .filter((m) => m.first_name && m.last_name)
-      .map((member) => ({
-        old_member_id: member.id,
-        old_name: `${member.first_name} ${member.last_name}`,
-        new_member_id: null,
-      }));
+    const unique = [];
+    const emails = new Set();
 
-    setAssignedMembers(currentAssigned);
-    setReassignList(preparedList);
+    selectedTasks.forEach((task) => {
+      (task.assign || []).forEach((member) => {
+        if (
+          member?.id &&
+          member?.first_name &&
+          member?.email &&
+          !emails.has(member.email)
+        ) {
+          emails.add(member.email);
+          unique.push({
+            id: member.id,
+            first_name: member.first_name,
+          });
+        }
+      });
+    });
+
+    setAssignedList(unique);
+    setReassignList([]);
   }, [selectedProject]);
 
-  // ✅ Generate reusable dropdown options once
-  const assignedIds = new Set(assignedMembers.map((m) => m.id));
-  const availableMembers = teamMembers
-    .filter((m) => !assignedIds.has(m.id))
-    .map((m) => ({
-      value: m.id,
-      label: `${m.first_name} ${m.last_name} (${m.email})`,
-    }));
+  // ✅ Remove assigned member from UI
+  const handleRemoveAssigned = (id) => {
+    setAssignedList((prev) => prev.filter((m) => m.id !== id));
+  };
 
-  // ✅ Handle dropdown change
-  const handleNewMemberChange = (index, option) => {
-    const updated = [...reassignList];
-    updated[index] = {
-      ...updated[index],
-      new_member_id: parseInt(option.value),
-    };
+  // ✅ Get available members (not assigned)
+  const getUnassignedTeamMembers = () => {
+    const assignedIds = new Set(assignedList.map((m) => m.id));
+    return teamMembers
+      .filter((member) => !assignedIds.has(member.id))
+      .map((member) => ({
+        value: member.id,
+        label: `${member.first_name}`,
+      }));
+  };
+
+  // ✅ Handle selection
+  const handleReassignSelect = (selected) => {
+    const selectedIds = selected.map((opt) => parseInt(opt.value));
+    const updated = selectedIds.map((newId, index) => ({
+      old_member_id: assignedList[index]?.id,
+      new_member_id: newId,
+    }));
     setReassignList(updated);
   };
 
   // ✅ Submit reassignment
-  const handleReassign = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    for (const reassignment of reassignList) {
-      if (!reassignment.new_member_id) continue;
-
+    for (const item of reassignList) {
+      if (!item.old_member_id || !item.new_member_id) continue;
+      console.log(`Reassigning ${item.old_member_id} to ${item.new_member_id}`);
       try {
         await fetch(
           "https://mtsbackend20-production.up.railway.app/api/today-task/replace",
@@ -71,75 +91,102 @@ const ReassignTeamForm = ({
             },
             body: JSON.stringify({
               project_id: selectedProject.project_id,
-              old_member_id: reassignment.old_member_id,
-              new_member_id: reassignment.new_member_id,
+              old_member_id: item.old_member_id,
+              new_member_id: item.new_member_id,
             }),
           },
         );
       } catch (err) {
-        console.error("Reassign failed:", err);
+        console.error("❌ Failed:", err);
       }
     }
 
     alert("✅ Reassigned successfully!");
     setSelectedProject(null);
-    setAssignedMembers([]);
+    setAssignedList([]);
     setReassignList([]);
     refreshTasks();
   };
 
+  // ✅ Project dropdown
+  const projectOptions = data.map((item) => ({
+    value: item.project_id,
+    label: `${item.project_id} - ${item.client_name}`,
+  }));
+
   return (
-    <form onSubmit={handleReassign} className="mb-6">
+    <form onSubmit={handleSubmit} className="mb-6">
       <h1 className="text-accent mb-4 text-4xl font-semibold">
         Reassign Team Members
       </h1>
-
-      {/* Project Selection */}
+      {/*  Project Select */}
       <label className="text-accent mb-2 block text-lg font-medium">
         Select Project
       </label>
-      <select
-        value={selectedProject?.project_id || ""}
-        onChange={(e) => {
-          const project = data.find(
-            (item) => item.project_id === parseInt(e.target.value),
-          );
-          setSelectedProject(project || null);
+      <CustomSelect
+        options={projectOptions}
+        value={
+          selectedProject
+            ? {
+                value: selectedProject.project_id,
+                label: `${selectedProject.project_id} - ${selectedProject.client_name}`,
+              }
+            : null
+        }
+        onChange={(option) => {
+          const selected = data.find((d) => d.project_id === option.value);
+          setSelectedProject(selected || null);
         }}
-        className="bg-primary border-border-color mb-4 w-150 rounded p-2 py-3"
-      >
-        <option value="">-- Select a Project --</option>
-        {tasks.map((t) => (
-          <option key={t.project_id} value={t.project_id}>
-            {t.project_id} - {t.client_name}
-          </option>
-        ))}
-      </select>
-
-      {/* Assigned Members to Reassign */}
-      {selectedProject &&
-        reassignList.map((item, index) => {
-          const selectedOption = item.new_member_id
-            ? availableMembers.find((opt) => opt.value === item.new_member_id)
-            : null;
-
-          return (
-            <div key={item.old_member_id} className="mb-4">
-              <label className="text-accent mb-2 block text-lg font-medium">
-                {item.old_name}
-              </label>
-              <CustomSelect
-                options={availableMembers}
-                value={selectedOption}
-                onChange={(opt) => handleNewMemberChange(index, opt)}
-                placeholder="Select new member..."
-              />
-            </div>
-          );
-        })}
-
+        placeholder="Search and select a project..."
+      />
+      {/*  Assigned Members -  */}
       {selectedProject && (
-        <div className="mt-4 flex justify-start">
+        <div className="mt-5">
+          <label className="text-accent mb-2 block text-lg font-medium">
+            Assigned Team Members
+          </label>
+          <CustomSelect
+            isMulti
+            options={assignedList.map((m) => ({
+              value: m.id,
+              label: m.first_name,
+            }))}
+            value={assignedList.map((m) => ({
+              value: m.id,
+              label: m.first_name,
+            }))}
+            onChange={(selectedOptions) => {
+              const updated = selectedOptions.map((opt) => ({
+                id: opt.value,
+                first_name: opt.label,
+              }));
+              setAssignedList(updated);
+            }}
+            placeholder={
+              assignedList.length > 0
+                ? "Assigned team members"
+                : "No members assigned to this project"
+            }
+          />
+        </div>
+      )}
+      {/*  Reassigned Team Members */}
+      {selectedProject && (
+        <div className="mt-6">
+          <label className="text-accent mb-2 block text-lg font-medium">
+            Reassigned Team Members
+          </label>
+          <CustomSelect
+            isMulti
+            options={getUnassignedTeamMembers()}
+            onChange={handleReassignSelect}
+            placeholder="Select unassigned members..."
+          />
+        </div>
+      )}
+      {/* Submit Button */}
+      {selectedProject && (
+        <div className="mt-4 flex items-start">
           <PrimaryButton>Reassign</PrimaryButton>
         </div>
       )}
