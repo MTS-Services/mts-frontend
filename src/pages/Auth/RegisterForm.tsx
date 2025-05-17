@@ -10,7 +10,6 @@ import Breadcrumb from "../../components/common/breadcrumb";
 import Loading from "../../components/Loading/Loading";
 import { AuthContext } from "../../context/AuthProvider";
 import { useSocket } from "../../context/SocketContext";
-import { useDepartmentNames } from "../../hooks/useSocketDataUtils";
 
 // Dropdown Options Constants
 const GENDER_OPTIONS = [
@@ -68,16 +67,18 @@ const FormField = ({
         id={id}
         {...register(id)}
         name={id}
+        defaultValue=""
         className="peer border-accent focus:border-primary w-full rounded-xl border-b bg-transparent text-gray-700 placeholder-transparent focus:text-gray-900 focus:outline-none"
       >
         <option value="" className="text-gray-500">
           Select {label}
         </option>
-        {options?.map((option) => (
-          <option key={option.id} value={option.id} className="text-gray-900">
-            {option.label || option.department_name || option.name}
-          </option>
-        ))}
+        {Array.isArray(options) &&
+          options.map((option) => (
+            <option key={option.id} value={option.id} className="text-gray-900">
+              {option.label || option.department_name || option.name}
+            </option>
+          ))}
       </select>
     ) : (
       <input
@@ -104,7 +105,23 @@ const RegisterForm = () => {
   const [profileImage, setProfileImage] = React.useState(null);
   const navigate = useNavigate();
   const socket = useSocket();
-  const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
+  const [DEPARTMENT_OPTIONS, setDEPARTMENT_OPTIONS] = React.useState([]);
+
+  React.useEffect(() => {
+    axios
+      .get("https://mtsbackend20-production.up.railway.app/api/department/")
+      .then((response) => {
+        // Adjust below if your API returns an object with an array property
+        const departments = Array.isArray(response.data)
+          ? response.data
+          : response.data?.departments || [];
+        setDEPARTMENT_OPTIONS(departments);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch departments", error);
+        setDEPARTMENT_OPTIONS([]);
+      });
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -170,9 +187,11 @@ const RegisterForm = () => {
 
         if (res.status === 200 || res.status === 201) {
           toast.success("Registration successful! Please login.");
-          res?.data.token
-            ? Cookies.set("core", res.data.token, { expires: 1 })
-            : Cookies.remove("core");
+          if (res?.data?.token) {
+            Cookies.set("core", res.data.token, { expires: 1 });
+          } else {
+            Cookies.remove("core");
+          }
           navigate("/dashboard/projects");
         } else {
           toast.error("Something went wrong. Please try again.");
@@ -279,7 +298,7 @@ const RegisterForm = () => {
 
                 <FormField
                   id="department"
-                  label="department"
+                  label="Department"
                   type="select"
                   options={DEPARTMENT_OPTIONS}
                   register={register}
@@ -341,7 +360,22 @@ const RegisterForm = () => {
                       type="file"
                       className="sr-only"
                       accept="image/*"
-                      onChange={handleFileChange}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const maxSizeMB = 2;
+                          const isImage = file.type.startsWith("image/");
+                          const isTooLarge =
+                            file.size > maxSizeMB * 1024 * 1024;
+                          if (!isImage)
+                            return toast.error("Only image files are allowed.");
+                          if (isTooLarge)
+                            return toast.error(
+                              "File size should be under 2MB.",
+                            );
+                          setProfileImage(file);
+                        }
+                      }}
                     />
                   </div>
                 </div>
