@@ -30,6 +30,11 @@ import Promotion from "../pages/Promotion/Promotion";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
+<<<<<<< HEAD
+=======
+import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
+import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
+>>>>>>> 25753f5004a9cfc4c09acce35b5d620a0ebbac75
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -128,6 +133,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "best_performance",
         element: <BestContributors />,
+      },
+      {
+        path:"create-department",
+        element: <CreateDepartment/>,
       },
       {
         path: "special-order",
