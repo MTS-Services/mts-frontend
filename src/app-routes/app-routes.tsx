@@ -28,6 +28,7 @@ import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
 import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
+import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -120,11 +121,15 @@ const AppRoutes = createBrowserRouter([
         element: <CreateDepartment/>,
       },
       {
+        path:"create-profile",
+        element: <CreateProfile/>,
+      },
+      {
         path: "special-order",
         element: <SpecialOrderPage />,
       },
       {
-        path: "profile",
+        path: "profile-datails",
         element: <Profile />,
       },
 
