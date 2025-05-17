@@ -79,7 +79,7 @@ const ReassignTeamForm = ({
     e.preventDefault();
     for (const item of reassignList) {
       if (!item.old_member_id || !item.new_member_id) continue;
-
+      console.log(`Reassigning ${item.old_member_id} to ${item.new_member_id}`);
       try {
         await fetch(
           "https://mtsbackend20-production.up.railway.app/api/today-task/replace",
@@ -186,7 +186,7 @@ const ReassignTeamForm = ({
       )}
       {/* Submit Button */}
       {selectedProject && (
-        <div className="flex items-start">
+        <div className="mt-4 flex items-start">
           <PrimaryButton>Reassign</PrimaryButton>
         </div>
       )}
