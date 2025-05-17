@@ -24,7 +24,7 @@ export function useFetchData(url, method = "GET", body = null) {
         headers,
         ...(body && { data: body }),
       });
-      
+
       cache[url] = response.data;
       setData(response.data);
       console.log("res:", response);
@@ -39,7 +39,6 @@ export function useFetchData(url, method = "GET", body = null) {
 
   useEffect(() => {
     fetchData();
-    
   }, [fetchData, version]);
 
   const refetch = () => setVersion((v) => v + 1);

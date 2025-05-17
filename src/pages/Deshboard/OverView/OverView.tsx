@@ -20,12 +20,11 @@ function OverView() {
     "eachTeamChart",
   );
 
-  // useEffect(() => {
-  //   if (chartRawData.length > 0) {
-  //     console.log("Real-time update received:", chartRawData);
-  //   }
+  // socket.emit('TeamChartid', 3);
 
-  // }, [chartRawData]);
+  //     socket.on('eachTeamChartForTeamId', (data) => {
+  //         console.log("Real-time for eachTeamChartForTeamId:", data);
+  //     })
 
   const base = chartRawData?.teamTarget || 1;
 

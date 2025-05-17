@@ -21,13 +21,15 @@ import BestContributors from "../pages/bestContributor/BestContributors";
 import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 import OverView from "../pages/Deshboard/OverView/OverView";
+import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
+import Distribution from "../pages/Distribution/Distribution";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
+import Promotion from "../pages/Promotion/Promotion";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
+import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
-import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
-import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -108,20 +110,36 @@ const AppRoutes = createBrowserRouter([
         element: <Projects />,
       },
       {
+        path: "distribution",
+        element: <Distribution />,
+      },
+      {
         path: "ranking-page",
         element: <ProfileRankingPage />,
       },
       {
-        path: "create-team",
-        element: <TeamCreate/>,
+        path: "promotion-add",
+        element: <Promotion />,
       },
       {
-        path:"create-department",
-        element: <CreateDepartment/>,
+        path: "create-team",
+        element: <TeamCreate />,
+      },
+      {
+        path: "best_performance",
+        element: <BestContributors />,
+      },
+      {
+        path: "create-department",
+        element: <CreateDepartment />,
       },
       {
         path: "special-order",
         element: <SpecialOrderPage />,
+      },
+      {
+        path: "update-message",
+        element: <UpdateMessage />,
       },
       {
         path: "profile",
