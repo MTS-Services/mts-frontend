@@ -11,7 +11,7 @@ import {
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
 import { MdBookmarkAdd, MdSafetyDivider } from "react-icons/md";
-import { PiRankingFill } from "react-icons/pi";
+import { PiBuildingOfficeFill, PiRankingFill } from "react-icons/pi";
 import { RiTeamFill } from "react-icons/ri";
 import { TbMessage2Check } from "react-icons/tb";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -104,6 +104,11 @@ const SidebarStyle = () => {
     { icon: <MdSafetyDivider />, label: "Distribution", path: "distribution" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
     { icon: <FaPeopleCarry />, label: "Team Create", path: "create-team" },
+    {
+      icon: <PiBuildingOfficeFill />,
+      label: "Department Create",
+      path: "create-department",
+    },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
 
