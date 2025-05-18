@@ -1,18 +1,18 @@
-// useFetchData.js
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-const cache = {};
 
 export function useFetchData(url, method = "GET", body = null) {
-  const token = Cookies.get("core");
   const [data, setData] = useState(null);
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // extra error state if needed
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    const token = Cookies.get("core");
+
     try {
       const headers = {
         "Content-Type": "application/json",
@@ -25,23 +25,38 @@ export function useFetchData(url, method = "GET", body = null) {
         ...(body && { data: body }),
       });
 
-      cache[url] = response.data;
       setData(response.data);
-      console.log("res:", response);
+      setError(null);
+      console.log("✅ Data fetched:", response.data);
     } catch (error) {
-      Cookies.remove("core");
-      toast.warning("Invalid or expired token. Please login again.");
-      console.error("API error:", error);
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message || "Something went wrong";
+
+      console.error("❌ Fetch error:", error);
+
+      if (status === 401 || status === 403) {
+        Cookies.remove("core");
+        toast.warning("Session expired. Please login again.");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+      } else if (status === 404) {
+        setData({ data: [] }); // Optional: fallback empty array
+      } else {
+        toast.error(message);
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
-  }, [url, method, body, token]);
+  }, [url, method, body, version]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, version]);
+  }, [fetchData]);
 
   const refetch = () => setVersion((v) => v + 1);
 
-  return { data, loading, refetch };
+  return { data, loading, error, refetch };
 }

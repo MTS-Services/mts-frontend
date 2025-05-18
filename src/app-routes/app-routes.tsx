@@ -31,6 +31,11 @@ import Promotion from "../pages/Promotion/Promotion";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
+// import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
+import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPlaceProfile";
+import { SocketProvider } from "../context/SocketContext";
+import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
+import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -84,7 +89,11 @@ const AppRoutes = createBrowserRouter([
   // DashBoard Route
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <SocketProvider>
+        <DashboardLayout />
+      </SocketProvider>
+    ),
     children: [
       {
         index: true,
@@ -123,6 +132,10 @@ const AppRoutes = createBrowserRouter([
         element: <Promotion />,
       },
       {
+        path: "promotion-summary",
+        element: <PromotionSummary />,
+      },
+      {
         path: "create-team",
         element: <TeamCreate />,
       },
@@ -135,12 +148,21 @@ const AppRoutes = createBrowserRouter([
         element: <CreateDepartment />,
       },
       {
+        path: "create-profile",
+        element: <CreateProfile />,
+      },
+
+      {
         path: "special-order",
         element: <SpecialOrderPage />,
       },
       {
         path: "update-message",
         element: <UpdateMessage />,
+      },
+      {
+        path: "profile-datails",
+        element: <Profile />,
       },
       {
         path: "profile",
@@ -173,6 +195,11 @@ const AppRoutes = createBrowserRouter([
       {
         path: "userlist",
         element: <UserListPage />,
+      },
+
+      {
+        path: "profile-List",
+        element: <MarketPlaceProfile />,
       },
 
       {
