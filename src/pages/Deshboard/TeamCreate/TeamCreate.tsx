@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { FaAngleDown, FaAngleUp, FaSearch, FaTimes } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaAngleDown, FaAngleUp, FaSearch, FaTimes } from "react-icons/fa";
-import Cookies from "js-cookie";
 // import { useDepartmentNames } from "../../hooks/useSocketDataUtils";
 import { useSocket } from "../../../context/SocketContext";
 import { useDepartmentNames } from "../../../hooks/useSocketDataUtils";
@@ -13,7 +13,8 @@ interface User {
   id: number;
   first_name: string;
   email: string;
-  team?: { // team property can be optional and its structure
+  team?: {
+    // team property can be optional and its structure
     id?: number; // team id can be optional
     department?: {
       department_name: string;
@@ -24,7 +25,6 @@ interface User {
 const TeamCreate = () => {
   const token = Cookies.get("core");
   const socket = useSocket();
-  console.log(socket,"this is socket")
   const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
 
   const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ const TeamCreate = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         // Assuming the API returns users and their team information
         setAllUsers(usersRes.data.teamMembers);
@@ -81,7 +81,7 @@ const TeamCreate = () => {
         user.email?.toLowerCase().includes(searchQuery.toLowerCase()) || // Search by email
         user.team?.department?.department_name // Search by department name if available
           ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()))
+          .includes(searchQuery.toLowerCase())),
   );
 
   // Filter available users for leader dropdown
@@ -91,14 +91,18 @@ const TeamCreate = () => {
     (user) =>
       (!user.team || user.team.id === null) && // Check if user.team is null or team.id is null
       !formData.selectedMembers.includes(user.id) && // Exclude users already selected as members
-      (user.first_name?.toLowerCase().includes(leaderSearchQuery.toLowerCase()) || // Search by first name
+      (user.first_name
+        ?.toLowerCase()
+        .includes(leaderSearchQuery.toLowerCase()) || // Search by first name
         user.email?.toLowerCase().includes(leaderSearchQuery.toLowerCase()) || // Search by email
         user.team?.department?.department_name // Search by department name if available
           ?.toLowerCase()
-          .includes(leaderSearchQuery.toLowerCase()))
+          .includes(leaderSearchQuery.toLowerCase())),
   );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -137,7 +141,13 @@ const TeamCreate = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { team_name, team_target, leader_id, selectedMembers, department_id } = formData;
+    const {
+      team_name,
+      team_target,
+      leader_id,
+      selectedMembers,
+      department_id,
+    } = formData;
 
     if (!team_name || !team_target || !leader_id) {
       toast.error("Please fill all required fields");
@@ -150,6 +160,7 @@ const TeamCreate = () => {
     }
 
     try {
+      console.log("team id-", selectedMembers);
       const response = await axios.post(
         "https://mtsbackend20-production.up.railway.app/api/team/create",
         {
@@ -164,7 +175,7 @@ const TeamCreate = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       toast.success(response.data.message);
@@ -187,22 +198,23 @@ const TeamCreate = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background m-auto flex items-center justify-center p-6">
+    <div className="bg-background m-auto flex min-h-screen items-center justify-center p-6">
       <ToastContainer />
-      <div className="w-full max-w-2xl bg-background p-8 rounded-lg shadow-lg border  border-primary">
-        <h1 className="text-2xl font-bold text-accent font-primary text-center mb-6" >Create New Team</h1>
+      <div className="bg-background border-primary w-full max-w-2xl rounded-lg border p-8 shadow-lg">
+        <h1 className="text-accent font-primary mb-6 text-center text-2xl font-bold">
+          Create New Team
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-
           {/* Team Name */}
           <div>
-            <label className="block text-sm font-semibold text-accent font-primary mb-1">
+            <label className="text-accent font-primary mb-1 block text-sm font-semibold">
               Team Name <span className="text-primary">*</span>
             </label>
             <input
@@ -210,28 +222,31 @@ const TeamCreate = () => {
               name="team_name"
               value={formData.team_name}
               onChange={handleInputChange}
-              className="w-full p-3 border border-accent/50 rounded-md focus:outline-none text-accent focus:ring-2 focus:ring-blue-500"
+              className="border-accent/50 text-accent w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           {/* Leader Selection */}
           <div>
-            <label className="block text-sm font-semibold text-accent font-primary mb-1">
+            <label className="text-accent font-primary mb-1 block text-sm font-semibold">
               Team Leader <span className="text-primary">*</span>
             </label>
             <div className="relative">
               <div
-                className="min-h-12 w-full p-3 bg-background rounded flex flex-wrap items-center gap-2 cursor-pointer border border-gray-300"
+                className="bg-background flex min-h-12 w-full cursor-pointer flex-wrap items-center gap-2 rounded border border-gray-300 p-3"
                 onClick={() => setIsLeaderDropdownOpen(!isLeaderDropdownOpen)}
               >
                 {formData.leader_id ? (
-                  <div className="flex items-center bg-card px-3 py-1 rounded-full gap-1 text-sm">
+                  <div className="bg-card flex items-center gap-1 rounded-full px-3 py-1 text-sm">
                     <span className="font-primary text-accent">
-                      {allUsers.find(user => user.id === formData.leader_id)?.first_name}
+                      {
+                        allUsers.find((user) => user.id === formData.leader_id)
+                          ?.first_name
+                      }
                     </span>
                     <FaTimes
-                      className="hover:text-red-500 cursor-pointer"
+                      className="cursor-pointer hover:text-red-500"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRemoveLeader();
@@ -241,47 +256,53 @@ const TeamCreate = () => {
                 ) : (
                   <span className="text-accent">Select team leader...</span>
                 )}
-                <div className="ml-auto text-accent">
-                  {isLeaderDropdownOpen ? <FaAngleUp  className="text-accent"/> : <FaAngleDown />}
+                <div className="text-accent ml-auto">
+                  {isLeaderDropdownOpen ? (
+                    <FaAngleUp className="text-accent" />
+                  ) : (
+                    <FaAngleDown />
+                  )}
                 </div>
               </div>
 
               {isLeaderDropdownOpen && (
-                <div className="absolute z-10 w-full text-accent bg-background mt-1 rounded shadow-lg max-h-60 overflow-auto border border-gray-200">
-                  <div className="sticky top-0 bg-background p-2 border-b border-accent/50">
+                <div className="text-accent bg-background absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border border-gray-200 shadow-lg">
+                  <div className="bg-background border-accent/50 sticky top-0 border-b p-2">
                     <div className="relative">
-                      <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                      <FaSearch className="absolute top-3 left-3 text-gray-400" />
                       <input
                         type="text"
                         placeholder="Search leaders by name, email or department..."
-                        className="w-full p-2 pl-10 text-accent focus:outline-none"
+                        className="text-accent w-full p-2 pl-10 focus:outline-none"
                         value={leaderSearchQuery}
                         onChange={(e) => setLeaderSearchQuery(e.target.value)}
                         autoFocus
                       />
                     </div>
                   </div>
-                  <div className="max-h-48 text-accent font-primary overflow-y-auto">
+                  <div className="text-accent font-primary max-h-48 overflow-y-auto">
                     {availableLeaders.length > 0 ? (
                       availableLeaders.map((user) => (
                         <div
                           key={user.id}
-                          className="p-3 text-accent font-primary hover:bg-background cursor-pointer border-b border-accent"
+                          className="text-accent font-primary hover:bg-background border-accent cursor-pointer border-b p-3"
                           onClick={() => handleSelectLeader(user)}
                         >
-                          <div className="font-medium text-accent font-primary">{user.first_name}</div>
-                          <div className="text-xs text-accent">
+                          <div className="text-accent font-primary font-medium">
+                            {user.first_name}
+                          </div>
+                          <div className="text-accent text-xs">
                             {user.email}
                           </div>
                           {user.team?.department?.department_name && (
-                            <div className="text-xs text-accent font-primary">
+                            <div className="text-accent font-primary text-xs">
                               {user.team.department.department_name}
                             </div>
                           )}
                         </div>
                       ))
                     ) : (
-                      <div className="p-3 text-accent font-primary text-center">
+                      <div className="text-accent font-primary p-3 text-center">
                         No users found
                       </div>
                     )}
@@ -293,7 +314,7 @@ const TeamCreate = () => {
 
           {/* Team Target */}
           <div>
-            <label className="block text-sm font-semibold font-primary text-accent mb-1">
+            <label className="font-primary text-accent mb-1 block text-sm font-semibold">
               Team Target <span className="text-red-500">*</span>
             </label>
             <input
@@ -301,23 +322,26 @@ const TeamCreate = () => {
               name="team_target"
               value={formData.team_target}
               onChange={handleInputChange}
-              className="w-full p-3 border border-accent/40 text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border-accent/40 text-accent w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           {/* Department Selection */}
           <div className="">
-            <label className="block text-sm font-semibold text-accent font-primary mb-1">
+            <label className="text-accent font-primary mb-1 block text-sm font-semibold">
               Department
             </label>
             <select
               name="department_id"
               value={formData.department_id}
               onChange={handleInputChange}
-              className="w-full p-3 border border-accent text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border-accent text-accent w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              <option value="" className="font-primary text-base bg-card"> Select Department (Optional)</option>
+              <option value="" className="font-primary bg-card text-base">
+                {" "}
+                Select Department (Optional)
+              </option>
               {DEPARTMENT_OPTIONS.map((dept) => (
                 <option key={dept.id} value={dept.id} className="bg-card">
                   {dept.department_name}
@@ -328,25 +352,27 @@ const TeamCreate = () => {
 
           {/* Team Members Selector */}
           <div>
-            <label className="block text-sm font-semibold text-accent font-primary mb-1">
+            <label className="text-accent font-primary mb-1 block text-sm font-semibold">
               Team Members <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div
-                className="min-h-12 w-full p-3 bg-background rounded flex flex-wrap items-center gap-2 cursor-pointer border border-gray-300"
+                className="bg-background flex min-h-12 w-full cursor-pointer flex-wrap items-center gap-2 rounded border border-gray-300 p-3"
                 onClick={() => setIsMembersDropdownOpen(!isMembersDropdownOpen)}
               >
                 {formData.selectedMembers.length > 0 ? (
                   formData.selectedMembers.map((userId) => {
-                    const user = allUsers.find(u => u.id === userId);
+                    const user = allUsers.find((u) => u.id === userId);
                     return user ? (
                       <div
                         key={userId}
-                        className="flex items-center bg-card px-3 py-1 rounded-full gap-1 text-sm"
+                        className="bg-card flex items-center gap-1 rounded-full px-3 py-1 text-sm"
                       >
-                        <span className="font-primary text-accent">{user.first_name}</span>
+                        <span className="font-primary text-accent">
+                          {user.first_name}
+                        </span>
                         <FaTimes
-                          className="hover:text-red-500 cursor-pointer"
+                          className="cursor-pointer hover:text-red-500"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleRemoveUser(userId);
@@ -364,41 +390,43 @@ const TeamCreate = () => {
               </div>
 
               {isMembersDropdownOpen && (
-                <div className="absolute z-10 w-full bg-background mt-1 rounded shadow-lg max-h-60 overflow-auto border border-gray-200">
-                  <div className="sticky top-0 bg-background p-2 border-b border-accent/50">
+                <div className="bg-background absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border border-gray-200 shadow-lg">
+                  <div className="bg-background border-accent/50 sticky top-0 border-b p-2">
                     <div className="relative">
-                      <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                      <FaSearch className="absolute top-3 left-3 text-gray-400" />
                       <input
                         type="text"
                         placeholder="Search users by name, email or department..."
-                        className="w-full p-2 pl-10 text-accent focus:outline-none"
+                        className="text-accent w-full p-2 pl-10 focus:outline-none"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         autoFocus
                       />
                     </div>
                   </div>
-                  <div className="max-h-48 text-accent bg-card font-primary overflow-y-auto">
+                  <div className="text-accent bg-card font-primary max-h-48 overflow-y-auto">
                     {availableUsers.length > 0 ? (
                       availableUsers.map((user) => (
                         <div
                           key={user.id}
-                          className="p-3 text-accent font-primary hover:bg-background cursor-pointer border-b border-accent"
+                          className="text-accent font-primary hover:bg-background border-accent cursor-pointer border-b p-3"
                           onClick={() => handleSelectUser(user)}
                         >
-                          <div className="font-medium text-accent font-primary">{user.first_name}</div>
-                          <div className="text-xs text-accent">
+                          <div className="text-accent font-primary font-medium">
+                            {user.first_name}
+                          </div>
+                          <div className="text-accent text-xs">
                             {user.email}
                           </div>
                           {user.team?.department?.department_name && (
-                            <div className="text-xs text-accent font-primary">
+                            <div className="text-accent font-primary text-xs">
                               {user.team.department.department_name}
                             </div>
                           )}
                         </div>
                       ))
                     ) : (
-                      <div className="p-3 text-accent font-primary text-center">
+                      <div className="text-accent font-primary p-3 text-center">
                         No users found
                       </div>
                     )}
@@ -410,7 +438,7 @@ const TeamCreate = () => {
 
           <button
             type="submit"
-            className="w-full p-3 bg-blue-600 text-white font-primary font-bold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+            className="font-primary w-full rounded-md bg-blue-600 p-3 font-bold text-white transition-colors duration-200 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
           >
             Create Team
           </button>
