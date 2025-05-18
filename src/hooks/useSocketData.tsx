@@ -26,8 +26,8 @@ export const useSocketData = (
   const salesteams = useSocketFetcher(
     socket,
     "getTeamsForDepartment",
-    1,
-    `getTeamName:${1}`,
+    2,
+    `getTeamName:${2}`,
   );
 
   const [profiles, setProfiles] = useState([]);
