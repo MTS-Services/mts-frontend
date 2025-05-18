@@ -22,6 +22,7 @@ import BestContributors from "../pages/bestContributor/BestContributors";
 import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
 import AllProjects from "../pages/Deshboard/AllProjects/AllProjects";
 import OverView from "../pages/Deshboard/OverView/OverView";
+import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
 import Distribution from "../pages/Distribution/Distribution";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
@@ -30,10 +31,11 @@ import Promotion from "../pages/Promotion/Promotion";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
-import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
 // import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
-import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
 import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPlaceProfile";
+import { SocketProvider } from "../context/SocketContext";
+import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
+import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -87,7 +89,11 @@ const AppRoutes = createBrowserRouter([
   // DashBoard Route
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <SocketProvider>
+        <DashboardLayout />
+      </SocketProvider>
+    ),
     children: [
       {
         index: true,
@@ -126,6 +132,10 @@ const AppRoutes = createBrowserRouter([
         element: <Promotion />,
       },
       {
+        path: "promotion-summary",
+        element: <PromotionSummary />,
+      },
+      {
         path: "create-team",
         element: <TeamCreate />,
       },
@@ -138,16 +148,15 @@ const AppRoutes = createBrowserRouter([
         element: <CreateDepartment />,
       },
       {
-        path:"create-profile",
-        element: <CreateProfile/>,
+        path: "create-profile",
+        element: <CreateProfile />,
       },
-      
+
       {
         path: "special-order",
         element: <SpecialOrderPage />,
       },
       {
-        
         path: "update-message",
         element: <UpdateMessage />,
       },
@@ -190,7 +199,7 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "profile-List",
-        element: <MarketPlaceProfile/>,
+        element: <MarketPlaceProfile />,
       },
 
       {
