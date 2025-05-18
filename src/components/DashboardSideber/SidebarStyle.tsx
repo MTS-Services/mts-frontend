@@ -130,6 +130,12 @@ const SidebarStyle = () => {
       path: "profile-List",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
+
+
+
+
+
+
   ];
 
   const sidebarItemsCEO = [
