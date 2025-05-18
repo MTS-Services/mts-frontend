@@ -80,6 +80,7 @@ const SidebarStyle = () => {
       path: "special-order",
     },
     { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
+    { icon: <GiTakeMyMoney />, label: "Promotion", path: "promotion-summary" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
     {
@@ -130,12 +131,6 @@ const SidebarStyle = () => {
       path: "profile-List",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
-
-
-
-
-
-
   ];
 
   const sidebarItemsCEO = [

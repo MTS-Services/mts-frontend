@@ -4,7 +4,6 @@ import { RouterProvider } from "react-router";
 import { AppRoutes } from "./app-routes/app-routes";
 import Loading from "./components/Loading/Loading";
 import AuthProvider from "./context/AuthProvider";
-import { SocketProvider } from "./context/SocketContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { store } from "./features/store";
 
@@ -15,9 +14,7 @@ function App() {
         <Provider store={store}>
           <ThemeProvider>
             <AuthProvider>
-              <SocketProvider>
-                <RouterProvider router={AppRoutes} />
-              </SocketProvider>
+              <RouterProvider router={AppRoutes} />
             </AuthProvider>
           </ThemeProvider>
         </Provider>
