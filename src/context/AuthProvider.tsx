@@ -44,6 +44,20 @@ const roleBaseTwo = [
 ];
 
 const roleBaseThree = ["operation_leader"];
+const roleBaseOperationMember = ["operation_member", "operation_leader"];
+const roleBaseSalesMember = ["sales_member", "sales_leader"];
+const roleBaseBusinessDevelopment = ["business_development"];
+const roleBaseHOD = [
+  "hod_sales",
+  "hod_mern",
+  "hod_wordpress",
+  "hod_laravel",
+  "hod_flutter",
+  "hod_seo",
+  "hod_graphic",
+  "hod_shopify",
+  "hod_plugin",
+];
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -52,6 +66,12 @@ const AuthProvider = ({ children }) => {
   const [roleBasePermissionOne, setRoleBasePermissionOne] = useState(null);
   const [roleBasePermissionTwo, setRoleBasePermissionTwo] = useState(null);
   const [roleBasePermissionThree, setRoleBasePermissionThree] = useState(null);
+  const [operationMemberPermission, setOperationMemberPermission] =
+    useState(null);
+  const [salesMemberPermission, setSalesMemberPermission] = useState(null);
+  const [businessDevelopmentPermission, setBusinessDevelopmentPermission] =
+    useState(null);
+  const [hodPermission, setHodPermission] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -100,6 +120,16 @@ const AuthProvider = ({ children }) => {
             setRoleBasePermissionTwo(
               roleBaseTwo.includes(res.data?.teamMember?.role),
             );
+            setOperationMemberPermission(
+              roleBaseOperationMember.includes(res.data?.teamMember?.role),
+            );
+            setSalesMemberPermission(
+              roleBaseSalesMember.includes(res.data?.teamMember?.role),
+            );
+            setBusinessDevelopmentPermission(
+              roleBaseBusinessDevelopment.includes(res.data?.teamMember?.role),
+            );
+            setHodPermission(roleBaseHOD.includes(res.data?.teamMember?.role));
           } else {
             setRole(null);
             Cookies.remove("core");
@@ -133,6 +163,10 @@ const AuthProvider = ({ children }) => {
     roleBasePermissionOne,
     roleBasePermissionTwo,
     roleBasePermissionThree,
+    operationMemberPermission,
+    salesMemberPermission,
+    hodPermission,
+    businessDevelopmentPermission,
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PrimaryButton from "../../../components/Button/PrimaryButton";
 import CustomSelect from "./CustomSelect";
-// --- testing code in monushi
+
 const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -27,29 +27,48 @@ const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
           }),
         },
       );
-      const data = await res.json();
-      alert(data.message || "Team members assigned!");
+
+      const result = await res.json();
+      alert(result.message || "Team members assigned successfully!");
       setSelectedProject(null);
       setSelectedMembers([]);
-      refreshTasks(); // <-- Refetch data to update table
+      refreshTasks();
     } catch (err) {
       console.error("Assign failed:", err);
     }
   };
 
+  // ✅ Get unassigned team members based on email
   const getUnassignedMembers = () => {
-    const assignedIds = new Set(
-      (
-        tasks.find((t) => t.project_id === selectedProject?.project_id)
-          ?.assign || []
-      ).map((a) => a.id),
+    if (!selectedProject) return [];
+
+    const assignedEmails = new Set();
+
+    tasks
+      .filter((task) => task.project_id === selectedProject.project_id)
+      .forEach((task) => {
+        (task.assign || []).forEach((assignedUser) => {
+          if (assignedUser?.email) {
+            assignedEmails.add(assignedUser.email.toLowerCase());
+          }
+        });
+      });
+
+    return teamMembers.filter(
+      (member) => !assignedEmails.has(member.email.toLowerCase()),
     );
-    return teamMembers.filter((member) => !assignedIds.has(member.id));
   };
 
   const memberOptions = getUnassignedMembers().map((member) => ({
     value: member.id,
     label: `${member.first_name} ${member.last_name} (${member.email})`,
+  }));
+
+  const projectOptions = Array.from(
+    new Map(data.map((item) => [item.project_id, item])).values(),
+  ).map((item) => ({
+    value: item.project_id,
+    label: `${item.project_id} - ${item.client_name}`,
   }));
 
   return (
@@ -58,31 +77,35 @@ const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
         Assign Team Members
       </h1>
 
+      {/* ✅ Select Project */}
       <label className="text-accent mb-2 block text-lg font-medium">
         Select Project
       </label>
-      <select
-        value={selectedProject?.project_id || ""}
-        onChange={(e) => {
+
+      <CustomSelect
+        options={projectOptions}
+        value={
+          selectedProject
+            ? {
+                value: selectedProject.project_id,
+                label: `${selectedProject.project_id} - ${selectedProject.client_name}`,
+              }
+            : null
+        }
+        onChange={(selectedOption) => {
           const selected = data.find(
-            (item) => item.project_id === parseInt(e.target.value),
+            (item) => item.project_id === selectedOption.value,
           );
           setSelectedProject(selected || null);
           setSelectedMembers([]);
         }}
-        className="bg-primary border-border-color mb-4 w-150 rounded p-2 py-3"
-      >
-        <option value="">-- Select a Project --</option>
-        {tasks.map((t) => (
-          <option key={t.project_id} value={t.project_id}>
-            {t.project_id} - {t.client_name}
-          </option>
-        ))}
-      </select>
+        placeholder="Search and select a project..."
+      />
 
+      {/* ✅ Select Team Members */}
       {selectedProject && (
         <>
-          <label className="text-accent mb-2 block text-lg font-medium">
+          <label className="text-accent mt-4 mb-2 block text-lg font-medium">
             Select Team Members
           </label>
 
