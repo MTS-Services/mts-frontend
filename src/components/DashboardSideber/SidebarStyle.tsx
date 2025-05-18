@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
-import { FaPeopleCarry, FaProjectDiagram, FaTools, FaUser, FaUserEdit } from "react-icons/fa";
+import { FaPeopleCarry, FaProjectDiagram, FaTools, FaUser, FaUserCircle, FaUserEdit } from "react-icons/fa";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import {
   IoMdArrowDropleftCircle,
@@ -50,7 +50,8 @@ const SidebarStyle = () => {
 
     { icon: <FaTools />, label: "Create Department", path: "create-department" },
     { icon: <FaUserEdit  />, label: "Create Profile", path: "create-profile" },
-    { icon: <FaUser  className="font-primary" />, label: "Profile Details", path: "profile-datails" }
+    { icon: <FaUserCircle className="font-primary" />, label: "Profile List", path: "profile-List" }
+
   ];
 
   const handleLogOut = () => {

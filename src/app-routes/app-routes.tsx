@@ -29,6 +29,7 @@ import UserProfilePage from "../pages/UserProfilePage";
 import TeamCreate from "../pages/Deshboard/TeamCreate/TeamCreate";
 import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
 import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
+import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPlaceProfile";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -159,6 +160,11 @@ const AppRoutes = createBrowserRouter([
       {
         path: "userlist",
         element: <UserListPage />,
+      },
+
+      {
+        path: "profile-List",
+        element: <MarketPlaceProfile/>,
       },
 
       {
