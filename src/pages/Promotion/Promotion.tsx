@@ -17,6 +17,8 @@ function Promotion() {
     promoAmount: "",
   });
 
+  console.log("pf-", profiles);
+
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };

@@ -12,7 +12,11 @@ import {
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
 import { MdBookmarkAdd, MdSafetyDivider } from "react-icons/md";
-import { PiBuildingOfficeFill, PiRankingFill } from "react-icons/pi";
+import {
+  PiBuildingOfficeFill,
+  PiRankingFill,
+  PiUserListFill,
+} from "react-icons/pi";
 import { RiTeamFill } from "react-icons/ri";
 import { TbMessage2Check } from "react-icons/tb";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -78,6 +82,11 @@ const SidebarStyle = () => {
     { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
+    {
+      icon: <ImProfile />,
+      label: "Profile Create",
+      path: "create-profile",
+    },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
 
@@ -114,6 +123,11 @@ const SidebarStyle = () => {
       icon: <ImProfile />,
       label: "Profile Create",
       path: "create-profile",
+    },
+    {
+      icon: <PiUserListFill />,
+      label: "Profile List",
+      path: "profile-List",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
 
