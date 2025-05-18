@@ -36,6 +36,7 @@ import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPl
 import { SocketProvider } from "../context/SocketContext";
 import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
 import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
+import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -118,6 +119,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "projects-old",
         element: <Projects />,
+      },
+      {
+        path: "quotation-pdf-form",
+        element: <QuotationPDFForm />,
       },
       {
         path: "distribution",

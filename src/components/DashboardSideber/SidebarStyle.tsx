@@ -88,6 +88,7 @@ const SidebarStyle = () => {
       label: "Profile Create",
       path: "create-profile",
     },
+    { icon: <FaAward />, label: "Quotation", path: "quotation-pdf-form" },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
 
