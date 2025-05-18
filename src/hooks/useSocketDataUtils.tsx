@@ -59,7 +59,7 @@ export function useProfileNames(socket) {
   return profiles;
 }
 
-export function useSalesMembers(socket, departmentId = 1) {
+export function useSalesMembers(socket, departmentId = 2) {
   const [sales, setSales] = useState([]);
 
   useEffect(() => {
