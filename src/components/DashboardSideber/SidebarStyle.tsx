@@ -6,6 +6,7 @@ import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GrWorkshop } from "react-icons/gr";
+import { ImProfile } from "react-icons/im";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
@@ -108,6 +109,11 @@ const SidebarStyle = () => {
       icon: <PiBuildingOfficeFill />,
       label: "Department Create",
       path: "create-department",
+    },
+    {
+      icon: <ImProfile />,
+      label: "Profile Create",
+      path: "create-profile",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
