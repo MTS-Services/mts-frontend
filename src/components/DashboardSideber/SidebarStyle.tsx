@@ -1,6 +1,9 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
-import { BsFileEarmarkBarGraph } from "react-icons/bs";
+import {
+  BsFileEarmarkBarGraph,
+  BsFillFileEarmarkPdfFill,
+} from "react-icons/bs";
 import { FaPeopleCarry, FaProjectDiagram, FaUser } from "react-icons/fa";
 import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
@@ -87,6 +90,11 @@ const SidebarStyle = () => {
       icon: <ImProfile />,
       label: "Profile Create",
       path: "create-profile",
+    },
+    {
+      icon: <BsFillFileEarmarkPdfFill />,
+      label: "Quotation",
+      path: "quotation-pdf-form",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];

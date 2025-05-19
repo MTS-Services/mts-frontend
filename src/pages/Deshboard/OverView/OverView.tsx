@@ -2,94 +2,88 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
 import { TbDevicesCancel, TbPointerDollar, TbUserDollar } from "react-icons/tb";
+
 import MtsBarChar from "../../../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../../../components/Chart/MtsLineChart/MtsLineChart";
 import MtsPIChart from "../../../components/Chart/MtsPIChart/MtsPIChart";
 import MtsProgressBar from "../../../components/Chart/MtsProgressBar/MtsProgressBar";
 import DisplayCard from "../../../components/DisplayCard/DisplayCard";
-import { useSocket } from "../../../context/SocketContext";
-import { useSocketFetcher } from "../../../hooks/useSocketFetcher";
+import { useFetchData } from "../../../hooks/useFetchData";
 
 function OverView() {
-  const socket = useSocket();
-
-  const chartRawData = useSocketFetcher(
-    socket,
-    "TeamChart",
+  const { data, refetch } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/team/teamwisechart",
+    "GET",
     null,
-    "eachTeamChart",
+    {
+      refetchInterval: 2000, // 🟢 Now works perfectly!
+    },
   );
 
-  // socket.emit('TeamChartid', 3);
-
-  //     socket.on('eachTeamChartForTeamId', (data) => {
-  //         console.log("Real-time for eachTeamChartForTeamId:", data);
-  //     })
-
-  const base = chartRawData?.teamTarget || 1;
+  const base = data?.teamTarget || 1;
 
   const cardData = [
     {
       title: "Team Target",
-      amount: chartRawData?.teamTarget,
+      amount: data?.teamTarget,
       icon: MdGroups,
       message: "Total monthly target assigned to the team.",
     },
     {
       title: "Total Carry",
-      amount: chartRawData?.teamTotalCarry,
+      amount: data?.teamTotalCarry,
       icon: FaHandHoldingDollar,
       message: "Total carry forward from previous month.",
     },
     {
       title: "Team Delivery",
-      amount: chartRawData?.teamAchievement,
+      amount: data?.teamAchievement,
       icon: TbUserDollar,
       message: "Total deliveries completed this month.",
     },
     {
       title: "Team Assigned",
-      amount: chartRawData?.totalAssign,
+      amount: data?.totalAssign,
       icon: BsPersonWorkspace,
       message: "Total tasks assigned this month.",
     },
     {
       title: "Team Cancelled",
-      amount: chartRawData?.teamCancelled,
+      amount: data?.teamCancelled,
       icon: TbDevicesCancel,
       message: "Total cancelled projects this month.",
     },
     {
       title: "Total Submitted",
-      amount: chartRawData?.submitted,
+      amount: data?.submitted,
       icon: TbPointerDollar,
       message: "Total tasks submitted by the team.",
     },
   ];
 
-  const barChartCardData = chartRawData?.memberTarget;
-  const weeklyAchievementBreakdown = chartRawData?.weeklyAchievementBreakdown;
+  const barChartCardData = data?.memberTarget;
+  const weeklyAchievementBreakdown = data?.weeklyAchievementBreakdown;
 
   const chartData = [
     {
       label: "Team Delivery",
-      value: (((chartRawData?.teamAchievement || 0) / base) * 100).toFixed(2),
+      value: (((data?.teamAchievement || 0) / base) * 100).toFixed(2),
     },
     {
       label: "Team Assigned",
-      value: (((chartRawData?.totalAssign || 0) / base) * 100).toFixed(2),
+      value: (((data?.totalAssign || 0) / base) * 100).toFixed(2),
     },
     {
       label: "Team Cancelled",
-      value: (((chartRawData?.teamCancelled || 0) / base) * 100).toFixed(2),
+      value: (((data?.teamCancelled || 0) / base) * 100).toFixed(2),
     },
     {
       label: "Total Submitted",
-      value: (((chartRawData?.submitted || 0) / base) * 100).toFixed(2),
+      value: (((data?.submitted || 0) / base) * 100).toFixed(2),
     },
     {
       label: "Total Carry",
-      value: (((chartRawData?.teamTotalCarry || 0) / base) * 100).toFixed(2),
+      value: (((data?.teamTotalCarry || 0) / base) * 100).toFixed(2),
     },
   ];
 
