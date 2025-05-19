@@ -10,7 +10,6 @@ import Breadcrumb from "../../components/common/breadcrumb";
 import Loading from "../../components/Loading/Loading";
 import { AuthContext } from "../../context/AuthProvider";
 import { useSocket } from "../../context/SocketContext";
-import { useDepartmentNames } from "../../hooks/useSocketDataUtils";
 
 // Dropdown Options Constants
 const GENDER_OPTIONS = [
@@ -54,21 +53,32 @@ const EDUCATION_OPTIONS = [
 ];
 
 // Form Field Component
-const FormField = ({ id, label, type = "text", options, fullWidth = false, register }) => (
+const FormField = ({
+  id,
+  label,
+  type = "text",
+  options,
+  fullWidth = false,
+  register,
+}) => (
   <div className={`relative w-full ${fullWidth ? "col-span-full" : ""}`}>
     {type === "select" ? (
       <select
         id={id}
         {...register(id)}
         name={id}
-        className="peer border-accent focus:border-primary w-full rounded-xl border-b bg-transparent text-gray-700 placeholder-transparent focus:outline-none focus:text-gray-900"
+        defaultValue=""
+        className="peer border-accent focus:border-primary w-full rounded-xl border-b bg-transparent text-gray-700 placeholder-transparent focus:text-gray-900 focus:outline-none"
       >
-        <option value="" className="text-gray-500">Select {label}</option>
-        {options?.map((option) => (
-          <option key={option.id} value={option.id} className="text-gray-900">
-            {option.label || option.department_name || option.name}
-          </option>
-        ))}
+        <option value="" className="text-gray-500">
+          Select {label}
+        </option>
+        {Array.isArray(options) &&
+          options.map((option) => (
+            <option key={option.id} value={option.id} className="text-gray-900">
+              {option.label || option.department_name || option.name}
+            </option>
+          ))}
       </select>
     ) : (
       <input
@@ -95,7 +105,23 @@ const RegisterForm = () => {
   const [profileImage, setProfileImage] = React.useState(null);
   const navigate = useNavigate();
   const socket = useSocket();
-  const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
+  const [DEPARTMENT_OPTIONS, setDEPARTMENT_OPTIONS] = React.useState([]);
+
+  React.useEffect(() => {
+    axios
+      .get("https://mtsbackend20-production.up.railway.app/api/department/")
+      .then((response) => {
+        // Adjust below if your API returns an object with an array property
+        const departments = Array.isArray(response.data)
+          ? response.data
+          : response.data?.departments || [];
+        setDEPARTMENT_OPTIONS(departments);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch departments", error);
+        setDEPARTMENT_OPTIONS([]);
+      });
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -125,12 +151,22 @@ const RegisterForm = () => {
         // Convert dropdown IDs to proper values
         const payload = {
           ...rest,
-          gender: GENDER_OPTIONS.find(g => g.id === Number(rest.gender))?.label,
-          blood_group: BLOOD_GROUP_OPTIONS.find(b => b.id === Number(rest.blood_group))?.label,
-          relationship: RELATIONSHIP_OPTIONS.find(r => r.id === Number(rest.relationship))?.label,
-          religion: RELIGION_OPTIONS.find(r => r.id === Number(rest.religion))?.label,
-          education: EDUCATION_OPTIONS.find(e => e.id === Number(rest.education))?.label,
-          department: DEPARTMENT_OPTIONS.find(d => d.id === Number(rest.department))?.department_name
+          gender: GENDER_OPTIONS.find((g) => g.id === Number(rest.gender))
+            ?.label,
+          blood_group: BLOOD_GROUP_OPTIONS.find(
+            (b) => b.id === Number(rest.blood_group),
+          )?.label,
+          relationship: RELATIONSHIP_OPTIONS.find(
+            (r) => r.id === Number(rest.relationship),
+          )?.label,
+          religion: RELIGION_OPTIONS.find((r) => r.id === Number(rest.religion))
+            ?.label,
+          education: EDUCATION_OPTIONS.find(
+            (e) => e.id === Number(rest.education),
+          )?.label,
+          department: DEPARTMENT_OPTIONS.find(
+            (d) => d.id === Number(rest.department),
+          )?.department_name,
         };
 
         Object.entries(payload).forEach(([key, value]) => {
@@ -146,14 +182,16 @@ const RegisterForm = () => {
         const res = await axios.post(
           "https://mtsbackend20-production.up.railway.app/api/teamMember/create",
           formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          { headers: { "Content-Type": "multipart/form-data" } },
         );
 
         if (res.status === 200 || res.status === 201) {
           toast.success("Registration successful! Please login.");
-          res.data.token
-            ? Cookies.set("core", res.data.token, { expires: 1 })
-            : Cookies.remove("core");
+          if (res?.data?.token) {
+            Cookies.set("core", res.data.token, { expires: 1 });
+          } else {
+            Cookies.remove("core");
+          }
           navigate("/dashboard/projects");
         } else {
           toast.error("Something went wrong. Please try again.");
@@ -177,39 +215,128 @@ const RegisterForm = () => {
       <div className="mt-25 flex flex-col justify-center pb-25">
         <div className="flex-wrap items-center justify-center space-y-6 md:flex-row md:space-y-0 md:space-x-12 lg:flex xl:flex">
           <div className="space-y-4 text-center md:space-y-6 md:text-center">
-            <h2 className="text-accent text-4xl font-extrabold sm:text-5xl">Welcome</h2>
-            <p className="text-accent text-base sm:text-lg">Register to your account</p>
+            <h2 className="text-accent text-4xl font-extrabold sm:text-5xl">
+              Welcome
+            </h2>
+            <p className="text-accent text-base sm:text-lg">
+              Register to your account
+            </p>
           </div>
 
           <div className="border-accent bg-background rounded-xl border-1 p-4 pt-10 pb-4 shadow-lg lg:w-1/2">
-
-          
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <FormField id="first_name" label="First Name" register={register} />
-                <FormField id="last_name" label="Last Name" register={register} />
-                <FormField id="email" label="E-mail" type="email" register={register} />
-                <FormField id="number" label="Phone Number" type="tel" register={register} />
-                <FormField id="permanent_address" label="Permanent Address" register={register} />
-                <FormField id="present_address" label="Present Address" register={register} />
-                <FormField id="gender" label="Gender" type="select" options={GENDER_OPTIONS} register={register} />
-                <FormField id="blood_group" label="Blood Group" type="select" options={BLOOD_GROUP_OPTIONS} register={register} />
-                <FormField id="relationship" label="Relationship" type="select" options={RELATIONSHIP_OPTIONS} register={register} />
-                <FormField id="guardian_relation" label="Guardian Relation" register={register} />
-                <FormField id="guardian_number" label="Guardian Number" type="tel" register={register} />
-                <FormField id="guardian_address" label="Guardian Address" register={register} />
+                <FormField
+                  id="first_name"
+                  label="First Name"
+                  register={register}
+                />
+                <FormField
+                  id="last_name"
+                  label="Last Name"
+                  register={register}
+                />
+                <FormField
+                  id="email"
+                  label="E-mail"
+                  type="email"
+                  register={register}
+                />
+                <FormField
+                  id="number"
+                  label="Phone Number"
+                  type="tel"
+                  register={register}
+                />
+                <FormField
+                  id="permanent_address"
+                  label="Permanent Address"
+                  register={register}
+                />
+                <FormField
+                  id="present_address"
+                  label="Present Address"
+                  register={register}
+                />
+                <FormField
+                  id="gender"
+                  label="Gender"
+                  type="select"
+                  options={GENDER_OPTIONS}
+                  register={register}
+                />
+                <FormField
+                  id="blood_group"
+                  label="Blood Group"
+                  type="select"
+                  options={BLOOD_GROUP_OPTIONS}
+                  register={register}
+                />
+                <FormField
+                  id="relationship"
+                  label="Relationship"
+                  type="select"
+                  options={RELATIONSHIP_OPTIONS}
+                  register={register}
+                />
+                <FormField
+                  id="guardian_relation"
+                  label="Guardian Relation"
+                  register={register}
+                />
+                <FormField
+                  id="guardian_number"
+                  label="Guardian Number"
+                  type="tel"
+                  register={register}
+                />
+                <FormField
+                  id="guardian_address"
+                  label="Guardian Address"
+                  register={register}
+                />
 
-                <FormField id="department" label="department" type="select" options={DEPARTMENT_OPTIONS} register={register} />
+                <FormField
+                  id="department"
+                  label="Department"
+                  type="select"
+                  options={DEPARTMENT_OPTIONS}
+                  register={register}
+                />
 
-                <FormField id="religion" label="Religion" type="select" options={RELIGION_OPTIONS} register={register} />
+                <FormField
+                  id="religion"
+                  label="Religion"
+                  type="select"
+                  options={RELIGION_OPTIONS}
+                  register={register}
+                />
 
-                <FormField id="education" label="Education" type="select" options={EDUCATION_OPTIONS} register={register} />
-                <FormField id="password" label="Password" type="password" register={register} />
-                <FormField id="confirmPassword" label="Confirm Password" type="password" register={register} />
+                <FormField
+                  id="education"
+                  label="Education"
+                  type="select"
+                  options={EDUCATION_OPTIONS}
+                  register={register}
+                />
+                <FormField
+                  id="password"
+                  label="Password"
+                  type="password"
+                  register={register}
+                />
+                <FormField
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  register={register}
+                />
 
                 {/* Profile Picture */}
                 <div className="space-y-2">
-                  <label className="text-accent block text-sm font-medium">Profile Picture (DP)</label>
+                  <label className="text-accent block text-sm font-medium">
+                    Profile Picture (DP)
+                  </label>
                   <div className="flex items-center">
                     <div className="bg-accent h-12 w-12 overflow-hidden rounded-full">
                       {profileImage ? (
@@ -233,7 +360,22 @@ const RegisterForm = () => {
                       type="file"
                       className="sr-only"
                       accept="image/*"
-                      onChange={handleFileChange}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const maxSizeMB = 2;
+                          const isImage = file.type.startsWith("image/");
+                          const isTooLarge =
+                            file.size > maxSizeMB * 1024 * 1024;
+                          if (!isImage)
+                            return toast.error("Only image files are allowed.");
+                          if (isTooLarge)
+                            return toast.error(
+                              "File size should be under 2MB.",
+                            );
+                          setProfileImage(file);
+                        }
+                      }}
                     />
                   </div>
                 </div>

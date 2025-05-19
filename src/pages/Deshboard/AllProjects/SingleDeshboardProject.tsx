@@ -260,6 +260,8 @@ function SingleDeshboardProject({ item, refetch }) {
   };
   // const navigate = useNavigate();
 
+  console.log(item);
+
   return (
     <tr
       className={`${
@@ -271,7 +273,11 @@ function SingleDeshboardProject({ item, refetch }) {
       }`}
     >
       <td className="border text-left text-sm font-semibold whitespace-nowrap">
-        <p className="p-2">{item.clientName}</p>
+        <p className="p-2">
+          <a href={item?.sheet_link} target="blank">
+            {item.clientName}
+          </a>
+        </p>
 
         {/* <p className="p-2">{item.order_id}</p> */}
 

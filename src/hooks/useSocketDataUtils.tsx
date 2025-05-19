@@ -7,15 +7,20 @@ export function useDepartmentNames(socket) {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getDepartmentNames");
-
+    const emit = () => socket.emit("getDepartmentNames");
     const handle = (data) => {
       setDepartments(Array.isArray(data) ? data : []);
     };
 
+    if (socket.connected) emit();
+    else socket.on("connect", emit);
+
     socket.on("getDepartmentName", handle);
 
-    return () => socket.off("getDepartmentName", handle);
+    return () => {
+      socket.off("getDepartmentName", handle);
+      socket.off("connect", emit);
+    };
   }, [socket]);
 
   return departments;
@@ -27,38 +32,54 @@ export function useProfileNames(socket) {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getProfilename");
+    const fetchProfiles = () => {
+      console.log("✅ Emitting getProfilename after socket ready");
+      socket.emit("getProfilename");
+    };
 
     const handle = (data) => {
+      console.log("✅ Got profiles:", data);
       setProfiles(Array.isArray(data) ? data : []);
     };
 
+    if (socket.connected) {
+      fetchProfiles();
+    } else {
+      socket.once("connect", fetchProfiles); // emit only once when connected
+    }
+
     socket.on("getProfilename", handle);
 
-    return () => socket.off("getProfilename", handle);
+    return () => {
+      socket.off("getProfilename", handle);
+      socket.off("connect", fetchProfiles); // clean up
+    };
   }, [socket]);
 
   return profiles;
 }
 
-export function useSalesMembers(socket, departmentId = 1) {
+export function useSalesMembers(socket, departmentId = 2) {
   const [sales, setSales] = useState([]);
 
   useEffect(() => {
     if (!socket || !departmentId) return;
 
-    socket.emit("getTeamMemberByDepartment", departmentId);
-
+    const emit = () => socket.emit("getTeamMemberByDepartment", departmentId);
     const handle = (data) => {
       setSales(Array.isArray(data) ? data : []);
     };
 
+    if (socket.connected) emit();
+    else socket.on("connect", emit);
+
     socket.on("getTeamMember", handle);
 
-    return () => socket.off("getTeamMember", handle);
+    return () => {
+      socket.off("getTeamMember", handle);
+      socket.off("connect", emit);
+    };
   }, [socket, departmentId]);
-
-  console.log(sales);
 
   return sales;
 }
