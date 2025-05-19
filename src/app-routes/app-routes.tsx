@@ -37,6 +37,7 @@ import { SocketProvider } from "../context/SocketContext";
 import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
 import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
 import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
+import AttendacnePage from "../layouts/DashBoard/AttendancePage/AttendancePage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -182,6 +183,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "userprofiledetails/:id",
         element: <UserProfilePage />,
+      },
+      {
+        path: "attendance",
+        element: <AttendacnePage />,
       },
 
       {
