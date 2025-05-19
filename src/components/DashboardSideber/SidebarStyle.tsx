@@ -92,11 +92,6 @@ const SidebarStyle = () => {
     { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
 
     {
-      icon: <ImProfile />,
-      label: "Profile Create",
-      path: "create-profile",
-    },
-    {
       icon: <BsFillFileEarmarkPdfFill />,
       label: "Quotation",
       path: "quotation-pdf-form",
