@@ -11,14 +11,23 @@ import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import { useFetchData } from "../../../hooks/useFetchData";
 
 function OverView() {
-  const { data, refetch } = useFetchData(
+  const { data, loading, refetch } = useFetchData(
     "https://mtsbackend20-production.up.railway.app/api/team/teamwisechart",
     "GET",
     null,
     {
-      refetchInterval: 2000, // 🟢 Now works perfectly!
+      refetchInterval: 2000, // Auto refetch every 2s
     },
   );
+
+  // Show loader while fetching data
+  if (loading || !data) {
+    return (
+      <div className="p-6 text-center text-sm text-gray-500">
+        🔄 Loading team overview...
+      </div>
+    );
+  }
 
   const base = data?.teamTarget || 1;
 
@@ -61,6 +70,8 @@ function OverView() {
     },
   ];
 
+  console.log("cardData", cardData);
+
   const barChartCardData = data?.memberTarget;
   const weeklyAchievementBreakdown = data?.weeklyAchievementBreakdown;
 
@@ -86,6 +97,8 @@ function OverView() {
       value: (((data?.teamTotalCarry || 0) / base) * 100).toFixed(2),
     },
   ];
+
+  console.log("📊 Fetched data:", data);
 
   return (
     <section className="pr-5">
