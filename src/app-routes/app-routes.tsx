@@ -151,14 +151,27 @@ const AppRoutes = createBrowserRouter([
         path: "update-message",
         element: <UpdateMessage />,
       },
+
+
+
+      // {
+      //   path: "profile-datails",
+      //   element: <Profile />,
+      // },
       {
-        path: "profile-datails",
+        path: "profile/:id",
         element: <Profile />,
       },
       {
-        path: "profile",
-        element: <Profile />,
+        path: "profile-List",
+        element: <MarketPlaceProfile/>,
       },
+
+
+
+
+
+
 
       {
         path: "projectsdetails/:id",
@@ -188,10 +201,7 @@ const AppRoutes = createBrowserRouter([
         element: <UserListPage />,
       },
 
-      {
-        path: "profile-List",
-        element: <MarketPlaceProfile/>,
-      },
+    
 
       {
         path: "operation",
