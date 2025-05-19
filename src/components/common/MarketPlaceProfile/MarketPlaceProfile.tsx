@@ -45,6 +45,7 @@ const MarketPlaceProfile = () => {
     "Completed Jobs", 
     "Profile Link"
   ];
+  
 
   if (loading) return <Loading />;
 

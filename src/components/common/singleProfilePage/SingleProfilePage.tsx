@@ -1,21 +1,75 @@
-const SingleProfilePage = () => {
-  const profileData = {
-    name: "John Doe",
-    permission: "Admin",
-    category: "wordpress",
-   
-    totalEarning: "$12,350",
-    totalSetted_Promotion_Name: "Gold Package",
-    promotion: "Featured",
-    thisMonthSpecialOrder: 12,
-    thisMonthEarning: "$1,500",
-    rankKeywords: ["React", "Next.js", "Tailwind"],
-    totalProjects: 34,
-    averageRating: 4.8,
-    currentRanking: 7,
-    specialOrderTakenFrom: ["Client A", "Client B", "Client C"], // ✅ Just a name list
-  };
+import { useEffect } from "react";
+import { useParams } from "react-router";
 
+const SingleProfilePage = () => {
+  const { id } = useParams(); 
+
+  // Fetch user data
+  useEffect(() => {
+    const profileData = async () => {
+      setLoading(true);
+      setMessage("");  // Clear previous message
+      try {
+        // Authorization header with Bearer token
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,  // Use token for authorization
+        };
+
+        const res = await axios.get(
+          `https://mtsbackend20-production.up.railway.app/api/profile/singleprofile/${id}`,
+          { headers }  // Pass the authorization header
+        );
+
+        const profileData = res.data.teamMember;
+
+        // Normalize the user data
+        // const userData = {
+        //   dp: fetchedUser.dp || "/default.jpg",
+        //   first_name: fetchedUser.first_name || "",
+        //   last_name: fetchedUser.last_name || "",
+        //   email: fetchedUser.email || "",
+        //   number: fetchedUser.number || "",
+        //   permanent_address: fetchedUser.permanent_address || "",
+        //   present_address: fetchedUser.present_address || "",
+        //   gender: fetchedUser.gender || "",
+        //   blood_group: fetchedUser.blood_group || "",
+        //   relationship: fetchedUser.relationship || "",
+        //   education: fetchedUser.education || "",
+        //   guardian_relation: fetchedUser.guardian_relation || "",
+        //   guardian_number: fetchedUser.guardian_number || "",
+        //   guardian_address: fetchedUser.guardian_address || "",
+        //   religion: fetchedUser.religion || "",
+        //   department_name: fetchedUser?.department?.department_name || "",
+        //   role: fetchedUser.role || "N/A",
+        //   // status: fetchedUser.status || "Active",
+        //   // joined: fetchedUser.joining_date || "N/A",
+        //   // last_login: fetchedUser.last_login || "N/A",
+        //   // access_level: fetchedUser.access_level || "User",
+        // };
+
+        console.log( "this sis tepartment part",userData.department_name)
+
+        console.log("this is a testing data in the fild and user ",userData)
+        setUser(userData);
+        setEditedUser(userData);  // Initialize the edited user data
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast.error("Error fetching user details. Please try again.");
+      } finally {
+        setLoading(false);  // Stop loading
+      }
+    };
+
+    fetchUserData();
+  }, [id, token]);  // Re-fetch data when `id` or `token` changes
+
+
+
+
+
+
+ 
   return (
     <div className="p-6 max-w-6xl mx-auto">
 
