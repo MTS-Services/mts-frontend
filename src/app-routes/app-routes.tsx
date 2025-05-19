@@ -37,6 +37,7 @@ import { SocketProvider } from "../context/SocketContext";
 import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
 import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
 import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
+import AttendacnePage from "../layouts/DashBoard/AttendancePage/AttendancePage";
 import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
@@ -167,8 +168,6 @@ const AppRoutes = createBrowserRouter([
         element: <UpdateMessage />,
       },
 
-
-
       // {
       //   path: "profile-datails",
       //   element: <Profile />,
@@ -179,14 +178,8 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "profile-List",
-        element: <MarketPlaceProfile/>,
+        element: <MarketPlaceProfile />,
       },
-
-
-
-
-
-
 
       {
         path: "projectsdetails/:id",
@@ -196,6 +189,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "userprofiledetails/:id",
         element: <UserProfilePage />,
+      },
+      {
+        path: "attendance",
+        element: <AttendacnePage />,
       },
 
       {
@@ -218,7 +215,7 @@ const AppRoutes = createBrowserRouter([
 
       {
         path: "profile-List",
-        element: <MarketPlaceProfile/>,
+        element: <MarketPlaceProfile />,
       },
 
       {

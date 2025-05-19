@@ -1,13 +1,13 @@
-import OrderPageScreenshot from "./OrderPageScreenshot"
-import ProjectsDetail from "./ProjectsDetail"
+import OrderPageScreenshot from "./OrderPageScreenshot";
+import ProjectsDetail from "./ProjectsDetail";
 
 const ProjectsDetails = () => {
   return (
-    <div className=" w-[1440px] m-auto overflow-hidden lg:px-6 md:px-4 px-2.5">
+    <div className="m-auto w-[1440px] overflow-hidden px-2.5 md:px-4 lg:px-6">
       <ProjectsDetail></ProjectsDetail>
-      {/* <OrderPageScreenshot></OrderPageScreenshot> */}
+      <OrderPageScreenshot></OrderPageScreenshot>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectsDetails
+export default ProjectsDetails;
