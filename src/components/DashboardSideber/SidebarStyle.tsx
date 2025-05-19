@@ -10,6 +10,7 @@ import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GrWorkshop } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
+import { HiOutlineFingerPrint } from "react-icons/hi2";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
@@ -46,6 +47,8 @@ const SidebarStyle = () => {
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <GrWorkshop />, label: "Today Task", path: "todaytask" },
+    { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
+
     {
       icon: <RiTeamFill />,
       label: "Team Perform",
@@ -86,6 +89,8 @@ const SidebarStyle = () => {
     { icon: <GiTakeMyMoney />, label: "Promotion", path: "promotion-summary" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
+    { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
+
     {
       icon: <ImProfile />,
       label: "Profile Create",
@@ -109,6 +114,8 @@ const SidebarStyle = () => {
     },
     { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
+    { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
+
     {
       icon: <MdBookmarkAdd />,
       label: "Add Awards",
@@ -123,6 +130,8 @@ const SidebarStyle = () => {
     { icon: <MdSafetyDivider />, label: "Distribution", path: "distribution" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
     { icon: <FaPeopleCarry />, label: "Team Create", path: "create-team" },
+    { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
+
     {
       icon: <PiBuildingOfficeFill />,
       label: "Department Create",
@@ -144,7 +153,10 @@ const SidebarStyle = () => {
   const sidebarItemsCEO = [
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
+
     { icon: <GrWorkshop />, label: "Today Task", path: "todaytask" },
+    { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
+
     {
       icon: <RiTeamFill />,
       label: "Team Perform",
