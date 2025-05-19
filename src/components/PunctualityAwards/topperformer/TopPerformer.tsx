@@ -58,8 +58,8 @@ top performer
           alt={`Member ${index + 1}`}
           className="w-full h-full p-2 mb-4 rounded-full border-4 border-primary object-cover shadow-box-style"
         />
-        <h4 className="text-[24px] font-semibold mb-2 font-primary text-primary text-shadow-md transform transition-all duration-300">{member.name}</h4>
-        <p className="text-lg font-medium text-accent font-primary">{member.position}</p>
+        <h4 className="text-[24px] font-semibold mb-2 font-primary text-white text-shadow-md transform transition-all duration-300">{member.name}</h4>
+        <p className="text-lg font-medium text-white font-primary">{member.position}</p>
       </div>
     </div>
   ))}
