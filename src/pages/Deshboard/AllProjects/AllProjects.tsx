@@ -13,7 +13,6 @@ import SelectFilter from "../../../components/SelectFilter/SelectFilter";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useSocket } from "../../../context/SocketContext";
 import { useFetchData } from "../../../hooks/useFetchData";
-import { useSocketFetcher } from "../../../hooks/useSocketFetcher";
 import SingleDeshboardProject from "./SingleDeshboardProject";
 
 function AllProjects() {
@@ -22,7 +21,7 @@ function AllProjects() {
     "https://mtsbackend20-production.up.railway.app/api/project",
   );
 
-  const { roleBasePermissionOne } = useContext(AuthContext);
+  const { roleBasePermissionOne, role } = useContext(AuthContext);
   const [team, setTeam] = useState([]);
   const [salesMember, setSalesMember] = useState([]);
   const [status, setStatus] = useState([]);
@@ -69,11 +68,13 @@ function AllProjects() {
     };
   }, [socket, data]);
 
-  const chartRawData = useSocketFetcher(
-    socket,
-    "TeamChart",
+  const { data: chartRawData, loading } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/team/teamwisechart",
+    "GET",
     null,
-    "eachTeamChart",
+    {
+      refetchInterval: 2000, // Auto refetch every 2s
+    },
   );
 
   const reset = () => {
@@ -131,7 +132,7 @@ function AllProjects() {
       message: "Total carry forward from previous month.",
     },
     {
-      title: "Team Delivery",
+      title: role === "sales_leader" ? "Total Sales" : "Team Delivery",
       amount: chartRawData?.teamAchievement,
       icon: TbUserDollar,
       message: "Total deliveries completed this month.",
