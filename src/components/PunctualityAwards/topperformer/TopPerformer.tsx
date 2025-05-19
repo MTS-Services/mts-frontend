@@ -7,7 +7,7 @@ const punctualityAwards = [
   {
     name: "Fatema akter ",
     position: "WEB DEVELOPER",
-    image: "public/developer zoon/fatema.JPG",
+    image: "/developer zoon/fatema.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
@@ -16,21 +16,14 @@ const punctualityAwards = [
   {
     name: "Md asif",
     position: "ACCOUNT MANAGER, SALES",
-    image: "public/developer zoon/asif.JPG",
+    image: "/developer zoon/asif.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
   },
 
 
-  {
-    name: "AFSANA AKTER NIPA",
-    position: "Jr. Web Developer",
-    image: "/developer zoon/ranar-bou.jpg",
-    award: "Punctuality",
-    bio: "Alex is known for delivering projects on time with great leadership skills.",
-    experience: "6 years"
-  }
+ 
 ];
 
 const TopPerformer = () => {
