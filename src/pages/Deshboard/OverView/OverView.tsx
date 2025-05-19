@@ -11,7 +11,7 @@ import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import { useFetchData } from "../../../hooks/useFetchData";
 
 function OverView() {
-  const { data, loading, refetch } = useFetchData(
+  const { data, loading } = useFetchData(
     "https://mtsbackend20-production.up.railway.app/api/team/teamwisechart",
     "GET",
     null,

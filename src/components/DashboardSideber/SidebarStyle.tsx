@@ -87,11 +87,6 @@ const SidebarStyle = () => {
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
     {
-      icon: <ImProfile />,
-      label: "Profile Create",
-      path: "create-profile",
-    },
-    {
       icon: <BsFillFileEarmarkPdfFill />,
       label: "Quotation",
       path: "quotation-pdf-form",

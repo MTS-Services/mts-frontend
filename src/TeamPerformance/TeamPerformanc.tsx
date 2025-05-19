@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
+import MtsBarChar from "../components/Chart/MtsBarChart/MtsBarChart";
+import MtsLineChart from "../components/Chart/MtsLineChart/MtsLineChart";
+import { useFetchData } from "../hooks/useFetchData";
 
 const TeamPerformance = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -11,19 +14,35 @@ const TeamPerformance = () => {
     bonus?: number;
   }
 
-  const [tableData, setTableData] = useState<TableRow[]>([]);
+  const { data, loading } = useFetchData(
+    "https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance",
+    "GET",
+    null,
+    {
+      refetchInterval: 2000, // Auto refetch every 2s
+    },
+  );
+
+  const target = data?.teamQuarterlyPerformance?.target;
+  const achive = data?.teamQuarterlyPerformance?.achieved;
+  const result = target - achive;
+
+  console.log("tmp", data);
+
+  const tableData = data?.teamMembersQuarterly;
 
   const lastQuarter = [
-    { title: "Target", amount: "$3000", note: "mr" },
-    { title: "Achieve", amount: "$2000", note: "mr" },
-    { title: "+/-", amount: "2", note: "mr" },
-  ];
-
-  const currentMonth = [
-    { title: "Worked Amount", amount: "$3000", note: "mr" },
-    { title: "Worked Projects", amount: "$3000", note: "mr" },
-    { title: "Target", amount: "$3000", note: "mr" },
-    { title: "Achieve", amount: "$2000", note: "mr" },
+    {
+      title: "Target",
+      amount: target,
+      note: "mr",
+    },
+    {
+      title: "Achieve",
+      amount: achive,
+      note: "mr",
+    },
+    { title: "+/-", amount: result, note: "mr" },
   ];
 
   const tableHeaders = ["Member Name", "Target", "Achive price", "+/-"];
@@ -68,9 +87,6 @@ const TeamPerformance = () => {
         );
 
         const data = await response.json();
-        console.log("API response:", data);
-
-        // Access data.projects if it exists
         if (data?.projects && Array.isArray(data.projects)) {
           setTableData(data.projects);
         } else {
@@ -85,11 +101,18 @@ const TeamPerformance = () => {
     fetchData();
   }, []);
 
+  const barChartCardData = data?.teamMembersQuarterly?.map((member) => ({
+    memberName: member.team_member_name,
+    target: member.quarterly_target,
+    earned: member.achieved,
+  }));
+  const weeklyAchievementBreakdown = [];
+
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10">
       <div>
         <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="my-5 text-4xl text-white">Last Quarter</h2>
+          <h2 className="my-5 text-4xl text-white">Current Quarter</h2>
           <select
             className="bg-background rounded px-4 py-1 text-white outline-none"
             value={selectedQuater}
@@ -126,44 +149,9 @@ const TeamPerformance = () => {
 
       <div>
         <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="text-4xl text-white">Current Month</h2>
-          <select
-            className="bg-background rounded px-4 py-1 text-white outline-none"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {monthName.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex flex-wrap items-start gap-2">
-          {currentMonth.map(({ title, amount, note }, idx) => (
-            <div
-              key={idx}
-              className="bg-primary border-border-color relative w-full rounded-sm border-2 p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
-            >
-              <h2 className="text-sm md:text-xl">{title}</h2>
-              <h2 className="text-sm md:text-xl">{amount}</h2>
-              {note && (
-                <div className="group absolute top-2 right-2">
-                  <MdInfoOutline className="text-xl" />
-                  <div className="pointer-events-none absolute top-6 right-0 z-10 w-40 rounded bg-black p-2 text-xs text-white opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
-                    {note}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="mb-5 text-4xl text-white">Member Performance</h2>
+          <h2 className="mb-5 text-4xl text-white">
+            Quater Base Member Performance
+          </h2>
           <select
             className="bg-background rounded px-4 py-1 text-white outline-none"
             value={selectedMonth}
@@ -195,28 +183,25 @@ const TeamPerformance = () => {
             </thead>
 
             <tbody className="border-2 border-white">
-              {tableData.length > 0 ? (
+              {tableData?.length > 0 ? (
                 tableData.map((row, i) => (
                   <tr
                     key={i}
                     className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 transform text-sm text-white transition-all duration-300 ease-in-out"
                   >
                     <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row.clientName}
+                      {row.team_member_name}
                     </td>
 
                     <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row?.after_fiverr_amount}
+                      $ {row?.quarterly_target}
                     </td>
 
                     <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row?.status}
+                      $ {row?.achieved}
                     </td>
                     <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
-                    </td>
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      ${Number(row?.bonus || 0).toFixed(2)}
+                      $ {row?.quarterly_target - row?.achieved}
                     </td>
                   </tr>
                 ))
@@ -234,6 +219,17 @@ const TeamPerformance = () => {
           </table>
         </div>
       </div>
+      <section className="pr-5">
+        {/* Charts Row 1 */}
+        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+            <MtsBarChar barData={barChartCardData} />
+          </div>
+          <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+            <MtsLineChart lineData={weeklyAchievementBreakdown} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

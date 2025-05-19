@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
+import Distribution from "../../../pages/Distribution/Distribution";
 
 const Performance = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -48,41 +49,6 @@ const Performance = () => {
     "1st July to 30th September",
     "1st October to 31st December",
   ];
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://mtsbackend20-production.up.railway.app/api/project",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              page: "1",
-              limit: "10",
-            }),
-          },
-        );
-
-        const data = await response.json();
-        console.log("API response:", data);
-
-        // Access data.projects if it exists
-        if (data?.projects && Array.isArray(data.projects)) {
-          setTableData(data.projects);
-        } else {
-          console.error("API response is not in the expected format:", data);
-          setTableData([]); // Fallback to empty array if response is not in the expected format
-        }
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10">
@@ -175,7 +141,7 @@ const Performance = () => {
             ))}
           </select>
         </div>
-
+        <Distribution />
         <div className="mt-10 overflow-x-auto">
           <table className="w-full min-w-[1000px] text-left">
             <thead>
