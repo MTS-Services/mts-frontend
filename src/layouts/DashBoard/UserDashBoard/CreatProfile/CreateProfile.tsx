@@ -3,10 +3,24 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSocket } from "../../../../context/SocketContext";
+import { useDepartmentNames } from "../../../../hooks/useSocketDataUtils";
 
 const CreateProfile = () => {
   const [ProfileName, setPrifileName] = useState("");
+  const socket = useSocket();
   const [loading, setLoading] = useState(false);
+  
+  // Socket.io দিয়ে ডিপার্টমেন্ট ডাটা লোড করা
+  const DEPARTMENT_OPTIONS = useDepartmentNames(socket);
+  const [formData, setFormData] = useState({
+    department_id: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +37,8 @@ const CreateProfile = () => {
       const response = await axios.post(
         "https://mtsbackend20-production.up.railway.app/api/profile/create",
         {
-            profile_name: ProfileName.trim(),
+          profile_name: ProfileName.trim(),
+          department_id: formData.department_id || null
         },
         {
           headers: {
@@ -34,17 +49,18 @@ const CreateProfile = () => {
       );
 
       if (response.status === 201) {
-        toast.success("✅ Department created successfully");
+        toast.success("✅ Profile created successfully");
         setPrifileName("");
+        setFormData({ department_id: "" });
       }
     } catch (error) {
       if (error.response?.status === 401) {
         Cookies.remove("core");
         toast.error("🔒 Token expired. Please login again.");
       } else {
-        toast.error("❌ Failed to create department");
+        toast.error("❌ Failed to create profile");
       }
-      console.error("Error creating department:", error);
+      console.error("Error creating profile:", error);
     } finally {
       setLoading(false);
     }
@@ -55,7 +71,7 @@ const CreateProfile = () => {
       <ToastContainer />
       <div className="bg-card shadow-lg rounded-xl w-full max-w-md sm:max-w-lg md:max-w-xl border border-primary p-6 sm:p-8 md:p-10">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-4 sm:mb-6 text-accent font-primary">
-          Create ProfileName
+          Create Profile
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           <div>
@@ -71,6 +87,29 @@ const CreateProfile = () => {
               required
             />
           </div>
+
+          {/* Department Selection - Socket.io দিয়ে লোড করা ডাটা ব্যবহার করা */}
+          <div className="">
+            <label className="text-accent font-primary mb-1 block text-sm font-semibold">
+              Department
+            </label>
+            <select
+              name="department_id"
+              value={formData.department_id}
+              onChange={handleInputChange}
+              className="border-accent text-accent w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="" className="font-primary bg-card text-base">
+                Select Department (Optional)
+              </option>
+              {DEPARTMENT_OPTIONS.map((dept) => (
+                <option key={dept.id} value={dept.id} className="bg-card">
+                  {dept.department_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -78,7 +117,7 @@ const CreateProfile = () => {
               loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
             }`}
           >
-            {loading ? "Creating..." : "Create Profile Name"}
+            {loading ? "Creating..." : "Create Profile"}
           </button>
         </form>
       </div>
@@ -86,6 +125,4 @@ const CreateProfile = () => {
   );
 };
 
-
-
-export default CreateProfile
+export default CreateProfile;

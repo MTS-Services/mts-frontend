@@ -6,7 +6,7 @@ import DashboardLayout from "../DashboardLayout";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
-import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
+// import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
 import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
@@ -38,6 +38,7 @@ import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/Creat
 import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
 import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
 import AttendacnePage from "../layouts/DashBoard/AttendancePage/AttendancePage";
+import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
 
 // const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -166,13 +167,18 @@ const AppRoutes = createBrowserRouter([
         path: "update-message",
         element: <UpdateMessage />,
       },
+
+      // {
+      //   path: "profile-datails",
+      //   element: <Profile />,
+      // },
       {
-        path: "profile-datails",
+        path: "profile/:id",
         element: <Profile />,
       },
       {
-        path: "profile",
-        element: <Profile />,
+        path: "profile-List",
+        element: <MarketPlaceProfile />,
       },
 
       {
