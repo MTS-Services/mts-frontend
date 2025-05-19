@@ -51,11 +51,12 @@
     "react-medium-image-zoom": "^5.2.14",
     "react-redux": "^9.2.0",
     "react-router": "^7.5.0",
-    "react-router-dom": "^7.5.0",
+    "react-router-dom": "^7.6.0",
     "react-select": "^5.10.1",
     "react-time-picker": "^7.0.0",
     "react-toastify": "^11.0.5",
     "react-zoom-pan-pinch": "^3.7.0",
+    "recharts": "^2.15.3",
     "socket.io-client": "^4.8.1",
     "swiper": "^11.2.6"
   },
