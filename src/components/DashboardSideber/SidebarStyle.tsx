@@ -1,6 +1,9 @@
 import Cookies from "js-cookie";
 import React, { useContext, useState } from "react";
-import { BsFileEarmarkBarGraph } from "react-icons/bs";
+import {
+  BsFileEarmarkBarGraph,
+  BsFillFileEarmarkPdfFill,
+} from "react-icons/bs";
 import { FaPeopleCarry, FaProjectDiagram, FaUser } from "react-icons/fa";
 import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
@@ -80,12 +83,18 @@ const SidebarStyle = () => {
       path: "special-order",
     },
     { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
+    { icon: <GiTakeMyMoney />, label: "Promotion", path: "promotion-summary" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
     {
       icon: <ImProfile />,
       label: "Profile Create",
       path: "create-profile",
+    },
+    {
+      icon: <BsFillFileEarmarkPdfFill />,
+      label: "Quotation",
+      path: "quotation-pdf-form",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
@@ -130,12 +139,6 @@ const SidebarStyle = () => {
       path: "profile-List",
     },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
-
-
-
-
-
-
   ];
 
   const sidebarItemsCEO = [
