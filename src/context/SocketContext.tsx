@@ -24,10 +24,7 @@ export const SocketProvider = ({ children }) => {
     // Prevent multiple connections
     if (socket) return;
 
-    const socketIo = io("https://mtsbackend20-production.up.railway.app/", {
-      auth: { token },
-      transports: ["websocket"],
-    });
+    const socketIo = io("https://mtsbackend20-production.up.railway.app/");
 
     socketIo.on("connect", () => {
       console.log("✅ Socket connected:", socketIo.id);
