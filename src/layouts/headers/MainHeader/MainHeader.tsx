@@ -50,13 +50,13 @@ const Header: React.FC = () => {
 
             if ((user && !isAuthItem) || (!user && isAuthItem)) {
               return (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   className="hover:text-cta transition-colors duration-200"
                 >
                   {item.label}
-                </a>
+                </Link>
               );
             }
 
