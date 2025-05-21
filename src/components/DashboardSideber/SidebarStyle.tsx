@@ -9,8 +9,8 @@ import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GrWorkshop } from "react-icons/gr";
-import { ImProfile } from "react-icons/im";
 import { HiOutlineFingerPrint } from "react-icons/hi2";
+import { ImProfile } from "react-icons/im";
 import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
@@ -23,7 +23,7 @@ import {
 } from "react-icons/pi";
 import { RiTeamFill } from "react-icons/ri";
 import { TbMessage2Check } from "react-icons/tb";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
 import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
@@ -76,16 +76,12 @@ const SidebarStyle = () => {
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     {
-      icon: <FaPersonArrowUpFromLine />,
-      label: "Self Perform",
-      path: "performance",
-    },
-    {
       icon: <BsFileEarmarkBarGraph />,
       label: "Special Order",
       path: "special-order",
     },
     { icon: <PiRankingFill />, label: "Profile Ranking", path: "ranking-page" },
+    { icon: <PiRankingFill />, label: "ALL Report", path: "all-report" },
     { icon: <GiTakeMyMoney />, label: "Promotion", path: "promotion-summary" },
     { icon: <GiTakeMyMoney />, label: "Add Promotion", path: "promotion-add" },
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
