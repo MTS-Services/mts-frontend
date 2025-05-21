@@ -88,36 +88,56 @@ function AllReport() {
     specialOrderStats,
     todaysDeliveries,
     todaysOrders,
+    projectsNeedingAssignment,
     totalMonthlyCancellations,
     totalMonthlyDeliveries,
     totalMonthlyOrders,
+    carryForwardProjects,
   } = data;
 
-  const monthlyOperationAchive =
-    operationalPerformance.achievements.this_month.total_achievement;
-  const dailyOperationAchive =
-    operationalPerformance.achievements.today.total_achievement;
-  const monthlyPromotionCost = promotionCosts?.this_month_promotion.total_cost;
-  const dailyPromotionCost = promotionCosts?.today_promotion.total_cost;
-  const monthlySpecialOrderCost =
-    specialOrderStats?.this_month_special_order.total_cost;
-  const dailySpecialOrderCost =
-    specialOrderStats?.today_special_order.total_cost;
+  const monthlyOperationAchive = parseFloat(
+    operationalPerformance.achievements.this_month.total_achievement,
+  );
+  const dailyOperationAchive = parseFloat(
+    operationalPerformance.achievements.today.total_achievement,
+  );
 
-  const total_Monthly_cost =
-    parseFloat(monthlyPromotionCost) + parseFloat(monthlySpecialOrderCost);
-  const total_daily_cost =
-    parseFloat(dailyPromotionCost) + parseFloat(dailySpecialOrderCost);
+  const monthlyOperationTarget = parseFloat(
+    operationalPerformance.targets.this_month.total_member_target_sum,
+  );
+  const dailyOperationTarget = parseFloat(
+    operationalPerformance.targets.today.total_member_target_sum,
+  );
 
-  const salesTargetThisMonth =
-    salesPerformance?.targets?.this_month?.total_member_target_sum;
-  const salesTargetToday =
-    salesPerformance?.targets?.today?.total_member_target_sum;
+  const monthlyPromotionCost = parseFloat(
+    promotionCosts?.this_month_promotion.total_cost,
+  );
+  const dailyPromotionCost = parseFloat(
+    promotionCosts?.today_promotion.total_cost,
+  );
+  const monthlySpecialOrderCost = parseFloat(
+    specialOrderStats?.this_month_special_order.total_cost,
+  );
+  const dailySpecialOrderCost = parseFloat(
+    specialOrderStats?.today_special_order.total_cost,
+  );
 
-  const salesAchivementThisMonth =
-    salesPerformance?.achievements?.this_month?.total_achievement;
-  const salesAchivementToday =
-    salesPerformance?.achievements?.today?.total_achievement;
+  const total_Monthly_cost = monthlyPromotionCost + monthlySpecialOrderCost;
+  const total_daily_cost = dailyPromotionCost + dailySpecialOrderCost;
+
+  const salesTargetThisMonth = parseFloat(
+    salesPerformance?.targets?.this_month?.total_member_target_sum,
+  );
+  const salesTargetToday = parseFloat(
+    salesPerformance?.targets?.today?.total_member_target_sum,
+  );
+
+  const salesAchivementThisMonth = parseFloat(
+    salesPerformance?.achievements?.this_month?.total_achievement,
+  );
+  const salesAchivementToday = parseFloat(
+    salesPerformance?.achievements?.today?.total_achievement,
+  );
 
   console.log(data);
 
@@ -191,7 +211,7 @@ function AllReport() {
           <thead className="bg-primary text-white">
             <tr>
               <th className="border border-white px-4 py-2 text-[18px]">
-                +/- ( T-A )
+                +/- ( A-T )
               </th>
               <th className="border border-white px-4 py-2 text-[18px]">
                 Target
@@ -208,12 +228,10 @@ function AllReport() {
             <tr className="odd:bg-secondary even:bg-background text-accent">
               <td>
                 <p className="px-4 py-2">
-                  {parseFloat(salesTargetThisMonth) -
-                    parseFloat(salesAchivementThisMonth)}
+                  {salesAchivementThisMonth - salesTargetThisMonth}
                 </p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
-                  {parseFloat(salesTargetToday) -
-                    parseFloat(salesAchivementToday)}
+                  {salesAchivementToday - salesTargetToday}
                 </p>
               </td>
 
@@ -244,7 +262,9 @@ function AllReport() {
         <table className="border-primary text-accent font-primary text-md w-full table-auto border text-center">
           <thead className="bg-primary text-white">
             <tr>
-              <th className="border border-white px-4 py-2 text-[18px]">+/-</th>
+              <th className="border border-white px-4 py-2 text-[18px]">
+                ( A-T ) +/-
+              </th>
 
               <th className="border border-white px-4 py-2 text-[18px]">
                 Target
@@ -256,7 +276,10 @@ function AllReport() {
                 Cancelled
               </th>
               <th className="border border-white px-4 py-2 text-[18px]">
-                Special Order Cost
+                Need to Assign
+              </th>
+              <th className="border border-white px-4 py-2 text-[18px]">
+                Carry
               </th>
             </tr>
           </thead>
@@ -264,13 +287,19 @@ function AllReport() {
             <tr className="odd:bg-secondary even:bg-background text-accent">
               <td>
                 <p className="px-4 py-2">
-                  {parseFloat(monthlyOperationAchive) - total_Monthly_cost}
+                  {monthlyOperationAchive - monthlyOperationTarget}
                 </p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
-                  {parseFloat(dailyOperationAchive) - total_daily_cost}
+                  {dailyOperationAchive - dailyOperationTarget}
                 </p>
               </td>
 
+              <td className="border-primary border">
+                <p className="px-4 py-2">{monthlyOperationTarget}</p>
+                <p className="border-primary/20 border-t-1 px-4 py-2">
+                  {dailyOperationTarget}
+                </p>
+              </td>
               <td className="border-primary border">
                 <p className="px-4 py-2">{monthlyOperationAchive}</p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
@@ -278,21 +307,27 @@ function AllReport() {
                 </p>
               </td>
               <td className="border-primary border">
-                <p className="px-4 py-2">{total_Monthly_cost}</p>
+                <p className="px-4 py-2">
+                  {totalMonthlyCancellations?.total_after_fiverr}
+                </p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
-                  {total_daily_cost}
+                  Count : {totalMonthlyCancellations?.count}
                 </p>
               </td>
               <td className="border-primary border">
-                <p className="px-4 py-2">{monthlyPromotionCost}</p>
+                <p className="px-4 py-2">
+                  {projectsNeedingAssignment?.total_after_fiverr_and_bonus}
+                </p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
-                  {dailyPromotionCost}
+                  Count : {projectsNeedingAssignment?.count}
                 </p>
               </td>
               <td className="border-primary border">
-                <p className="px-4 py-2">{monthlySpecialOrderCost}</p>
+                <p className="px-4 py-2">
+                  {carryForwardProjects?.total_after_fiverr_and_bonus}
+                </p>
                 <p className="border-primary/20 border-t-1 px-4 py-2">
-                  {dailySpecialOrderCost}
+                  Count : {carryForwardProjects?.count}
                 </p>
               </td>
             </tr>
