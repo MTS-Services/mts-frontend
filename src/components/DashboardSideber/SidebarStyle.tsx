@@ -31,6 +31,7 @@ import ToggleDarkAndLight from "../ToggleDarkAndLight/ToggleDarkAndLight";
 
 const SidebarStyle = () => {
   const { theme } = useTheme();
+
   const {
     role,
     dbUser,
