@@ -1,48 +1,73 @@
-// useFetchData.js
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useCallback, useEffect, useState } from "react";
+import { useContext } from "react";
 import { toast } from "react-toastify";
-const cache = {};
+import { AuthContext } from "../context/AuthProvider";
 
-export function useFetchData(url, method = "GET", body = null) {
+/**
+ * useFetchData
+ * @param {string} url - API endpoint
+ * @param {string} method - HTTP method (default: "GET")
+ * @param {object|null} body - request body (optional)
+ * @param {object} options - react-query options like refetchInterval, retry etc.
+ */
+export function useFetchData(url, method = "GET", body = null, options = {}) {
+  const { isLoading: authLoading } = useContext(AuthContext);
   const token = Cookies.get("core");
-  const [data, setData] = useState(null);
-  const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const isTokenAvailable = !!token && !authLoading;
+
+  const fetchData = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      };
-
       const response = await axios(url, {
         method,
         headers,
         ...(body && { data: body }),
       });
-      
-      cache[url] = response.data;
-      setData(response.data);
-      console.log("res:", response);
+
+      return response.data;
     } catch (error) {
-      Cookies.remove("core");
-      toast.warning("Invalid or expired token. Please login again.");
-      console.error("API error:", error);
-    } finally {
-      setLoading(false);
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message || "Something went wrong";
+
+      if (status === 401 || status === 403) {
+        toast.warning(
+          "⚠️ Session expired or unauthorized. Please login again.",
+        );
+      } else if (status === 404) {
+        return { data: [] };
+      } else {
+        toast.error(message);
+      }
+
+      throw new Error(message);
     }
-  }, [url, method, body, token]);
+  };
 
-  useEffect(() => {
-    fetchData();
-    
-  }, [fetchData, version]);
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [url, method, body],
+    queryFn: fetchData,
+    enabled: isTokenAvailable,
+    refetchOnWindowFocus: false,
+    retry: false,
+    ...options,
+  });
 
-  const refetch = () => setVersion((v) => v + 1);
-
-  return { data, loading, refetch };
+  return {
+    data,
+    loading,
+    error: error?.message || null,
+    refetch,
+  };
 }
