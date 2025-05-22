@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const SingleTodayTask = ({ item }) => {
   const { theme } = useTheme();
@@ -30,7 +31,7 @@ const SingleTodayTask = ({ item }) => {
     try {
       const response = await axios.patch(
         `https://mtsbackend20-production.up.railway.app/api/today-task/update/${item.today_task_id}`,
-        payload, // axios handles JSON.stringify automatically
+        payload,
         {
           headers: {
             "Content-Type": "application/json",
@@ -40,10 +41,10 @@ const SingleTodayTask = ({ item }) => {
       );
       console.log("Update response:", response.data);
       setOriginalTime(updatedTime);
-      alert("✅ Status updated successfully");
+      toast.success("Status updated successfully");
     } catch (error) {
       console.error("❌ Update failed:", error);
-      alert("❌ Update failed — see console.");
+      toast.error("Failed to update");
     }
   };
 

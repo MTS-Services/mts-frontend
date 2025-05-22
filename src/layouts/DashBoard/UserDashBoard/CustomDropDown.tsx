@@ -1,6 +1,6 @@
 import Select from "react-select";
 
-const CustomSelect = ({
+const CustomDropDown = ({
   options,
   value,
   onChange,
@@ -10,10 +10,10 @@ const CustomSelect = ({
   const customStyles = {
     control: (base) => ({
       ...base,
-      minHeight: "60px",
+      minHeight: "40px",
       borderRadius: "6px",
       backgroundColor: "#ffffff",
-      borderColor: "#e5e7eb",
+      borderColor: "primary",
       padding: "4px",
     }),
     option: (base, state) => ({
@@ -40,10 +40,10 @@ const CustomSelect = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="mb-4 w-150"
+      className="mb-4 w-40"
       styles={customStyles}
     />
   );
 };
 
-export default CustomSelect;
+export default CustomDropDown;
