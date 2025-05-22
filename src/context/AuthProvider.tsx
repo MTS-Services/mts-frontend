@@ -91,6 +91,7 @@ const AuthProvider = ({ children }) => {
   const logOutUser = () => {
     setIsLoading(true);
     Cookies.remove("core");
+    queryClient.clear();
     setRole(null);
     return signOut(auth);
   };

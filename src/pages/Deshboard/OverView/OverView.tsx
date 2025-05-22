@@ -118,7 +118,30 @@ function OverView() {
       {/* Charts Row 1 */}
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
         <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-          <MtsBarChar barData={barChartCardData} />
+          <MtsBarChar
+            title="Team Target vs Achieved"
+            labels={barChartCardData?.map((member) => member.memberName)}
+            datasets={[
+              {
+                color: "#ffffff",
+                label: "Target",
+                data:
+                  barChartCardData?.map((member) =>
+                    parseFloat(member.target),
+                  ) || [],
+                backgroundColor: "#FFB22C",
+              },
+              {
+                color: "#ffffff",
+                label: "Achieved",
+                data:
+                  barChartCardData?.map((member) =>
+                    parseFloat(member.earned),
+                  ) || [],
+                backgroundColor: "#FA812F",
+              },
+            ]}
+          />
         </div>
         <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
           <MtsPIChart PiData={chartData} />

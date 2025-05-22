@@ -1,3 +1,4 @@
+import MtsBarChar from "../../components/Chart/MtsBarChart/MtsBarChart";
 import Loading from "../../components/Loading/Loading";
 import { useFetchData } from "../../hooks/useFetchData";
 
@@ -93,6 +94,7 @@ function AllReport() {
     totalMonthlyDeliveries,
     totalMonthlyOrders,
     carryForwardProjects,
+    otherCosts,
   } = data;
 
   const monthlyOperationAchive = parseFloat(
@@ -122,8 +124,13 @@ function AllReport() {
     specialOrderStats?.today_special_order.total_cost,
   );
 
-  const total_Monthly_cost = monthlyPromotionCost + monthlySpecialOrderCost;
-  const total_daily_cost = dailyPromotionCost + dailySpecialOrderCost;
+  const monthlyOtherCosts = parseFloat(otherCosts?.this_month?.total_cost);
+  const dailyOtherCosts = parseFloat(otherCosts?.today?.total_cost);
+
+  const total_Monthly_cost =
+    monthlyPromotionCost + monthlySpecialOrderCost + monthlyOtherCosts;
+  const total_daily_cost =
+    dailyPromotionCost + dailySpecialOrderCost + dailyOtherCosts;
 
   const salesTargetThisMonth = parseFloat(
     salesPerformance?.targets?.this_month?.total_member_target_sum,
@@ -164,6 +171,9 @@ function AllReport() {
               <th className="border border-white px-4 py-2 text-[18px]">
                 Special Order Cost
               </th>
+              <th className="border border-white px-4 py-2 text-[18px]">
+                Other Cost
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -201,9 +211,16 @@ function AllReport() {
                   {dailySpecialOrderCost}
                 </p>
               </td>
+              <td className="border-primary border">
+                <p className="px-4 py-2">{monthlyOtherCosts}</p>
+                <p className="border-primary/20 border-t-1 px-4 py-2">
+                  {dailyOtherCosts}
+                </p>
+              </td>
             </tr>
           </tbody>
         </table>
+        <MtsBarChar />
       </div>
       <div className="py-5">
         <h2 className="pb-3 text-3xl">Sales Factors</h2>

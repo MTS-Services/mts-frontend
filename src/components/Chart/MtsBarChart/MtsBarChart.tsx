@@ -21,59 +21,42 @@ ChartJS.register(
 );
 
 function MtsBarChar({
-  barData = [],
   title = "Revenue Overview",
+  labels = [],
+  datasets = [],
   className = "",
 }) {
   const { theme } = useTheme();
 
-  // 🎨 Dynamic Colors Based on Theme
+  // 🎨 Theme-based colors
   const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
   const gridColor =
-    theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)";
+    theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255, 255, 255,.2)";
 
-  const labels = barData.map((item) => item.memberName);
-  const targets = barData.map((item) => parseFloat(item.target));
-  const achieved = barData.map((item) => parseFloat(item.earned));
-
+  // 📊 Chart data
   const chartData = {
     labels: labels,
-    datasets: [
-      {
-        label: "Target",
-        data: targets,
-        backgroundColor: "#FFB22C",
-        borderRadius: 0,
-        borderColor: "#ffffff",
-        borderWidth: 2,
-      },
-      {
-        label: "Achieved",
-        data: achieved,
-        backgroundColor: "#FA812F",
-        borderRadius: 0,
-        borderColor: "#ffffff",
-        borderWidth: 2,
-      },
-    ],
+    datasets: datasets.map((ds) => ({
+      ...ds,
+      borderRadius: 0,
+      borderColor: "#ffffff",
+      borderWidth: 2,
+    })),
   };
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     layout: {
-      padding: {
-        top: 0, // more spacing from title/legend
-      },
+      padding: { top: 0 },
     },
     plugins: {
       legend: {
         position: "top",
         labels: {
           color: textColor,
-          font: {
-            family: "'Rubik', sans-serif",
-          },
-          padding: 10, // extra spacing below legend
+          font: { family: "'Rubik', sans-serif" },
+          padding: 10,
         },
       },
       title: {
@@ -94,38 +77,25 @@ function MtsBarChar({
         titleColor: "#ffffff",
         bodyColor: "#ffffff",
       },
-      datalabels: {
-        color: textColor,
-        anchor: "end",
-        align: "top",
-        font: {
-          weight: "bold",
-          size: 12,
-        },
-      },
     },
     scales: {
       x: {
-        ticks: {
-          color: textColor,
-        },
-        grid: {
-          color: gridColor,
-        },
+        ticks: { color: textColor },
+        grid: { color: gridColor },
       },
       y: {
         beginAtZero: true,
-        ticks: {
-          color: textColor,
-        },
-        grid: {
-          color: gridColor,
-        },
+        ticks: { color: textColor },
+        grid: { color: gridColor },
       },
     },
   };
 
-  return <Bar data={chartData} options={chartOptions} className={className} />;
+  return (
+    <div className="h-[400px] w-full">
+      <Bar data={chartData} options={chartOptions} className={className} />
+    </div>
+  );
 }
 
 export default MtsBarChar;
