@@ -1,12 +1,25 @@
-// ✅ PrefetchWrapper.tsx → একটা কম্পোনেন্ট যা auto prefetch করে
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
+import Cookies from "js-cookie";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthProvider";
 
 const PrefetchWrapper = () => {
   const queryClient = useQueryClient();
+  const { user, isLoading } = useContext(AuthContext);
 
   useEffect(() => {
+    if (isLoading) return;
+
+    const token = Cookies.get("core"); // ✅ Correct token source
+
+    if (!token || !user) {
+      console.warn("⛔ Not logged in or token missing, skipping prefetch.");
+      return;
+    }
+
+    console.log("🚀 Prefetching started...");
+
     const routes = [
       {
         url: "https://mtsbackend20-production.up.railway.app/api/profile/reports/all",
@@ -30,15 +43,16 @@ const PrefetchWrapper = () => {
       queryClient.prefetchQuery({
         queryKey: [url],
         queryFn: async () => {
-          const token = localStorage.getItem("core");
+          // ✅ Use the token we already got from Cookies
           const res = await axios.get(url, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          console.log(`✅ Prefetched: ${url}`);
           return res.data;
         },
       });
     });
-  }, [queryClient]);
+  }, [queryClient, user, isLoading]);
 
   return null;
 };
