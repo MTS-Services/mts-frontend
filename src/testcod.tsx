@@ -5,15 +5,15 @@ import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query"; // Import useQuery
 import { useContext } from "react"; // Import useContext
-import { AuthContext } from "../../../context/AuthProvider";
+import { AuthContext } from "../context/AuthProvider"; // Assuming AuthContext path
 
-// Problematic imports (commented out to prevent compilation errors in Canvas)
-// import Tippy from "@tippyjs/react";
-// import { FaStar } from "react-icons/fa";
-// import "react-toastify/dist/ReactToastify.css";
-// import "tippy.js/dist/tippy.css";
-// import Loading from "../../../components/Loading/Loading";
-// import { useFetchData } from "../../../hooks/useFetchData"; // This hook is now defined below
+// Re-added imports for design and loading component
+import Tippy from "@tippyjs/react";
+import { FaStar } from "react-icons/fa";
+import "react-toastify/dist/ReactToastify.css";
+import "tippy.js/dist/tippy.css";
+import Loading from "../../../components/Loading/Loading";
+
 
 // Define interfaces for better type safety and understanding of data structure
 interface Department {
@@ -78,29 +78,17 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
   onChange: (field: string, value: string | number, source: string) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const hasFocused = useRef(false); // New ref to track if focus has been set
 
   useEffect(() => {
-    // console.log(`Info component for field '${field}': editable changed to ${editable}. hasFocused: ${hasFocused.current}`);
     if (editable && inputRef.current) {
-      // Only focus if it's editable AND it hasn't been focused in this editable session yet
-      if (!hasFocused.current) {
-        // console.log(`Info component for field '${field}': Focusing input for the first time in this editable session.`);
+      // Only focus if the input isn't already focused
+      if (document.activeElement !== inputRef.current) {
         inputRef.current.focus();
+        // Select all text in the input field when it gains focus
         inputRef.current.select();
-        hasFocused.current = true; // Set flag to true
-      } else {
-        // console.log(`Info component for field '${field}': Input already editable and focused once.`);
-      }
-    } else if (!editable) {
-      // Reset hasFocused when not editable, so it can focus again if it becomes editable later
-      // Only reset if the input is not currently focused, to prevent focus loss while typing
-      if (hasFocused.current && document.activeElement !== inputRef.current) {
-        // console.log(`Info component for field '${field}': Resetting hasFocused flag.`);
-        hasFocused.current = false;
       }
     }
-  }, [editable]); // Removed 'field' from dependencies as it's static for a given Info instance
+  }, [editable, value]); // Added 'value' to dependencies
 
   let content;
   let inputType = "text";
@@ -117,34 +105,42 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
         key={field} // Keep key for input element itself
         ref={inputRef}
         type={inputType}
-        value={value ?? ""}
+        value={value ?? ""} // Use nullish coalescing to ensure controlled input is never undefined
         step={field === "rating" ? "0.1" : (inputType === "number" ? "1" : undefined)}
         min={field === "rating" ? "0" : undefined}
         max={field === "rating" ? "5" : undefined}
-        onChange={(e) => onChange(field, e.target.value, source)}
+        onChange={(e) => onChange(field, e.target.value, source)} // Pass source to handleInputChange
         className="font-secondary text-accent w-full rounded border p-2 sm:w-auto"
       />
     );
   } else if (field.includes("_link") && value) {
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
-      <span title={value} className="font-secondary break-words text-blue-500 underline cursor-pointer">
-        {value.length > 30 ? `${value.substring(0, 30)}...` : value}
-      </span>
+      <Tippy content={value} placement="bottom">
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-secondary break-words text-blue-500 underline"
+        >
+          {value.length > 30 ? `${value.substring(0, 30)}...` : value}
+        </a>
+      </Tippy>
     );
   } else if (field === "project_requirements" && value) {
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
-      <span title={value} className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
-        {value.length > 30 ? `${value.substring(0, 30)}...` : value}
-      </span>
+      <Tippy content={value} placement="bottom">
+        <span className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
+          {value.length > 30 ? `${value.substring(0, 30)}...` : value}
+        </span>
+      </Tippy>
     );
   } else {
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
-      <span title={value || "-"} className="text-accent font-secondary text-base break-words">
-        {value && value.length > 30 ? `${value.substring(0, 30)}...` : value || "-"}
-      </span>
+      <Tippy content={value || "-"} placement="bottom">
+        <span className="text-accent font-secondary text-base break-words">
+          {value && value.length > 30 ? `${value.substring(0, 30)}...` : value || "-"}
+        </span>
+      </Tippy>
     );
   }
 
@@ -160,13 +156,6 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
   );
 }); // Memoize the Info component
 
-// Simple Loading Component replacement (also moved outside)
-const LoadingComponent = () => (
-    <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      <p className="ml-4 text-gray-500">Loading...</p>
-    </div>
-);
 
 /**
  * useFetchData hook provided by the user
@@ -241,22 +230,25 @@ const ProjectsDetail = () => {
   const [user, setUser] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false); // For local loading states (save operations)
   
-  // Use useFetchData hook to fetch project data
-  const { data: fetchedData, loading: fetchLoading, refetch: refetchProject } = useFetchData(
-    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
-  );
-
-  // Combined state for active editing section for better synchronization
-  const [activeEditSection, setActiveEditSection] = useState<'main' | 'client' | 'user' | 'cpanel' | null>(null);
-
-  // Use editedUser as the single source of truth for editable data
+  // Reverted to separate editing states
+  const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState<Project | null>(null);
+
+  const [isEditingClient, setIsEditingClient] = useState(false);
+  const [isEditingUser, setIsEditingUser] = useState(false);
+  const [isEditingCpanel, setIsEditingCpanel] = useState(false);
+
 
   const loginEditableFields = {
     client: ["client_login_info_link", "client_login_info_username", "client_login_info_password"],
     user: ["user_login_info_link", "user_login_info_username", "user_login_info_password"],
     cpanel: ["cpanel_link", "cpanel_username", "cpanel_password", "branch"],
   };
+
+  // Use useFetchData hook to fetch project data
+  const { data: fetchedData, loading: fetchLoading, refetch: refetchProject } = useFetchData(
+    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
+  );
 
   // Initialize user and editedUser states when data is fetched by useFetchData
   useEffect(() => {
@@ -277,16 +269,17 @@ const ProjectsDetail = () => {
   }, [fetchedData]);
 
 
+  // Updated handleInputChange for all editable fields
   const handleInputChange = useCallback((field: keyof Project | keyof Department | keyof Team, value: string | number, source: string) => {
-    // console.log(`handleInputChange called for field: ${String(field)}, value: ${value}, source: ${source}`);
     setEditedUser((prev) => {
-      if (!prev) {
-        // console.warn("handleInputChange: prev state is null.");
-        return null;
-      }
+      // Defensive check: If prev is null, return null to prevent errors
+      if (!prev) return null;
 
+      // Create a new object to ensure immutability
       const newEditedUser = { ...prev };
 
+      // Handle nested properties if they exist (though your current setup uses flat properties for editing)
+      // This is a more robust way to handle potential nested structures for future expansion
       if (source === "department") {
         if (newEditedUser.department && newEditedUser.department.length > 0) {
           newEditedUser.department = [{ ...newEditedUser.department[0], [field]: value }];
@@ -297,49 +290,40 @@ const ProjectsDetail = () => {
       } else if (source === "team") {
         newEditedUser.team = { ...newEditedUser.team, [field]: value };
       } else {
-        // Ensure value is correctly parsed for numbers, especially for empty strings
-        if (typeof value === 'string' && (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision"))) {
-            newEditedUser[field as keyof Project] = value === "" ? null : (field === "rating" ? Math.min(5, parseFloat(value || "0")) : parseFloat(value || "0"));
-        } else if (field === "project_requirements") { // Handle project_requirements as string
-            newEditedUser[field as keyof Project] = value;
+        // For 'user' source or direct properties, update directly
+        // Special handling for rating to ensure it's a number and capped at 5
+        if (field === "rating") {
+          newEditedUser[field as keyof Project] = Math.min(5, parseFloat(value as string || "0"));
+        } else if (field === "project_requirements") {
+          newEditedUser[field as keyof Project] = value;
+        } else if (typeof value === 'string' && (field.includes("amount") || field.includes("bonus") || field.includes("revision"))) {
+          newEditedUser[field as keyof Project] = value === "" ? null : parseFloat(value || "0");
         }
-        else { // Default handling for other direct fields
-            newEditedUser[field as keyof Project] = value;
+        else {
+          newEditedUser[field as keyof Project] = value;
         }
       }
-      // console.log("newEditedUser after update:", newEditedUser);
       return newEditedUser;
     });
-  }, []);
+  }, []); // No dependencies needed when using functional update form of setEditedUser
+
 
   const handleSave = async () => {
     try {
       setLoading(true);
       const token = Cookies.get("core");
       const updatedData: Partial<Project> = {};
-
+      
+      // Collect only the fields that are meant to be editable and belong to the 'user' source
       editableFields.forEach((field) => {
         if (editedUser && Object.prototype.hasOwnProperty.call(editedUser, field)) {
-          // Special handling for nested 'department' and 'team' if they are in editableFields
-          if (field === 'department_name') {
-            if (editedUser.department?.[0]?.department_name !== user?.department?.[0]?.department_name) {
-                // Assuming API expects department_name as a direct field for update
-                updatedData.department_name = editedUser.department?.[0]?.department_name;
-            }
-          } else if (field === 'team_name') {
-            if (editedUser.team?.team_name !== user?.team?.team_name) {
-                // Assuming API expects team_name as a direct field for update
-                updatedData.team_name = editedUser.team?.team_name;
-            }
-          } else {
-            updatedData[field] =
-              field === "rating"
-                ? parseFloat(parseFloat(editedUser[field] as string ?? "0").toFixed(1))
-                : editedUser[field];
-          }
+          updatedData[field] =
+            field === "rating"
+              ? parseFloat(parseFloat(editedUser[field] as string ?? "0").toFixed(1))
+              : editedUser[field];
         }
       });
-      
+
       console.log("Sending update request for main section with data:", updatedData); // Debugging log
       await axios.put(
         `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
@@ -353,7 +337,7 @@ const ProjectsDetail = () => {
       );
       // After successful save, refetch the project data to ensure UI is updated with latest from backend
       refetchProject(); 
-      setActiveEditSection(null); // Exit editing mode for the main section
+      setIsEditing(false); // Exit editing mode for the main section
       toast.success("Project updated successfully!"); // Toast message added
       console.log("Main project updated successfully."); // Debugging log
     } catch (error) {
@@ -368,7 +352,7 @@ const ProjectsDetail = () => {
     }
   };
 
-  const handleSectionSave = async (section: 'client' | 'user' | 'cpanel') => {
+  const handleSectionSave = async (section: 'client' | 'user' | 'cpanel', toggleEdit: React.Dispatch<React.SetStateAction<boolean>>) => {
     try {
       setLoading(true);
       const token = Cookies.get("core");
@@ -394,7 +378,7 @@ const ProjectsDetail = () => {
 
       // After successful save, refetch the project data to ensure UI is updated with latest from backend
       refetchProject(); 
-      setActiveEditSection(null); // Exit editing mode for the specific section
+      toggleEdit(false); // Exit editing mode for the specific section
       toast.success(`${section === 'client' ? 'Client' : section === 'user' ? 'User' : 'cPanel'} info updated successfully!`); // Toast message added
       console.log(`${section} section updated successfully.`); // Debugging log
     } catch (err) {
@@ -409,7 +393,7 @@ const ProjectsDetail = () => {
     }
   };
 
-  if (fetchLoading || loading || !user) return <LoadingComponent />;
+  if (fetchLoading || loading || !user) return <Loading />; // Using imported Loading component
 
   // Define fields that can be edited in the main 'Edit Info' section
   // These are the fields you explicitly mentioned should be editable via the main "Edit Info" button
@@ -437,7 +421,7 @@ const ProjectsDetail = () => {
     { label: "After Fiverr Amount", field: "after_fiverr_amount", source: "user" },
     { label: "After Fiverr Bonus", field: "after_Fiverr_bonus", source: "user" },
     { label: "Department Name", field: "department_name", source: "department" },
-    { label: "Project Requirements", field: "project_requirements", source: "user" },
+    { label: "Project Requirements", field: "project_requirements", source: "user" }, // Changed source to "user" as per your right code snippet
     { label: "Team Name", field: "team_name", source: "team" },
   ];
 
@@ -445,21 +429,21 @@ const ProjectsDetail = () => {
   const groupedFields = [
     allFields.slice(0, 5),
     allFields.slice(5, 10),
-    allFields.slice(10, 15)
+    allFields.slice(10, 15) // Adjusted slice end to cover all 15 fields
   ];
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-primary min-h-screen"> {/* Reverted to bg-primary */}
       <ToastContainer />
       {/* Top Project Info Section */}
       <section className="py-6 sm:py-8 md:py-12">
-        <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8">
+        <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8"> {/* Reverted to bg-card, shadow-primary */}
           <div className="flex flex-col flex-wrap sm:flex-row sm:items-center sm:justify-between">
             <div className="mb-6 sm:mb-0">
-              <h2 className="font-primary text-primary py-2 text-xl font-bold sm:text-2xl md:text-3xl">
+              <h2 className="font-primary text-primary py-2 text-xl font-bold sm:text-2xl md:text-3xl"> {/* Reverted to text-primary */}
                 {user.project_name}
               </h2>
-              <p className="text-accent font-secondary pb-2 text-sm">
+              <p className="text-accent font-secondary pb-2 text-sm"> {/* Reverted to text-accent */}
                 {user.order_id}
               </p>
 
@@ -470,16 +454,15 @@ const ProjectsDetail = () => {
                   const fillPercent = Math.min(100, Math.max(0, (currentRating - index) * 100));
                   return (
                     <div key={index} className="relative h-4 w-4 text-base">
-                      {/* Replaced FaStar with a Unicode star character */}
-                      <span className="absolute inset-0 text-gray-300">⭐</span>
-                      <span
-                        className="absolute inset-0 text-yellow-400 overflow-hidden"
+                      <FaStar className="absolute inset-0 text-gray-300" /> {/* Using FaStar */}
+                      <FaStar
+                        className="absolute inset-0 text-yellow-400"
                         style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
-                      >⭐</span>
+                      />
                     </div>
                   );
                 })}
-                <span className="text-accent font-secondary ml-2 text-sm">
+                <span className="text-accent font-secondary ml-2 text-sm"> {/* Reverted to text-accent */}
                   ({parseFloat(user.rating !== null && user.rating !== undefined ? user.rating.toString() : "0").toFixed(1)})
                 </span>
               </div>
@@ -488,12 +471,12 @@ const ProjectsDetail = () => {
             {/* Edit Controls for main section */}
             <div className="flex flex-col flex-wrap items-center gap-4 sm:flex-row">
               <button
-                onClick={() => setActiveEditSection(activeEditSection === 'main' ? null : 'main')}
+                onClick={() => setIsEditing(!isEditing)}
                 className="px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-colors"
               >
-                {activeEditSection === 'main' ? "Cancel" : "Edit Info"}
+                {isEditing ? "Cancel" : "Edit Info"}
               </button>
-              {activeEditSection === 'main' && (
+              {isEditing && (
                 <button
                   onClick={handleSave}
                   className="px-6 py-2 bg-green-600 text-white rounded-full font-bold hover:bg-green-700 transition-colors"
@@ -518,22 +501,18 @@ const ProjectsDetail = () => {
                     value = editedUser?.team?.[field as keyof Team];
                   }
 
-                  // Determine if the current field is editable based on activeEditSection and editableFields
-                  const isFieldEditable = activeEditSection === 'main' && editableFields.includes(field);
-
-                  const infoProps = {
-                    label: label,
-                    field: field,
-                    source: source,
-                    value: value,
-                    editable: isFieldEditable,
-                    onChange: handleInputChange
-                  };
+                  // Determine if the current field is editable based on isEditing and editableFields
+                  const isFieldEditable = isEditing && editableFields.includes(field);
 
                   return (
                     <Info
                       key={field}
-                      {...infoProps} // Spreading the props object
+                      label={label}
+                      field={field}
+                      source={source}
+                      value={value}
+                      editable={isFieldEditable}
+                      onChange={handleInputChange}
                     />
                   );
                 })}
@@ -547,57 +526,48 @@ const ProjectsDetail = () => {
       <div className="max-w-9xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
           {/* Client Login Section */}
-          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]"> {/* Reverted to bg-background, border-accent/30 */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">👤 Client Login Info</h3>
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">👤 Client Login Info</h3> {/* Reverted to text-accent */}
               <button
-                onClick={() => setActiveEditSection(activeEditSection === 'client' ? null : 'client')}
+                onClick={() => setIsEditingClient(!isEditingClient)}
                 className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
               >
-                {activeEditSection === 'client' ? "Cancel" : "Edit"}
+                {isEditingClient ? "Cancel" : "Edit"}
               </button>
             </div>
 
             <div className="space-y-4">
-              {(() => { // Using an IIFE to define props object
-                const infoProps = {
-                  label: "Login URL",
-                  field: "client_login_info_link",
-                  source: "user",
-                  value: editedUser?.client_login_info_link,
-                  editable: activeEditSection === 'client',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Username",
-                  field: "client_login_info_username",
-                  source: "user",
-                  value: editedUser?.client_login_info_username,
-                  editable: activeEditSection === 'client',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Password",
-                  field: "client_login_info_password",
-                  source: "user",
-                  value: editedUser?.client_login_info_password,
-                  editable: activeEditSection === 'client',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
+              <Info
+                label="Login URL"
+                field="client_login_info_link"
+                source="user" // Specify source
+                value={editedUser?.client_login_info_link}
+                editable={isEditingClient}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Username"
+                field="client_login_info_username"
+                source="user" // Specify source
+                value={editedUser?.client_login_info_username}
+                editable={isEditingClient}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Password"
+                field="client_login_info_password"
+                source="user" // Specify source
+                value={editedUser?.client_login_info_password}
+                editable={isEditingClient}
+                onChange={handleInputChange}
+              />
             </div>
 
-            {activeEditSection === 'client' && (
+            {isEditingClient && (
               <div className="flex justify-end mt-4">
                 <button
-                  onClick={() => handleSectionSave('client')}
+                  onClick={() => handleSectionSave('client', setIsEditingClient)}
                   className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
                 >
                   Save Client Info
@@ -607,57 +577,48 @@ const ProjectsDetail = () => {
           </div>
 
           {/* User Login Section */}
-          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]"> {/* Reverted to bg-background, border-accent/30 */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">🔧 Our/User Login Info</h3>
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">🔧 Our/User Login Info</h3> {/* Reverted to text-accent */}
               <button
-                onClick={() => setActiveEditSection(activeEditSection === 'user' ? null : 'user')}
+                onClick={() => setIsEditingUser(!isEditingUser)}
                 className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
               >
-                {activeEditSection === 'user' ? "Cancel" : "Edit"}
+                {isEditingUser ? "Cancel" : "Edit"}
               </button>
             </div>
 
             <div className="space-y-4">
-              {(() => {
-                const infoProps = {
-                  label: "Login URL",
-                  field: "user_login_info_link",
-                  source: "user",
-                  value: editedUser?.user_login_info_link,
-                  editable: activeEditSection === 'user',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Username",
-                  field: "user_login_info_username",
-                  source: "user",
-                  value: editedUser?.user_login_info_username,
-                  editable: activeEditSection === 'user',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Password",
-                  field: "user_login_info_password",
-                  source: "user",
-                  value: editedUser?.user_login_info_password,
-                  editable: activeEditSection === 'user',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
+              <Info
+                label="Login URL"
+                field="user_login_info_link"
+                source="user" // Specify source
+                value={editedUser?.user_login_info_link}
+                editable={isEditingUser}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Username"
+                field="user_login_info_username"
+                source="user" // Specify source
+                value={editedUser?.user_login_info_username}
+                editable={isEditingUser}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Password"
+                field="user_login_info_password"
+                source="user" // Specify source
+                value={editedUser?.user_login_info_password}
+                editable={isEditingUser}
+                onChange={handleInputChange}
+              />
             </div>
 
-            {activeEditSection === 'user' && (
+            {isEditingUser && (
               <div className="flex justify-end mt-4">
                 <button
-                  onClick={() => handleSectionSave('user')}
+                  onClick={() => handleSectionSave('user', setIsEditingUser)}
                   className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
                 >
                   Save User Info
@@ -667,68 +628,56 @@ const ProjectsDetail = () => {
           </div>
 
           {/* cPanel Section */}
-          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]"> {/* Reverted to bg-background, border-accent/30 */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent ">📦 cPanel/Hosting Info</h3>
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent ">📦 cPanel/Hosting Info</h3> {/* Reverted to text-accent */}
               <button
-                onClick={() => setActiveEditSection(activeEditSection === 'cpanel' ? null : 'cpanel')}
+                onClick={() => setIsEditingCpanel(!isEditingCpanel)}
                 className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
               >
-                {activeEditSection === 'cpanel' ? "Cancel" : "Edit"}
+                {isEditingCpanel ? "Cancel" : "Edit"}
               </button>
             </div>
 
-            <div className="space-y-4 text-accent">
-              {(() => {
-                const infoProps = {
-                  label: "C/H URL",
-                  field: "cpanel_link",
-                  source: "user",
-                  value: editedUser?.cpanel_link,
-                  editable: activeEditSection === 'cpanel',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Username",
-                  field: "cpanel_username",
-                  source: "user",
-                  value: editedUser?.cpanel_username,
-                  editable: activeEditSection === 'cpanel',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Password",
-                  field: "cpanel_password",
-                  source: "user",
-                  value: editedUser?.cpanel_password,
-                  editable: activeEditSection === 'cpanel',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Branch",
-                  field: "branch",
-                  source: "user",
-                  value: editedUser?.branch,
-                  editable: activeEditSection === 'cpanel',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
-              })()}
+            <div className="space-y-4 text-accent"> {/* Reverted to text-accent */}
+              <Info 
+                label="C/H URL"
+                field="cpanel_link"
+                source="user" // Specify source
+                value={editedUser?.cpanel_link}
+                editable={isEditingCpanel}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Username"
+                field="cpanel_username"
+                source="user" // Specify source
+                value={editedUser?.cpanel_username}
+                editable={isEditingCpanel}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Password"
+                field="cpanel_password"
+                source="user" // Specify source
+                value={editedUser?.cpanel_password}
+                editable={isEditingCpanel}
+                onChange={handleInputChange}
+              />
+              <Info
+                label="Branch"
+                field="branch"
+                source="user" // Specify source
+                value={editedUser?.branch}
+                editable={isEditingCpanel}
+                onChange={handleInputChange}
+              />
             </div>
 
-            {activeEditSection === 'cpanel' && (
+            {isEditingCpanel && (
               <div className="flex justify-end mt-4">
                 <button
-                  onClick={() => handleSectionSave('cpanel')}
+                  onClick={() => handleSectionSave('cpanel', setIsEditingCpanel)}
                   className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
                 >
                   Save cPanel Info

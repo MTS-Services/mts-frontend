@@ -31,6 +31,8 @@ const MarketPlaceProfile = () => {
     const matchesSearch = 
       profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       profile.department.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      console.log(profile.department , "department id and searchTem ")
 
     const matchesDepartment = 
       selectedDepartment === "" || 

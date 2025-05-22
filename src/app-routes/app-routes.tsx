@@ -99,6 +99,7 @@ const AppRoutes = createBrowserRouter([
               "operation_member",
               "operation_leader",
               "sales_leader",
+              "hod_mern"
             ]}
           >
             <AllProjects />
