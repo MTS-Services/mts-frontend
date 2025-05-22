@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { MdInfoOutline } from "react-icons/md";
+import { TbTargetArrow } from "react-icons/tb";
+import { GiStairsGoal } from "react-icons/gi";
+import { PiPlusMinusDuotone } from "react-icons/pi";
 import MtsBarChar from "../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../components/Chart/MtsLineChart/MtsLineChart";
 import { useFetchData } from "../hooks/useFetchData";
@@ -38,18 +40,21 @@ const TeamPerformance = () => {
     {
       title: "Target",
       amount: target,
+      icon: TbTargetArrow,
       message:
         "This shows the total operation amount earned this month by the operations team.",
     },
     {
       title: "Achieve",
       amount: achive,
+      icon: GiStairsGoal,
       message:
         "This shows the total operation amount earned this month by the operations team.",
     },
     {
       title: "+/-",
       amount: result,
+      icon: PiPlusMinusDuotone,
       message:
         "This shows the total operation amount earned this month by the operations team.",
     },
@@ -122,8 +127,8 @@ const TeamPerformance = () => {
   return (
     <div className="font-secondary w-full overflow-x-auto p-4">
       <div>
-        <div className="mb-4 flex items-center gap-4">
-          <h2 className="text-accent mb-4 text-4xl font-semibold">
+        <div className="mb-12 flex items-center gap-4">
+          <h2 className="text-accent text-4xl font-semibold">
             Current Quarter
           </h2>
           <div>
@@ -139,21 +144,21 @@ const TeamPerformance = () => {
         </div>
 
         {/*  Last Quarter Summary Cards Using DisplayCard */}
-        <div className="border-accent/30 flex flex-wrap gap-5 border-b pb-7">
-          {lastQuarter.map(({ title, amount, message }, idx) => (
+        <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-14">
+          {lastQuarter.map((item, index) => (
             <DisplayCard
-              key={idx}
-              title={title}
-              amount={amount}
-              icon={MdInfoOutline}
-              message={message || ""}
+              key={index}
+              title={item.title}
+              amount={item.amount}
+              icon={item.icon}
+              message={item.message}
             />
           ))}
         </div>
       </div>
       <div>
-        <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="text-accent mb-4 text-4xl font-semibold">
+        <div className="mt-12 flex items-center gap-4">
+          <h2 className="text-accent text-4xl font-semibold">
             Quater Base Member Performance
           </h2>
           <div>
@@ -168,7 +173,7 @@ const TeamPerformance = () => {
           </div>
         </div>
 
-        <div className="mt-10 overflow-x-auto">
+        <div className="mt-14 overflow-x-auto">
           <table className="w-full min-w-[1000px] text-left">
             <thead>
               <tr className="bg-secondary border border-white text-[16px] text-white">
@@ -224,7 +229,7 @@ const TeamPerformance = () => {
       </div>
       <section className="pr-5">
         {/* Charts Row 1 */}
-        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
           <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
             <MtsBarChar barData={barChartCardData} />
           </div>

@@ -13,13 +13,29 @@ import AssignTeamForm from "./AssignTeamForm";
 import { AuthContext } from "../../../context/AuthProvider";
 import ReassignTeamForm from "./ReassignTeamForm";
 
+// Define the expected AuthContext type
+type AuthContextType = {
+  roleBasePermissionThree: boolean;
+  // add other properties if needed
+};
+
 const TodayTask = () => {
-  const { roleBasePermissionThree } = useContext(AuthContext);
-  const [tableData, setTableData] = useState([]);
+  const { roleBasePermissionThree } = useContext(
+    AuthContext,
+  ) as unknown as AuthContextType;
+  type TableDataItem = {
+    assign?: AssignItem[];
+    [key: string]: unknown;
+  };
+  const [tableData, setTableData] = useState<TableDataItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
-  const [td, setTd] = useState([]);
+  // Define the type for an assigned task item
+  type AssignItem = {
+    [key: string]: unknown;
+  };
+  const [td, setTd] = useState<AssignItem[]>([]);
 
   const token = Cookies.get("core");
 
@@ -53,6 +69,7 @@ const TodayTask = () => {
   // ✅ Load data on token
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // ✅ Process td after tableData loaded
@@ -62,43 +79,45 @@ const TodayTask = () => {
     console.log("✅ Processed td:", tds);
   }, [tableData]);
 
-  const mtsTargets = [
-    {
-      title: "Today Assign :",
-      amount: "1000",
-      icon: MdAttachMoney,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
-    },
-    {
-      title: "Today Cancel :",
-      amount: "4",
-      icon: MdEdit,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
-    },
-    {
-      title: "Today Delivery:",
-      amount: "2",
-      icon: MdCheckCircle,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
-    },
-    {
-      title: "Totall Submit :",
-      amount: "2",
-      icon: MdArrowCircleDown,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
-    },
-    {
-      title: "Totall Short Time :",
-      amount: "2",
-      icon: MdAccessTime,
-      message:
-        "This shows the total operation amount earned this month by the operations team.",
-    },
-  ];
+  // 👉 Step 1: Add new state
+  type DashboardData = {
+    todayAssign: number;
+    todayCancel: number;
+    todayDelivery: number;
+    totalSubmit: number;
+    totalShortTime?: {
+      project_count: number;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
+
+  // 👉 Step 2: Fetch card API on load
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await fetch(
+          "https://mtsbackend20-production.up.railway.app/api/today-task/operations/dashboard",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        const json = await res.json();
+        setDashboardData(json);
+      } catch (err) {
+        console.error("Failed to fetch dashboard metrics:", err);
+      }
+    };
+
+    fetchDashboard();
+  }, [token]);
 
   const tableHeaders = [
     "Client Name/ ID",
@@ -133,15 +152,40 @@ const TodayTask = () => {
 
       {/* ✅ Summary Cards */}
       <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
-        {mtsTargets.map((item, index) => (
-          <DisplayCard
-            key={index}
-            title={item.title}
-            amount={item.amount}
-            icon={item.icon}
-            message={item.message}
-          />
-        ))}
+        {dashboardData && (
+          <>
+            <DisplayCard
+              title="Today Assign"
+              amount={dashboardData.todayAssign}
+              icon={MdAttachMoney}
+              message="This shows the total operation amount earned this month by the operations team."
+            />
+            <DisplayCard
+              title="Today Cancel"
+              amount={dashboardData.todayCancel}
+              icon={MdEdit}
+              message="This shows the total operation amount earned this month by the operations team."
+            />
+            <DisplayCard
+              title="Today Delivery"
+              amount={dashboardData.todayDelivery}
+              icon={MdCheckCircle}
+              message="This shows the total operation amount earned this month by the operations team."
+            />
+            <DisplayCard
+              title="Total Submit"
+              amount={dashboardData.totalSubmit}
+              icon={MdArrowCircleDown}
+              message="This shows the total operation amount earned this month by the operations team."
+            />
+            <DisplayCard
+              title="Total Short Time"
+              amount={dashboardData.totalShortTime?.project_count}
+              icon={MdAccessTime}
+              message="This shows the total operation amount earned this month by the operations team."
+            />
+          </>
+        )}
       </div>
 
       {/* ✅ Table Section */}

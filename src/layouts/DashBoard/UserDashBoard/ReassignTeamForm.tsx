@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PrimaryButton from "../../../components/Button/PrimaryButton";
 import CustomSelect from "./CustomSelect";
+import { toast } from "react-toastify";
 
 const ReassignTeamForm = ({
   data,
@@ -89,10 +90,11 @@ const ReassignTeamForm = ({
   // ✅ Submit reassignment (backend update)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let result = { message: "" };
     for (const item of reassignList) {
       if (!item.old_member_id || !item.new_member_id) continue;
       try {
-        await fetch(
+        const response = await fetch(
           "https://mtsbackend20-production.up.railway.app/api/today-task/replace",
           {
             method: "POST",
@@ -107,12 +109,14 @@ const ReassignTeamForm = ({
             }),
           },
         );
-      } catch (err) {
-        console.error("❌ Failed:", err);
+        result = await response.json();
+      } catch (error) {
+        console.error("Failed to Reassigned", error);
+        toast.error("Failed to Reassigned");
       }
     }
 
-    alert("✅ Reassigned successfully!");
+    toast.success(result.message || "Team Members Reassigned Successfully!");
     setSelectedProject(null);
     setAssignedList([]);
     setReassignList([]);
