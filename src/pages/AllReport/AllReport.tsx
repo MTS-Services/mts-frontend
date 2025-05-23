@@ -1,12 +1,30 @@
-import MtsBarChar from "../../components/Chart/MtsBarChart/MtsBarChart";
+import { useEffect, useState } from "react";
+import MtsBarChart from "../../components/Chart/MtsBarChart/MtsBarChart";
+import MtsLineChart from "../../components/Chart/MtsLineChart/MtsLineChart";
 import Loading from "../../components/Loading/Loading";
+import StyledDropdown from "../../components/utility/StyledDropdown";
+import { useSocket } from "../../context/SocketContext";
 import { useFetchData } from "../../hooks/useFetchData";
+import { useSocketData } from "../../hooks/useSocketData";
 
 function AllReport() {
+  const socket = useSocket();
+  const [mainFactorStatus, setMainFactorStatus] = useState("Monthly");
+  const [operationStatus, setOperationStatus] = useState("Monthly");
+  const [salesStatus, setSalesStatus] = useState("Monthly");
+
+  const { salesteams } = useSocketData();
   // all
   const { data } = useFetchData(
     "https://mtsbackend20-production.up.railway.app/api/profile/reports/all",
   );
+
+  useEffect(() => {
+    socket.emit("TeamChartid", 2); // Example team ID, replace with actual ID if needed
+    socket.on("eachTeamChartForTeamId", (data) => {
+      console.log("Real-time for eachTeamChartForTeamId:", data);
+    });
+  });
 
   // Project Delivery Reports
   //   const { data: projectDelivery, loading: projectDeliveryLoading } =
@@ -148,6 +166,83 @@ function AllReport() {
 
   console.log(data);
 
+  const getCurrentMonthDates = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+
+    return Array.from({ length: lastDay }, (_, i) => {
+      const date = new Date(year, month, i + 1);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+      });
+    });
+  };
+
+  const xLabels = getCurrentMonthDates();
+
+  const chartData = [
+    {
+      id: "Total Earn",
+      data: xLabels.map((x) => ({ x, y: Math.floor(Math.random() * 1000) })),
+    },
+    {
+      id: "Total Cost",
+      data: xLabels.map((x) => ({ x, y: Math.floor(Math.random() * 700) })),
+    },
+    {
+      id: "Promo Cost",
+      data: xLabels.map((x) => ({ x, y: Math.floor(Math.random() * 300) })),
+    },
+  ];
+
+  const barChartCardData =
+    operationalPerformance?.achievements?.this_month?.team_breakdown;
+
+  const monthlyMainFactors = [
+    { name: "Total Earn", value: monthlyOperationAchive },
+    { name: "Total Cost", value: total_Monthly_cost },
+    { name: "Promotion Cost", value: monthlyPromotionCost },
+    { name: "Special Order Cost", value: monthlySpecialOrderCost },
+    { name: "Other Cost", value: monthlyOtherCosts },
+  ];
+  const dailyMainFactors = [
+    { name: "Total Earn", value: dailyOperationAchive },
+    { name: "Total Cost", value: total_daily_cost },
+    { name: "Promotion Cost", value: dailyPromotionCost },
+    { name: "Special Order Cost", value: dailySpecialOrderCost },
+    { name: "Other Cost", value: dailyOtherCosts },
+  ];
+
+  const monthlySalesFactors = [
+    { name: "Target", value: salesTargetThisMonth },
+    { name: "Achived", value: salesAchivementThisMonth },
+    { name: "Total Project", value: totalMonthlyOrders?.count },
+  ];
+  const dailySalesFactors = [
+    { name: "Target", value: salesTargetToday },
+    { name: "Achived", value: salesAchivementToday },
+    { name: "Total Project", value: todaysOrders?.count },
+  ];
+
+  const monthlyOperationFactors = [
+    { name: "Target", value: monthlyOperationTarget },
+    { name: "Achived", value: monthlyOperationAchive },
+    { name: "Cancelled", value: totalMonthlyCancellations?.total_after_fiverr },
+    {
+      name: "Carry",
+      value: carryForwardProjects?.total_after_fiverr_and_bonus,
+    },
+    { name: "Need to Assign", value: projectsNeedingAssignment?.count },
+  ];
+
+  const dailyOperationFactors = [
+    { name: "Target", value: dailyOperationTarget },
+    { name: "Achived", value: dailyOperationAchive },
+  ];
+
   return (
     <section className="font-primary">
       <div className="py-5">
@@ -158,22 +253,11 @@ function AllReport() {
               <th className="border border-white px-4 py-2 text-[18px]">
                 +/- ( TE-TC )
               </th>
-
-              <th className="border border-white px-4 py-2 text-[18px]">
-                Total Earn
-              </th>
-              <th className="border border-white px-4 py-2 text-[18px]">
-                Total Cost
-              </th>
-              <th className="border border-white px-4 py-2 text-[18px]">
-                Promotion Cost
-              </th>
-              <th className="border border-white px-4 py-2 text-[18px]">
-                Special Order Cost
-              </th>
-              <th className="border border-white px-4 py-2 text-[18px]">
-                Other Cost
-              </th>
+              {monthlyMainFactors?.map((item) => (
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  {item.name}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -220,7 +304,27 @@ function AllReport() {
             </tr>
           </tbody>
         </table>
-        <MtsBarChar />
+        <div className="flex justify-end">
+          <StyledDropdown
+            options={["Monthly", "Daily"]}
+            onSelect={(value) => setMainFactorStatus(value)}
+          />
+        </div>
+        <MtsBarChart
+          data={
+            mainFactorStatus == "Monthly"
+              ? monthlyMainFactors
+              : dailyMainFactors
+          }
+          keys={["value"]}
+          indexBy="name"
+          legent={
+            mainFactorStatus == "Monthly"
+              ? "Monthy Base Report"
+              : "Daily Base Report"
+          }
+        />
+        <MtsLineChart data={chartData} />
       </div>
       <div className="py-5">
         <h2 className="pb-3 text-3xl">Sales Factors</h2>
@@ -273,6 +377,24 @@ function AllReport() {
             </tr>
           </tbody>
         </table>
+        <div className="flex justify-end">
+          <StyledDropdown
+            options={["Monthly", "Daily"]}
+            onSelect={(value) => setSalesStatus(value)}
+          />
+        </div>
+        <MtsBarChart
+          data={
+            salesStatus == "Monthly" ? monthlySalesFactors : dailySalesFactors
+          }
+          keys={["value"]}
+          indexBy="name"
+          legent={
+            salesStatus == "Monthly"
+              ? "Monthy Base Report"
+              : "Daily Base Report"
+          }
+        />
       </div>
       <div className="py-5">
         <h2 className="pb-3 text-3xl">Operation Factors</h2>
@@ -350,6 +472,21 @@ function AllReport() {
             </tr>
           </tbody>
         </table>
+        <div className="flex justify-end">
+          <StyledDropdown onSelect={(value) => setOperationStatus(value)} />
+        </div>
+        <MtsBarChart
+          data={
+            operationStatus == "Monthly"
+              ? monthlyOperationFactors
+              : dailyOperationFactors
+          }
+          keys={["value"]}
+          indexBy="name"
+          legent={
+            status == "Monthly" ? "Monthy Base Report" : "Daily Base Report"
+          }
+        />
       </div>
     </section>
   );

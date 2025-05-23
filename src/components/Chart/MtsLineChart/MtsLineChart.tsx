@@ -1,158 +1,103 @@
-import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-} from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useEffect, useRef } from "react";
-import { Line } from "react-chartjs-2";
-import { useTheme } from "../../../context/ThemeContext";
+import { ResponsiveLine } from "@nivo/line";
 
-ChartJS.register(
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  Legend,
-  Title,
-  ChartDataLabels,
-);
+const MtsLineChart = ({
+  data = [],
+  customColors = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"],
+  showArea = true,
+}) => {
+  const fallbackColors = [
+    "#FF9B45",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#7f7f7f",
+    "#bcbd22",
+    "#17becf",
+  ];
 
-const MtsLineChart = ({ lineData = [] }) => {
-  const chartRef = useRef(null);
-  const { theme } = useTheme();
-
-  const textColor = theme === "light-mode" ? "#000000" : "#ffffff";
-  const gridColor =
-    theme === "light-mode" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)";
-  const labelColor = theme === "light-mode" ? "#111827" : "#f9fafb";
-
-  const labels = lineData.map((item) => item.week);
-  const achievedValues = lineData.map((item) => item.amount);
-  const targetValues = lineData.map((item) => item.target);
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Achieved",
-        data: achievedValues,
-        borderColor: "#36A2EB",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        tension: 0.4,
-        fill: false,
-        pointBackgroundColor: "#36A2EB",
-        pointBorderColor: "#36A2EB",
-        pointRadius: 5,
-      },
-      {
-        label: "Target",
-        data: targetValues,
-        borderColor: "#FF6384",
-        backgroundColor: "rgba(255, 99, 132, 0.3)",
-        tension: 0.4,
-        fill: false,
-        pointBackgroundColor: "#FF6384",
-        pointBorderColor: "#FF6384",
-        pointRadius: 5,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          color: textColor,
-          font: {
-            family: "'Rubik', sans-serif",
-            size: 14,
-            lineHeight: 1.4,
-          },
-        },
-      },
-      title: {
-        display: true,
-        text: "Weekly Target vs Achievement",
-        color: textColor,
-        font: {
-          family: "'Rubik', sans-serif",
-          size: 18,
-        },
-      },
-      tooltip: {
-        backgroundColor: "#000000",
-        titleColor: "#ffffff",
-        bodyColor: "#ffffff",
-        callbacks: {
-          label: function (context) {
-            return `${context.dataset.label}: ${context.raw}`;
-          },
-        },
-      },
-      datalabels: {
-        color: textColor,
-        font: {
-          weight: "bold",
-          size: 12,
-        },
-        anchor: "end",
-        align: "top",
-        formatter: (value) => `${value}`,
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: textColor,
-          font: {
-            family: "'Rubik', sans-serif",
-          },
-        },
-        grid: {
-          color: gridColor,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: textColor,
-          stepSize: 50,
-          font: {
-            family: "'Rubik', sans-serif",
-          },
-        },
-        grid: {
-          color: gridColor,
-        },
-      },
-    },
-  };
-
-  useEffect(() => {
-    const chart = chartRef.current;
-    return () => {
-      if (chart && chart.chartInstance) {
-        chart.chartInstance.destroy();
-      }
-    };
-  }, []);
+  const getLineColor = (index) =>
+    index < customColors.length
+      ? customColors[index]
+      : fallbackColors[index % fallbackColors.length];
 
   return (
-    <Line
-      ref={chartRef}
-      data={data}
-      options={options}
-      plugins={[ChartDataLabels]}
-    />
+    <div style={{ height: 400 }}>
+      <ResponsiveLine
+        data={data}
+        margin={{ top: 50, right: 120, bottom: 50, left: 60 }}
+        xScale={{ type: "point" }}
+        yScale={{ type: "linear", stacked: false, min: "auto", max: "auto" }}
+        curve="monotoneX"
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: -45,
+          legend: "Date",
+          legendOffset: 36,
+          legendPosition: "middle",
+        }}
+        axisLeft={{
+          tickSize: 5,
+          tickPadding: 5,
+          legend: "Amount",
+          legendOffset: -50,
+          legendPosition: "middle",
+        }}
+        enablePoints={true}
+        pointSize={8}
+        pointColor={{ theme: "background" }}
+        pointBorderWidth={2}
+        pointBorderColor={{ from: "serieColor" }}
+        enableArea={showArea}
+        areaOpacity={0.2}
+        useMesh={true}
+        colors={({ index }) => getLineColor(index)}
+        tooltip={({ point }) => (
+          <div
+            style={{
+              background: "#000",
+              color: "#fff",
+              padding: "6px 12px",
+              border: `1px solid ${point.serieColor}`,
+              borderRadius: "4px",
+            }}
+          >
+            <strong>{point.serieId}:</strong> {point.data.yFormatted}
+          </div>
+        )}
+        theme={{
+          axis: {
+            domain: { line: { stroke: "#ffffff" } },
+            ticks: {
+              line: { stroke: "#ffffff" },
+              text: { fill: "#ffffff" },
+            },
+            legend: {
+              text: { fill: "#ffffff" },
+            },
+          },
+          grid: {
+            line: {
+              stroke: "#444",
+              strokeDasharray: "4 4",
+            },
+          },
+          tooltip: {
+            container: {
+              background: "#000",
+              color: "#fff",
+              borderRadius: "4px",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+            },
+          },
+        }}
+      />
+    </div>
   );
 };
 

@@ -108,6 +108,11 @@ const SidebarStyle = () => {
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
     { icon: <HiOutlineFingerPrint />, label: "Attendance", path: "attendance" },
     {
+      icon: <HiOutlineFingerPrint />,
+      label: "Add Cost",
+      path: "add-other-cost",
+    },
+    {
       icon: <BsFillFileEarmarkPdfFill />,
       label: "Quotation",
       path: "quotation-pdf-form",
