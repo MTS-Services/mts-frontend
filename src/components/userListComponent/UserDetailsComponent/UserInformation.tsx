@@ -60,6 +60,10 @@ const Info = memo(({ label, field, value, editable = false, onChange, editedUser
 });
 
 
+
+
+
+
 const UserInformation = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
