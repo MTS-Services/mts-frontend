@@ -3,19 +3,14 @@ import Cookies from "js-cookie";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query"; // Import useQuery
-import { useContext } from "react"; // Import useContext
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthProvider";
 
-// Problematic imports (commented out to prevent compilation errors in Canvas)
-// import Tippy from "@tippyjs/react";
-// import { FaStar } from "react-icons/fa";
-// import "react-toastify/dist/ReactToastify.css";
-// import "tippy.js/dist/tippy.css";
-// import Loading from "../../../components/Loading/Loading";
-// import { useFetchData } from "../../../hooks/useFetchData"; // This hook is now defined below
+import { FaStar } from "react-icons/fa";
+import "react-toastify/dist/ReactToastify.css";
 
-// Define interfaces for better type safety and understanding of data structure
+// Interface Definitions
 interface Department {
   id: number;
   department_name: string;
@@ -68,7 +63,7 @@ interface Project {
   team?: Team;
 }
 
-// Info Component moved OUTSIDE ProjectsDetail and memoized
+// Info Component (Memoized for performance)
 const Info = React.memo(({ label, field, value, source, editable = false, onChange }: {
   label?: string;
   field: string;
@@ -78,47 +73,33 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
   onChange: (field: string, value: string | number, source: string) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const hasFocused = useRef(false); // New ref to track if focus has been set
-
+  
+  // Effect to focus input when it becomes editable
   useEffect(() => {
-    // console.log(`Info component for field '${field}': editable changed to ${editable}. hasFocused: ${hasFocused.current}`);
     if (editable && inputRef.current) {
-      // Only focus if it's editable AND it hasn't been focused in this editable session yet
-      if (!hasFocused.current) {
-        // console.log(`Info component for field '${field}': Focusing input for the first time in this editable session.`);
         inputRef.current.focus();
-        inputRef.current.select();
-        hasFocused.current = true; // Set flag to true
-      } else {
-        // console.log(`Info component for field '${field}': Input already editable and focused once.`);
-      }
-    } else if (!editable) {
-      // Reset hasFocused when not editable, so it can focus again if it becomes editable later
-      // Only reset if the input is not currently focused, to prevent focus loss while typing
-      if (hasFocused.current && document.activeElement !== inputRef.current) {
-        // console.log(`Info component for field '${field}': Resetting hasFocused flag.`);
-        hasFocused.current = false;
-      }
+        inputRef.current.select(); // Selects all text for easy editing
     }
-  }, [editable]); // Removed 'field' from dependencies as it's static for a given Info instance
+  }, [editable, field]); // Dependency on 'field' to re-focus if field changes
 
   let content;
   let inputType = "text";
 
-  if (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision")) { // Added bonus to number type
+  // Determine input type based on field name
+  if (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision")) {
     inputType = "number";
   } else if (field.includes("date")) {
     inputType = "date";
   }
 
   if (editable) {
+    // Render an input field when editable
     content = (
       <input
-        key={field} // Keep key for input element itself
         ref={inputRef}
         type={inputType}
-        value={value ?? ""}
-        step={field === "rating" ? "0.1" : (inputType === "number" ? "1" : undefined)}
+        value={value ?? ""} // Use nullish coalescing for empty string if value is null/undefined
+        step={field === "rating" ? "0.1" : (inputType === "number" ? "1" : undefined)} // Step for rating (0.1) or other numbers (1)
         min={field === "rating" ? "0" : undefined}
         max={field === "rating" ? "5" : undefined}
         onChange={(e) => onChange(field, e.target.value, source)}
@@ -126,22 +107,31 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
       />
     );
   } else if (field.includes("_link") && value) {
+    // Render a clickable link for fields ending with '_link'
+    // Ensure the URL has a protocol (http/https) for proper linking
+    const formattedValue = (value.startsWith('http://') || value.startsWith('https://')) ? value : `http://${value}`;
+    
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
-      <span title={value} className="font-secondary break-words text-blue-500 underline cursor-pointer">
-        {value.length > 30 ? `${value.substring(0, 30)}...` : value}
-      </span>
+      <a 
+        href={formattedValue} // Use the formatted value for the href
+        target="_blank" // Open in a new tab
+        rel="noopener noreferrer" // Security best practice for target="_blank"
+        title={value} // Show full URL on hover
+        className="font-secondary break-words text-blue-500 underline cursor-pointer"
+      >
+        {value.length > 30 ? `${value.substring(0, 30)}...` : value} {/* Truncate long URLs */}
+      </a>
     );
   } else if (field === "project_requirements" && value) {
+    // Special handling for project_requirements (truncation only)
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
       <span title={value} className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
         {value.length > 30 ? `${value.substring(0, 30)}...` : value}
       </span>
     );
   } else {
+    // Default display for non-editable, non-link fields
     content = (
-      // Replaced Tippy with simple span + title for tooltip functionality
       <span title={value || "-"} className="text-accent font-secondary text-base break-words">
         {value && value.length > 30 ? `${value.substring(0, 30)}...` : value || "-"}
       </span>
@@ -158,9 +148,9 @@ const Info = React.memo(({ label, field, value, source, editable = false, onChan
       {content}
     </div>
   );
-}); // Memoize the Info component
+});
 
-// Simple Loading Component replacement (also moved outside)
+// Loading Component
 const LoadingComponent = () => (
     <div className="flex justify-center items-center h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -168,13 +158,7 @@ const LoadingComponent = () => (
     </div>
 );
 
-/**
- * useFetchData hook provided by the user
- * @param {string} url - API endpoint
- * @param {string} method - HTTP method (default: "GET")
- * @param {object|null} body - request body (optional)
- * @param {object} options - react-query options like refetchInterval, retry etc.
- */
+// Custom Hook for Data Fetching with react-query
 export function useFetchData(url: string, method = "GET", body: object | null = null, options = {}) {
   const { isLoading: authLoading } = useContext(AuthContext);
   const token = Cookies.get("core");
@@ -195,7 +179,7 @@ export function useFetchData(url: string, method = "GET", body: object | null = 
       });
 
       return response.data;
-    } catch (error: any) { // Added any type for error
+    } catch (error: any) {
       const status = error?.response?.status;
       const message = error?.response?.data?.message || "Something went wrong";
 
@@ -204,12 +188,15 @@ export function useFetchData(url: string, method = "GET", body: object | null = 
           "⚠️ Session expired or unauthorized. Please login again.",
         );
       } else if (status === 404) {
-        return { data: [] }; // Return an empty array for 404
+        toast.info("Project not found or an error occurred while fetching.");
+        return { project: null }; // Return null project for 404 to indicate not found, but don't re-throw as an error for useQuery
       } else {
         toast.error(message);
       }
-
-      throw new Error(message);
+      
+      // Re-throw the error so react-query can catch it and set the query state to 'error'
+      // This is crucial for proper error handling with react-query's `error` property.
+      throw new Error(message); 
     }
   };
 
@@ -219,12 +206,12 @@ export function useFetchData(url: string, method = "GET", body: object | null = 
     error,
     refetch,
   } = useQuery({
-    queryKey: [url, method, body],
-    queryFn: fetchData,
-    enabled: isTokenAvailable,
-    refetchOnWindowFocus: false,
-    retry: false,
-    ...options,
+    queryKey: [url, method, body], // Unique key for the query
+    queryFn: fetchData, // Function to fetch data
+    enabled: isTokenAvailable, // Only fetch if token is available
+    refetchOnWindowFocus: false, // Prevent refetching on window focus
+    retry: false, // Disable automatic retries on query failure
+    ...options, // Allow overriding default options
   });
 
   return {
@@ -235,7 +222,7 @@ export function useFetchData(url: string, method = "GET", body: object | null = 
   };
 }
 
-
+// ProjectsDetail Component
 const ProjectsDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<Project | null>(null);
@@ -246,19 +233,20 @@ const ProjectsDetail = () => {
     `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
   );
 
-  // Combined state for active editing section for better synchronization
+  // State to manage which section is actively being edited
   const [activeEditSection, setActiveEditSection] = useState<'main' | 'client' | 'user' | 'cpanel' | null>(null);
 
-  // Use editedUser as the single source of truth for editable data
+  // State to hold the edited data (a copy of 'user' data for editing)
   const [editedUser, setEditedUser] = useState<Project | null>(null);
 
+  // Define editable fields for login sections
   const loginEditableFields = {
     client: ["client_login_info_link", "client_login_info_username", "client_login_info_password"],
     user: ["user_login_info_link", "user_login_info_username", "user_login_info_password"],
-    cpanel: ["cpanel_link", "cpanel_username", "cpanel_password", "branch"],
+    cpanel: ["cpanel_link", "cpanel_username", "cpanel_password"],
   };
 
-  // Initialize user and editedUser states when data is fetched by useFetchData
+  // Initialize user and editedUser states when data is fetched
   useEffect(() => {
     if (fetchedData?.project) {
       const fixedData: Project = {
@@ -268,20 +256,17 @@ const ProjectsDetail = () => {
       };
       setUser(fixedData);
       setEditedUser(fixedData);
-      // console.log("Initial data loaded:", fixedData);
-    } else if (fetchedData && !fetchedData.project) {
-        // Handle cases where data is fetched but project is null/undefined (e.g., 404 from API)
+    } else if (fetchedData && fetchedData.project === null) { 
         setUser(null);
         setEditedUser(null);
+        // Toast for "Project not found" is already handled in useFetchData for 404.
     }
   }, [fetchedData]);
 
-
+  // Callback for handling input changes in editable fields
   const handleInputChange = useCallback((field: keyof Project | keyof Department | keyof Team, value: string | number, source: string) => {
-    // console.log(`handleInputChange called for field: ${String(field)}, value: ${value}, source: ${source}`);
     setEditedUser((prev) => {
       if (!prev) {
-        // console.warn("handleInputChange: prev state is null.");
         return null;
       }
 
@@ -291,44 +276,41 @@ const ProjectsDetail = () => {
         if (newEditedUser.department && newEditedUser.department.length > 0) {
           newEditedUser.department = [{ ...newEditedUser.department[0], [field]: value }];
         } else {
-          // Fallback: if department array doesn't exist, create a dummy one
           newEditedUser.department = [{ id: 0, department_name: value as string, created_date: "", department_target: null }];
         }
       } else if (source === "team") {
         newEditedUser.team = { ...newEditedUser.team, [field]: value };
       } else {
-        // Ensure value is correctly parsed for numbers, especially for empty strings
         if (typeof value === 'string' && (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision"))) {
+            // Convert empty string to null for number fields, parse float otherwise
             newEditedUser[field as keyof Project] = value === "" ? null : (field === "rating" ? Math.min(5, parseFloat(value || "0")) : parseFloat(value || "0"));
-        } else if (field === "project_requirements") { // Handle project_requirements as string
+        } else if (field === "project_requirements") {
             newEditedUser[field as keyof Project] = value;
         }
-        else { // Default handling for other direct fields
+        else {
             newEditedUser[field as keyof Project] = value;
         }
       }
-      // console.log("newEditedUser after update:", newEditedUser);
       return newEditedUser;
     });
   }, []);
 
+  // Function to handle saving main project details
   const handleSave = async () => {
     try {
       setLoading(true);
       const token = Cookies.get("core");
       const updatedData: Partial<Project> = {};
 
+      // Collect only the changed editable fields for the update payload
       editableFields.forEach((field) => {
         if (editedUser && Object.prototype.hasOwnProperty.call(editedUser, field)) {
-          // Special handling for nested 'department' and 'team' if they are in editableFields
           if (field === 'department_name') {
             if (editedUser.department?.[0]?.department_name !== user?.department?.[0]?.department_name) {
-                // Assuming API expects department_name as a direct field for update
                 updatedData.department_name = editedUser.department?.[0]?.department_name;
             }
           } else if (field === 'team_name') {
             if (editedUser.team?.team_name !== user?.team?.team_name) {
-                // Assuming API expects team_name as a direct field for update
                 updatedData.team_name = editedUser.team?.team_name;
             }
           } else {
@@ -340,7 +322,7 @@ const ProjectsDetail = () => {
         }
       });
       
-      console.log("Sending update request for main section with data:", updatedData); // Debugging log
+      console.log("Sending update request for main section with data:", updatedData);
       await axios.put(
         `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
         updatedData,
@@ -351,11 +333,10 @@ const ProjectsDetail = () => {
           },
         }
       );
-      // After successful save, refetch the project data to ensure UI is updated with latest from backend
-      refetchProject(); 
-      setActiveEditSection(null); // Exit editing mode for the main section
-      toast.success("Project updated successfully!"); // Toast message added
-      console.log("Main project updated successfully."); // Debugging log
+      refetchProject(); // Refetch data after successful update
+      setActiveEditSection(null); // Exit editing mode
+      toast.success("Project updated successfully!"); // Success toast
+      console.log("Main project updated successfully.");
     } catch (error) {
       console.error("Update error for main section:", error);
       if (axios.isAxiosError(error)) {
@@ -368,19 +349,21 @@ const ProjectsDetail = () => {
     }
   };
 
+  // Function to handle saving login section details (Client, User, cPanel)
   const handleSectionSave = async (section: 'client' | 'user' | 'cpanel') => {
     try {
       setLoading(true);
       const token = Cookies.get("core");
       const updatedData: Partial<Project> = {};
 
+      // Collect relevant fields for the specific login section
       loginEditableFields[section].forEach((field) => {
         if (editedUser && Object.prototype.hasOwnProperty.call(editedUser, field)) {
           updatedData[field as keyof Project] = editedUser[field as keyof Project];
         }
       });
 
-      console.log(`Sending update request for ${section} section with data:`, updatedData); // Debugging log
+      console.log(`Sending update request for ${section} section with data:`, updatedData);
       await axios.put(
         `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
         updatedData,
@@ -392,11 +375,10 @@ const ProjectsDetail = () => {
         }
       );
 
-      // After successful save, refetch the project data to ensure UI is updated with latest from backend
-      refetchProject(); 
-      setActiveEditSection(null); // Exit editing mode for the specific section
-      toast.success(`${section === 'client' ? 'Client' : section === 'user' ? 'User' : 'cPanel'} info updated successfully!`); // Toast message added
-      console.log(`${section} section updated successfully.`); // Debugging log
+      refetchProject(); // Refetch data after successful update
+      setActiveEditSection(null); // Exit editing mode for this section
+      toast.success(`${section === 'client' ? 'Client' : section === 'user' ? 'User' : 'cPanel'} info updated successfully!`); // Success toast
+      console.log(`${section} section updated successfully.`);
     } catch (err) {
       console.error(`Section Update Error for ${section}:`, err);
       if (axios.isAxiosError(err)) {
@@ -409,10 +391,21 @@ const ProjectsDetail = () => {
     }
   };
 
-  if (fetchLoading || loading || !user) return <LoadingComponent />;
+  // Conditional rendering for loading or if project not found
+  if (fetchLoading || loading || !user) {
+    if (!fetchLoading && !loading && !user) {
+      // If fetching is complete and no user data, it means project not found.
+      // A toast.info is already shown in useFetchData for this case.
+      return (
+        <div className="flex justify-center items-center h-screen">
+          <p className="text-xl text-gray-600">Project not found or an error occurred.</p>
+        </div>
+      );
+    }
+    return <LoadingComponent />;
+  }
 
   // Define fields that can be edited in the main 'Edit Info' section
-  // These are the fields you explicitly mentioned should be editable via the main "Edit Info" button
   const editableFields: string[] = [ 
     "project_name", 
     "bonus", 
@@ -450,7 +443,19 @@ const ProjectsDetail = () => {
 
   return (
     <div className="bg-background min-h-screen">
-      <ToastContainer />
+      {/* ToastContainer for displaying notifications */}
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+      />
+
       {/* Top Project Info Section */}
       <section className="py-6 sm:py-8 md:py-12">
         <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8">
@@ -463,19 +468,18 @@ const ProjectsDetail = () => {
                 {user.order_id}
               </p>
 
-              {/* Rating Display */}
+              {/* Rating Display using FaStar icons */}
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, index) => {
                   const currentRating = user.rating !== null && user.rating !== undefined ? user.rating : 0;
                   const fillPercent = Math.min(100, Math.max(0, (currentRating - index) * 100));
                   return (
                     <div key={index} className="relative h-4 w-4 text-base">
-                      {/* Replaced FaStar with a Unicode star character */}
-                      <span className="absolute inset-0 text-gray-300">⭐</span>
-                      <span
+                      <FaStar className="absolute inset-0 text-gray-300" />
+                      <FaStar
                         className="absolute inset-0 text-yellow-400 overflow-hidden"
                         style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
-                      >⭐</span>
+                      />
                     </div>
                   );
                 })}
@@ -532,8 +536,8 @@ const ProjectsDetail = () => {
 
                   return (
                     <Info
-                      key={field}
-                      {...infoProps} // Spreading the props object
+                      key={field} // Key prop on the Info component for list rendering
+                      {...infoProps}
                     />
                   );
                 })}
@@ -568,7 +572,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'client',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="client_login_info_link" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -579,7 +583,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'client',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="client_login_info_username" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -590,7 +594,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'client',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="client_login_info_password" {...infoProps} />;
               })()}
             </div>
 
@@ -628,7 +632,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'user',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="user_login_info_link" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -639,7 +643,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'user',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="user_login_info_username" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -650,7 +654,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'user',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="user_login_info_password" {...infoProps} />;
               })()}
             </div>
 
@@ -688,7 +692,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'cpanel',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="cpanel_link" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -699,7 +703,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'cpanel',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
+                return <Info key="cpanel_username" {...infoProps} />;
               })()}
               {(() => {
                 const infoProps = {
@@ -710,18 +714,7 @@ const ProjectsDetail = () => {
                   editable: activeEditSection === 'cpanel',
                   onChange: handleInputChange
                 };
-                return <Info {...infoProps} />;
-              })()}
-              {(() => {
-                const infoProps = {
-                  label: "Branch",
-                  field: "branch",
-                  source: "user",
-                  value: editedUser?.branch,
-                  editable: activeEditSection === 'cpanel',
-                  onChange: handleInputChange
-                };
-                return <Info {...infoProps} />;
+                return <Info key="cpanel_password" {...infoProps} />;
               })()}
             </div>
 

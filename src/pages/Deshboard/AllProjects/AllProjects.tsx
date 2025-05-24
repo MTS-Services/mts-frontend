@@ -20,6 +20,7 @@ function AllProjects() {
   const { data, refetch } = useFetchData(
     "https://mtsbackend20-production.up.railway.app/api/project",
   );
+  console.log(data, "this  is projects data in  ")
 
   const { roleBasePermissionOne, role } = useContext(AuthContext);
   const [team, setTeam] = useState([]);
