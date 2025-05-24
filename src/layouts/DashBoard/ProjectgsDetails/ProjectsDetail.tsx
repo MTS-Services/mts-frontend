@@ -7,13 +7,13 @@ import { useQuery } from "@tanstack/react-query"; // Import useQuery
 import { useContext } from "react"; // Import useContext
 import { AuthContext } from "../../../context/AuthProvider";
 
-// Problematic imports (commented out to prevent compilation errors in Canvas)
-// import Tippy from "@tippyjs/react";
-// import { FaStar } from "react-icons/fa";
-// import "react-toastify/dist/ReactToastify.css";
-// import "tippy.js/dist/tippy.css";
-// import Loading from "../../../components/Loading/Loading";
-// import { useFetchData } from "../../../hooks/useFetchData"; // This hook is now defined below
+// Problematic imports (now corrected for FaStar)
+// import Tippy from "@tippyjs/react"; // Assuming you might not use Tippy
+import { FaStar } from "react-icons/fa"; // THIS LINE IS UNCOMMENTED AND NOW ACTIVE
+import "react-toastify/dist/ReactToastify.css";
+// import "tippy.js/dist/tippy.css"; // Only if you use Tippy
+// import Loading from "../../../components/Loading/Loading"; // Replaced with LoadingComponent below
+// import { useFetchData } = "../../../hooks/useFetchData"; // This hook is now defined below
 
 // Define interfaces for better type safety and understanding of data structure
 interface Department {
@@ -63,7 +63,7 @@ interface Project {
   cpanel_link: string | null;
   cpanel_username: string | null;
   cpanel_password: string | null;
-  branch: string | null;
+  branch: string | null; // Keep this in interface as it might be present in fetched data, even if not displayed/edited
   department?: Department[];
   team?: Team;
 }
@@ -255,7 +255,7 @@ const ProjectsDetail = () => {
   const loginEditableFields = {
     client: ["client_login_info_link", "client_login_info_username", "client_login_info_password"],
     user: ["user_login_info_link", "user_login_info_username", "user_login_info_password"],
-    cpanel: ["cpanel_link", "cpanel_username", "cpanel_password", "branch"],
+    cpanel: ["cpanel_link", "cpanel_username", "cpanel_password"], // 'branch' field removed from here
   };
 
   // Initialize user and editedUser states when data is fetched by useFetchData
@@ -439,13 +439,14 @@ const ProjectsDetail = () => {
     { label: "Department Name", field: "department_name", source: "department" },
     { label: "Project Requirements", field: "project_requirements", source: "user" },
     { label: "Team Name", field: "team_name", source: "team" },
+    // { label: "Branch", field: "branch", source: "user" }, // 'Branch' field removed from here
   ];
 
   // Group fields for layout purposes
   const groupedFields = [
     allFields.slice(0, 5),
     allFields.slice(5, 10),
-    allFields.slice(10, 15)
+    allFields.slice(10, 15) // This slice remains the same, but the content will be fewer if 'Branch' is removed
   ];
 
   return (
@@ -463,19 +464,20 @@ const ProjectsDetail = () => {
                 {user.order_id}
               </p>
 
-              {/* Rating Display */}
+              {/* Rating Display - NOW USING FASTAR */}
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, index) => {
                   const currentRating = user.rating !== null && user.rating !== undefined ? user.rating : 0;
                   const fillPercent = Math.min(100, Math.max(0, (currentRating - index) * 100));
                   return (
                     <div key={index} className="relative h-4 w-4 text-base">
-                      {/* Replaced FaStar with a Unicode star character */}
-                      <span className="absolute inset-0 text-gray-300">⭐</span>
-                      <span
+                      {/* FaStar for grey background */}
+                      <FaStar className="absolute inset-0 text-gray-300" />
+                      {/* FaStar for yellow fill with clipPath for partial fill */}
+                      <FaStar
                         className="absolute inset-0 text-yellow-400 overflow-hidden"
                         style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
-                      >⭐</span>
+                      />
                     </div>
                   );
                 })}
@@ -712,7 +714,8 @@ const ProjectsDetail = () => {
                 };
                 return <Info {...infoProps} />;
               })()}
-              {(() => {
+              {/* Branch field removed from here */}
+              {/* {(() => {
                 const infoProps = {
                   label: "Branch",
                   field: "branch",
@@ -722,7 +725,7 @@ const ProjectsDetail = () => {
                   onChange: handleInputChange
                 };
                 return <Info {...infoProps} />;
-              })()}
+              })()} */}
             </div>
 
             {activeEditSection === 'cpanel' && (
