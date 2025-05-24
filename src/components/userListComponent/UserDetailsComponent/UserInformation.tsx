@@ -1,42 +1,93 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, memo } from "react";
 import { useParams } from "react-router-dom";
-import Cookies from "js-cookie";  // Import the Cookies library
-import Loading from "../../Loading/Loading";  // Assume this is a loading spinner component
+import Cookies from "js-cookie";
+import Loading from "../../Loading/Loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Info Component (আলাদাভাবে সংজ্ঞায়িত এবং memoized)
+const Info = memo(({ label, field, value, editable = false, onChange, editedUser }) => {
+  const inputRef = useRef(null);
+
+  // Effect to focus input when it becomes editable
+  useEffect(() => {
+    console.log(`[Info Component - ${field}] useEffect triggered. Editable: ${editable}, Current ref:`, inputRef.current);
+    if (editable && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+      console.log(`[Info Component - ${field}] Input focused and selected.`);
+    }
+  }, [editable, field]); // Dependency on 'field' to re-focus if field changes
+
+  // Console log for rendering Info component
+  console.log(`[Info Component - ${field}] Rendering with value: "${value}", editedUser value: "${editedUser?.[field] ?? ""}", Editable: ${editable}`);
+
+
+  let inputType = "text";
+  if (field.includes("number")) {
+    inputType = "tel";
+  } else if (field.includes("email")) {
+    inputType = "email";
+  }
+
+  return (
+    <div className="flex flex-wrap items-start border-b border-accent/20 pb-2 mb-2">
+      <strong className="text-base text-accent font-primary mr-2 whitespace-nowrap">
+        {label}:
+      </strong>
+
+      {editable ? (
+        <input
+          ref={inputRef}
+          type={inputType}
+          name={field}
+          autoComplete="off"
+          value={editedUser?.[field] ?? ""}
+          onChange={(e) => {
+            console.log(`[Info Component - ${field}] onChange triggered. New value: "${e.target.value}"`);
+            onChange(field, e.target.value);
+          }}
+          className="text-base rounded-md border p-1 font-secondary w-full sm:w-auto bg-background focus:outline-none"
+        />
+      ) : (
+        <span className="text-base text-accent break-words whitespace-normal font-secondary">
+          {value}
+        </span>
+      )}
+    </div>
+  );
+});
+
+
 const UserInformation = () => {
-  const { id } = useParams();  // Get user ID from URL params
+  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [editedUser, setEditedUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Authorization token stored in cookies
   const token = Cookies.get("core");
 
-  // Fetch user data
   useEffect(() => {
+    console.log("[UserInformation] Fetching user data...");
     const fetchUserData = async () => {
       setLoading(true);
-      setMessage("");  // Clear previous message
+      setMessage("");
       try {
-        // Authorization header with Bearer token
         const headers = {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,  // Use token for authorization
+          Authorization: `Bearer ${token}`,
         };
 
         const res = await axios.get(
           `https://mtsbackend20-production.up.railway.app/api/teamMember/${id}`,
-          { headers }  // Pass the authorization header
+          { headers }
         );
 
         const fetchedUser = res.data.teamMember;
 
-        // Normalize the user data
         const userData = {
           dp: fetchedUser.dp || "/default.jpg",
           first_name: fetchedUser.first_name || "",
@@ -55,33 +106,37 @@ const UserInformation = () => {
           religion: fetchedUser.religion || "",
           department_name: fetchedUser?.department?.department_name || "",
           role: fetchedUser.role || "N/A",
-          // status: fetchedUser.status || "Active",
-          // joined: fetchedUser.joining_date || "N/A",
-          // last_login: fetchedUser.last_login || "N/A",
-          // access_level: fetchedUser.access_level || "User",
         };
 
-        console.log( "this sis tepartment part",userData.department_name)
+        console.log("this is department part", userData.department_name);
+        console.log("this is a testing data in the field and user ", userData);
 
-        console.log("this is a testing data in the fild and user ",userData)
         setUser(userData);
-        setEditedUser(userData);  // Initialize the edited user data
+        setEditedUser(userData);
+        console.log("[UserInformation] User data fetched and states set.");
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("[UserInformation] Error fetching user details:", error);
         toast.error("Error fetching user details. Please try again.");
       } finally {
-        setLoading(false);  // Stop loading
+        setLoading(false);
+        console.log("[UserInformation] Loading finished.");
       }
     };
 
     fetchUserData();
-  }, [id, token]);  // Re-fetch data when `id` or `token` changes
+  }, [id, token]);
 
   const handleInputChange = (field, value) => {
-    setEditedUser((prev) => ({ ...prev, [field]: value }));
+    console.log(`[UserInformation] handleInputChange: field=${field}, value=${value}`);
+    setEditedUser((prev) => {
+      const newState = { ...prev, [field]: value };
+      console.log("[UserInformation] setEditedUser - New state:", newState);
+      return newState;
+    });
   };
 
   const handleSave = async () => {
+    console.log("[UserInformation] handleSave triggered.");
     try {
       const allowedFields = [
         "first_name", "last_name", "email", "number", "permanent_address",
@@ -95,6 +150,7 @@ const UserInformation = () => {
           filteredData[key] = editedUser[key];
         }
       }
+      console.log("[UserInformation] Data to save:", filteredData);
 
       const response = await fetch(
         `https://mtsbackend20-production.up.railway.app/api/teamMember/${id}`,
@@ -102,24 +158,31 @@ const UserInformation = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,  // Authorization with Bearer token
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(filteredData),
         }
       );
 
       if (response.ok) {
-        setUser({ ...user, ...filteredData });
+        setUser((prevUser) => ({ ...prevUser, ...filteredData }));
         setIsEditing(false);
         toast.success("User information updated successfully!");
+        console.log("[UserInformation] Save successful.");
       } else {
-        toast.error("Failed to update user information. Please try again.");
+        const errorData = await response.json();
+        console.error("[UserInformation] Save failed. Response:", errorData);
+        toast.error(errorData.message || "Failed to update user information. Please try again.");
       }
     } catch (error) {
-      console.error("Save error", error);
+      console.error("[UserInformation] An error occurred during save:", error);
       toast.error("An error occurred while saving the data. Please try again.");
     }
   };
+
+  // Console log for UserInformation component rendering
+  console.log("[UserInformation] Rendering component. isEditing:", isEditing, "editedUser:", editedUser);
+
 
   if (loading) {
     return (
@@ -132,67 +195,6 @@ const UserInformation = () => {
   if (!user) {
     return <div className="mt-10 text-center text-red-500">Data not found</div>;
   }
-
-//   const Info = ({ label, field, value, editable = false, onChange }) => (
-//     <p className="text-accent font-secondary border-accent/20 mb-2  flex items-center border-b pr-1  pb-2 text-xl font-light">
-//       <strong className="pr-1 font-primary text-base text-xl">{label}:</strong>
-//       {editable ? (
-//         // <input
-//         //   type="text"
-//         //   value={editedUser[field] || ""}
-//         //   onChange={(e) => onChange(field, e.target.value)}
-//         //   className="rounded-md border p-1 font-secondary"
-//         // />
-
-
-// <input
-//   type="text"
-//   name={field}
-//   autoComplete="off"
-//   value={editedUser?.[field] ?? ""}
-//   onChange={(e) => {
-//     e.stopPropagation(); // 🛑 Prevent parent focus loss
-//     onChange(field, e.target.value);
-//   }}
-//   className="rounded-md border p-1 font-secondary w-full bg-background focus:outline-none"
-// />
-
-
-//       ) : (
-//         value
-//       )}
-//     </p>
-//   );
-// munshi coding test 
-
-const Info = ({ label, field, value, editable = false, onChange }) => (
-  <div className="flex flex-wrap items-start border-b border-accent/20 pb-2 mb-2">
-    {/* Label */}
-    <strong className="text-base text-accent font-primary mr-2 whitespace-nowrap">
-      {label}:
-    </strong>
-
-    {/* Value */}
-    {editable ? (
-      <input
-        type="text"
-        name={field}
-        autoComplete="off"
-        value={editedUser?.[field] ?? ""}
-        onChange={(e) => onChange(field, e.target.value)}
-        className="text-base rounded-md border p-1 font-secondary w-full sm:w-auto bg-background focus:outline-none"
-      />
-    ) : (
-      <span className="text-base text-accent break-words whitespace-normal font-secondary">
-        {value}
-      </span>
-    )}
-  </div>
-);
-
-
-
-
 
   return (
     <section className="py-8 lg:py-12">
@@ -220,7 +222,10 @@ const Info = ({ label, field, value, editable = false, onChange }) => (
 
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                console.log("[UserInformation] Toggle Edit button clicked. isEditing was:", isEditing);
+                setIsEditing(!isEditing);
+              }}
               className="flex items-center relative py-2 px-6 sm:px-8 md:px-10 lg:px-12 text-background text-base sm:text-lg font-bold rounded-full overflow-hidden bg-primary transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out font-primary before:z-[-1] before:rounded-full hover:before:left-0"
             >
               {isEditing ? "Cancel" : "Edit User Info"}
@@ -250,13 +255,14 @@ const Info = ({ label, field, value, editable = false, onChange }) => (
               Personal Info
             </h3>
             {["Email", "Number", "Present Address", "Permanent Address", "Gender", "Blood Group", "relationship", "Religion"].map((label) => (
-              <Info 
+              <Info
                 key={label}
                 label={label}
                 field={label.toLowerCase().replace(/ /g, "_")}
                 value={user[label.toLowerCase().replace(/ /g, "_")]}
                 editable={isEditing}
                 onChange={handleInputChange}
+                editedUser={editedUser}
               />
             ))}
           </div>
@@ -265,38 +271,37 @@ const Info = ({ label, field, value, editable = false, onChange }) => (
             <h3 className="font-primary border-accent/40 text-primary mb-4 border-b pb-1 text-2xl uppercase  text-shadow-md">
               Work Details
             </h3>
-          <div className="text-2xl">
-              
-            {["Department_name", "Role", "Education"].map((label) => (
+            <div className="text-2xl">
+              {["Department_name", "Role", "Education"].map((label) => (
+                <Info
+                  key={label}
+                  label={label}
+                  field={label.toLowerCase().replace(/ /g, "_")}
+                  value={user[label.toLowerCase().replace(/ /g, "_")]}
+                  editable={isEditing && label !== "Department_name"}
+                  onChange={handleInputChange}
+                  editedUser={editedUser}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-primary uppercase border-accent/40 text-primary mb-4 border-b pb-1 text-2xl text-shadow-md">
+              Guardian Info
+            </h3>
+            {["Guardian Relation", "Guardian Number", "Guardian Address"].map((label) => (
               <Info
                 key={label}
                 label={label}
                 field={label.toLowerCase().replace(/ /g, "_")}
                 value={user[label.toLowerCase().replace(/ /g, "_")]}
-                editable={isEditing && label !== "Department_name" && label !== "Joined" && label !== "Last Login"}
+                editable={isEditing}
                 onChange={handleInputChange}
+                editedUser={editedUser}
               />
             ))}
           </div>
-          </div>
-
-         <div className="">
-  <h3 className="font-primary uppercase border-accent/40 text-primary mb-4 border-b pb-1 text-2xl text-shadow-md">
-    Guardian Info
-  </h3>
-  {["Guardian Relation", "Guardian Number", "Guardian Address"].map((label) => (
-    <Info
-      key={label}
-      label={label}
-      field={label.toLowerCase().replace(/ /g, "_")}
-      value={user[label.toLowerCase().replace(/ /g, "_")]}
-      editable={isEditing}
-      onChange={handleInputChange}
-    />
-  ))}
-</div>
-
-
         </div>
       </div>
     </section>
