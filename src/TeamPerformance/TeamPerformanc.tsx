@@ -1,40 +1,57 @@
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import { TbTargetArrow } from "react-icons/tb";
 import { GiStairsGoal } from "react-icons/gi";
 import { PiPlusMinusDuotone } from "react-icons/pi";
 import MtsBarChar from "../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../components/Chart/MtsLineChart/MtsLineChart";
-import { useFetchData } from "../hooks/useFetchData";
 import DisplayCard from "../components/DisplayCard/DisplayCard";
 import CustomDropDown from "../layouts/DashBoard/UserDashBoard/CustomDropDown";
 
 const TeamPerformance = () => {
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedQuater, setSelectedQuater] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("May");
+  const [selectedQuater, setSelectedQuater] = useState(null);
+  const [data, setData] = useState(null);
 
-  interface TableRow {
-    clientName: string;
-    after_fiverr_amount?: number;
-    status?: string;
-    bonus?: number;
-  }
+  const token = Cookies.get("core"); // ✅ Get token from cookie
 
-  const { data, loading } = useFetchData(
-    "https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance",
-    "GET",
-    null,
-    {
-      refetchInterval: 2000, // Auto refetch every 2s
-    },
-  );
+  const getCurrentQuarter = () => Math.floor(new Date().getMonth() / 3) + 1;
+  const getCurrentYear = () => new Date().getFullYear();
 
-  const target = data?.teamQuarterlyPerformance?.target;
-  const achive = data?.teamQuarterlyPerformance?.achieved;
+  useEffect(() => {
+    const fetchQuarterData = async () => {
+      const quarter = selectedQuater || getCurrentQuarter();
+      const year = getCurrentYear();
+
+      if (!token) {
+        console.warn("No token found. Skipping request.");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance?quarter=${quarter}&year=${year}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        const json = await res.json();
+        setData(json);
+      } catch (error) {
+        console.error("Failed to fetch quarterly performance:", error);
+      }
+    };
+
+    fetchQuarterData();
+  }, [selectedQuater, token]);
+
+  const target = data?.teamQuarterlyPerformance?.target || 0;
+  const achive = data?.teamQuarterlyPerformance?.achieved || 0;
   const result = target - achive;
-
-  console.log("tmp", data);
-
-  const tableData = data?.teamMembersQuarterly;
 
   const lastQuarter = [
     {
@@ -60,7 +77,7 @@ const TeamPerformance = () => {
     },
   ];
 
-  const tableHeaders = ["Member Name", "Target", "Achive price", "+/-"];
+  const tableHeaders = ["Member Name", "Target", "Achieve price", "+/-"];
 
   const monthName = [
     "January",
@@ -78,50 +95,30 @@ const TeamPerformance = () => {
   ];
 
   const quarterName = [
-    " January-March",
-    " April-June",
-    " July-September",
-    " October-December",
+    { label: "January-March", value: 1 },
+    { label: "April-June", value: 2 },
+    { label: "July-September", value: 3 },
+    { label: "October-December", value: 4 },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://mtsbackend20-production.up.railway.app/api/project",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              page: "1",
-              limit: "10",
-            }),
-          },
-        );
-
-        const data = await response.json();
-        if (data?.projects && Array.isArray(data.projects)) {
-          setTableData(data.projects);
-        } else {
-          console.error("API response is not in the expected format:", data);
-          setTableData([]); // Fallback to empty array if response is not in the expected format
-        }
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      }
+  const filteredTableData = data?.teamMembersQuarterly?.map((member) => {
+    const monthly = member.monthlyBreakdown?.find(
+      (m) => m.month === selectedMonth,
+    );
+    return {
+      team_member_name: member.team_member_name,
+      quarterly_target: monthly?.target || 0,
+      achieved: monthly?.achieved || 0,
     };
-
-    fetchData();
-  }, []);
+  });
 
   const barChartCardData = data?.teamMembersQuarterly?.map((member) => ({
     memberName: member.team_member_name,
     target: member.quarterly_target,
     earned: member.achieved,
   }));
-  const weeklyAchievementBreakdown = [];
+
+  const weeklyAchievementBreakdown = []; // still empty as per your context
 
   return (
     <div className="font-secondary w-full p-4">
@@ -132,17 +129,16 @@ const TeamPerformance = () => {
           </h2>
           <div>
             <CustomDropDown
-              options={quarterName.map((q) => ({ label: q, value: q }))}
-              value={{ label: selectedQuater, value: selectedQuater }}
-              onChange={(selected: { label: string; value: string } | null) =>
-                setSelectedQuater(selected?.value || "")
+              options={quarterName}
+              value={quarterName.find((q) => q.value === selectedQuater)}
+              onChange={(selected) =>
+                setSelectedQuater(selected?.value || null)
               }
               placeholder="Select Quarter"
             />
           </div>
         </div>
 
-        {/*  Last Quarter Summary Cards Using DisplayCard */}
         <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-14">
           {lastQuarter.map((item, index) => (
             <DisplayCard
@@ -156,6 +152,7 @@ const TeamPerformance = () => {
           ))}
         </div>
       </div>
+
       <div>
         <div className="mt-12 flex items-center gap-4">
           <h2 className="text-accent text-4xl font-semibold">
@@ -165,8 +162,8 @@ const TeamPerformance = () => {
             <CustomDropDown
               options={monthName.map((m) => ({ label: m, value: m }))}
               value={{ label: selectedMonth, value: selectedMonth }}
-              onChange={(selected: { label: string; value: string } | null) =>
-                setSelectedMonth(selected?.value || "")
+              onChange={(selected) =>
+                setSelectedMonth(selected?.value || "May")
               }
               placeholder="Select Month"
             />
@@ -180,9 +177,7 @@ const TeamPerformance = () => {
                 {tableHeaders.map((head, i) => (
                   <th
                     key={head}
-                    className={`border border-white px-4 py-4 ${
-                      i === 0 ? "border-x" : ""
-                    }`}
+                    className={`border border-white px-4 py-4 ${i === 0 ? "border-x" : ""}`}
                   >
                     {head}
                   </th>
@@ -191,8 +186,8 @@ const TeamPerformance = () => {
             </thead>
 
             <tbody className="border-border-color border-2">
-              {tableData?.length > 0 ? (
-                tableData.map((row, i) => (
+              {filteredTableData?.length > 0 ? (
+                filteredTableData.map((row, i) => (
                   <tr
                     key={i}
                     className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 transform text-sm text-white transition-all duration-300 ease-in-out"
@@ -200,16 +195,14 @@ const TeamPerformance = () => {
                     <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
                       {row.team_member_name}
                     </td>
-
                     <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
-                      $ {row?.quarterly_target}
-                    </td>
-
-                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
-                      $ {row?.achieved}
+                      $ {row.quarterly_target}
                     </td>
                     <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
-                      $ {row?.quarterly_target - row?.achieved}
+                      $ {row.achieved}
+                    </td>
+                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
+                      $ {row.quarterly_target - row.achieved}
                     </td>
                   </tr>
                 ))
@@ -217,9 +210,9 @@ const TeamPerformance = () => {
                 <tr>
                   <td
                     colSpan={tableHeaders.length}
-                    className="py-4 text-center"
+                    className="py-4 text-center text-white"
                   >
-                    No projects found.
+                    No data found.
                   </td>
                 </tr>
               )}
@@ -227,8 +220,8 @@ const TeamPerformance = () => {
           </table>
         </div>
       </div>
+
       <section className="pr-5">
-        {/* Charts Row 1 */}
         <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
           <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
             <MtsBarChar barData={barChartCardData} />
