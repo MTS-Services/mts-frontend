@@ -38,7 +38,7 @@ const TeamPerformance = () => {
 
   const lastQuarter = [
     {
-      title: "Target",
+      title: "Target ",
       amount: target,
       icon: TbTargetArrow,
       message:
@@ -76,7 +76,6 @@ const TeamPerformance = () => {
     "November",
     "December",
   ];
-  const monthOptions = monthName.map((m) => ({ label: m, value: m }));
 
   const quarterName = [
     " January-March",
@@ -125,7 +124,7 @@ const TeamPerformance = () => {
   const weeklyAchievementBreakdown = [];
 
   return (
-    <div className="font-secondary w-full overflow-x-auto p-4">
+    <div className="font-secondary w-full p-4">
       <div>
         <div className="mb-12 flex items-center gap-4">
           <h2 className="text-accent text-4xl font-semibold">
@@ -152,6 +151,7 @@ const TeamPerformance = () => {
               amount={item.amount}
               icon={item.icon}
               message={item.message}
+              width="min-w-[260px]"
             />
           ))}
         </div>
@@ -173,14 +173,14 @@ const TeamPerformance = () => {
           </div>
         </div>
 
-        <div className="mt-14 overflow-x-auto">
+        <div className="border-accent/30 mt-12 border-b-1 pb-12">
           <table className="w-full min-w-[1000px] text-left">
             <thead>
-              <tr className="bg-secondary border border-white text-[16px] text-white">
+              <tr className="bg-secondary border-border-color border-2 text-white">
                 {tableHeaders.map((head, i) => (
                   <th
                     key={head}
-                    className={`border border-white px-2 py-3 ${
+                    className={`border border-white px-4 py-4 ${
                       i === 0 ? "border-x" : ""
                     }`}
                   >
@@ -190,25 +190,25 @@ const TeamPerformance = () => {
               </tr>
             </thead>
 
-            <tbody className="border-2 border-white">
+            <tbody className="border-border-color border-2">
               {tableData?.length > 0 ? (
                 tableData.map((row, i) => (
                   <tr
                     key={i}
                     className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 transform text-sm text-white transition-all duration-300 ease-in-out"
                   >
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
+                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
                       {row.team_member_name}
                     </td>
 
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
+                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
                       $ {row?.quarterly_target}
                     </td>
 
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
+                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
                       $ {row?.achieved}
                     </td>
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
+                    <td className="border-secondary font-primary border-r px-4 py-4 font-normal">
                       $ {row?.quarterly_target - row?.achieved}
                     </td>
                   </tr>
@@ -229,7 +229,7 @@ const TeamPerformance = () => {
       </div>
       <section className="pr-5">
         {/* Charts Row 1 */}
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
           <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
             <MtsBarChar barData={barChartCardData} />
           </div>

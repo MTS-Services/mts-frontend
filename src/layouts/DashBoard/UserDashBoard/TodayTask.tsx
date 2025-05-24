@@ -151,7 +151,7 @@ const TodayTask = () => {
       )}
 
       {/* ✅ Summary Cards */}
-      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-7">
+      <div className="border-accent/30 mt-12 flex flex-wrap gap-5 border-b-1 pb-12">
         {dashboardData && (
           <>
             <DisplayCard
@@ -159,37 +159,42 @@ const TodayTask = () => {
               amount={dashboardData.todayAssign}
               icon={MdAttachMoney}
               message="This shows the total operation amount earned this month by the operations team."
+              width="min-w-[260px]"
             />
             <DisplayCard
               title="Today Cancel"
               amount={dashboardData.todayCancel}
               icon={MdEdit}
               message="This shows the total operation amount earned this month by the operations team."
+              width="min-w-[260px]"
             />
             <DisplayCard
               title="Today Delivery"
               amount={dashboardData.todayDelivery}
               icon={MdCheckCircle}
               message="This shows the total operation amount earned this month by the operations team."
+              width="min-w-[260px]"
             />
             <DisplayCard
               title="Total Submit"
               amount={dashboardData.totalSubmit}
               icon={MdArrowCircleDown}
               message="This shows the total operation amount earned this month by the operations team."
+              width="min-w-[260px]"
             />
             <DisplayCard
               title="Total Short Time"
               amount={dashboardData.totalShortTime?.project_count}
               icon={MdAccessTime}
               message="This shows the total operation amount earned this month by the operations team."
+              width="min-w-[260px]"
             />
           </>
         )}
       </div>
 
       {/* ✅ Table Section */}
-      <section className="my-7 w-full">
+      <section className="my-12 w-full">
         <div className="w-full overflow-x-auto">
           <table className="w-full border-collapse">
             <thead className="font-primary sticky top-0 bg-gray-100">
