@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 
 const Performance = () => {
   const [selectedQuarter, setSelectedQuarter] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("May");
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [data, setData] = useState(null);
 
   const quarterOptions = [
@@ -19,32 +19,33 @@ const Performance = () => {
     { label: "October-December", value: 4 },
   ];
 
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  const quarters = {
+    1: ["January", "February", "March"],
+    2: ["April", "May", "June"],
+    3: ["July", "August", "September"],
+    4: ["October", "November", "December"],
+  };
 
   const getCurrentQuarter = () => Math.floor(new Date().getMonth() / 3) + 1;
   const getCurrentYear = () => new Date().getFullYear();
   const token = Cookies.get("core");
 
   useEffect(() => {
+    if (!selectedQuarter) {
+      setData(null);
+      setSelectedMonth(null);
+      return;
+    }
+
+    // কোয়ার্টার সিলেক্ট হলে ঐ কোয়ার্টারের প্রথম মাস সিলেক্ট করা
+    const monthsForQuarter = quarters[selectedQuarter];
+    setSelectedMonth(monthsForQuarter ? monthsForQuarter[0] : null);
+
     const fetchPerformance = async () => {
-      const quarter = selectedQuarter || getCurrentQuarter();
       const year = getCurrentYear();
       try {
         const res = await fetch(
-          `https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance?quarter=${quarter}&year=${year}`,
+          `https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance?quarter=${selectedQuarter}&year=${year}`,
           {
             method: "GET",
             headers: {
@@ -57,6 +58,7 @@ const Performance = () => {
         setData(json);
       } catch (err) {
         console.error("Fetch error:", err);
+        setData(null);
       }
     };
 
@@ -84,15 +86,19 @@ const Performance = () => {
     },
   ];
 
+  // কোয়ার্টার অনুযায়ী মাস গুলো
+  const quarterMonths = selectedQuarter ? quarters[selectedQuarter] : [];
+
+  // সদস্যদের ডাটা ফিল্টারিং (সিলেক্টেড মাস অনুযায়ী)
   const memberMonthly = data?.teamMembersQuarterly?.map((member) => {
-    const month = member.monthlyBreakdown.find(
+    const monthData = member.monthlyBreakdown.find(
       (m) => m.month === selectedMonth,
     );
     return {
       name: member.team_member_name,
-      target: month?.target || 0,
-      achieved: month?.achieved || 0,
-      difference: month?.difference || 0,
+      target: monthData?.target || 0,
+      achieved: monthData?.achieved || 0,
+      difference: monthData?.difference || 0,
     };
   });
 
@@ -105,7 +111,9 @@ const Performance = () => {
           </h2>
           <CustomDropDown
             options={quarterOptions}
-            value={quarterOptions.find((q) => q.value === selectedQuarter)}
+            value={
+              quarterOptions.find((q) => q.value === selectedQuarter) || null
+            }
             onChange={(selected) => setSelectedQuarter(selected?.value || null)}
             placeholder="Select Quarter"
           />
@@ -131,10 +139,15 @@ const Performance = () => {
             Quater Base Member Performance
           </h2>
           <CustomDropDown
-            options={monthNames.map((m) => ({ label: m, value: m }))}
-            value={{ label: selectedMonth, value: selectedMonth }}
-            onChange={(selected) => setSelectedMonth(selected?.value || "May")}
+            options={quarterMonths.map((m) => ({ label: m, value: m }))}
+            value={
+              selectedMonth
+                ? { label: selectedMonth, value: selectedMonth }
+                : null
+            }
+            onChange={(selected) => setSelectedMonth(selected?.value || null)}
             placeholder="Select Month"
+            isDisabled={!selectedQuarter}
           />
         </div>
 
@@ -152,7 +165,9 @@ const Performance = () => {
               {memberMonthly?.map((row, idx) => (
                 <tr
                   key={idx}
-                  className={`border border-white ${idx % 2 === 0 ? "bg-primary/70" : "bg-primary"}`}
+                  className={`border border-white ${
+                    idx % 2 === 0 ? "bg-primary/70" : "bg-primary"
+                  }`}
                 >
                   <td className="px-4 py-2">{row.name}</td>
                   <td className="px-4 py-2">$ {row.target}</td>
@@ -160,6 +175,13 @@ const Performance = () => {
                   <td className="px-4 py-2">$ {row.difference}</td>
                 </tr>
               ))}
+              {!memberMonthly?.length && (
+                <tr>
+                  <td colSpan={4} className="py-4 text-center">
+                    No data found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
