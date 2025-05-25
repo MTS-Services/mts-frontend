@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { BiGridVertical } from "react-icons/bi";
+import { HiViewGridAdd } from "react-icons/hi";
+import ChartToggleContainer from "../../components/Chart/ChartToggleContainer/ChartToggleContainer";
 import MtsBarChart from "../../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../../components/Chart/MtsLineChart/MtsLineChart";
+import MyPieChart from "../../components/Chart/MtsPIChart/MyPieChart";
 import Loading from "../../components/Loading/Loading";
 import StyledDropdown from "../../components/utility/StyledDropdown";
 import { useSocket } from "../../context/SocketContext";
@@ -12,6 +16,7 @@ function AllReport() {
   const [mainFactorStatus, setMainFactorStatus] = useState("Monthly");
   const [operationStatus, setOperationStatus] = useState("Monthly");
   const [salesStatus, setSalesStatus] = useState("Monthly");
+  const [operationData, setOperationData] = useState([]);
 
   const { salesteams } = useSocketData();
   // all
@@ -20,11 +25,25 @@ function AllReport() {
   );
 
   useEffect(() => {
-    socket.emit("TeamChartid", 2); // Example team ID, replace with actual ID if needed
-    socket.on("eachTeamChartForTeamId", (data) => {
-      console.log("Real-time for eachTeamChartForTeamId:", data);
-    });
-  });
+    if (
+      socket &&
+      operationStatus !== "Monthly" &&
+      operationStatus !== "Daily"
+    ) {
+      socket.emit("TeamChartid", operationStatus);
+      const handler = (data) => {
+        setOperationData(data?.memberTarget);
+      };
+
+      socket.on("eachTeamChartForTeamId", handler);
+
+      return () => {
+        socket.off("eachTeamChartForTeamId", handler);
+      };
+    } else {
+      setOperationData([]);
+    }
+  }, [operationStatus, socket]);
 
   // Project Delivery Reports
   //   const { data: projectDelivery, loading: projectDeliveryLoading } =
@@ -116,30 +135,30 @@ function AllReport() {
   } = data;
 
   const monthlyOperationAchive = parseFloat(
-    operationalPerformance.achievements.this_month.total_achievement,
+    operationalPerformance?.achievements?.this_month?.total_achievement,
   );
   const dailyOperationAchive = parseFloat(
-    operationalPerformance.achievements.today.total_achievement,
+    operationalPerformance?.achievements?.today?.total_achievement,
   );
 
   const monthlyOperationTarget = parseFloat(
-    operationalPerformance.targets.this_month.total_member_target_sum,
+    operationalPerformance?.targets?.this_month?.total_member_target_sum,
   );
   const dailyOperationTarget = parseFloat(
-    operationalPerformance.targets.today.total_member_target_sum,
+    operationalPerformance?.targets?.today?.total_member_target_sum,
   );
 
   const monthlyPromotionCost = parseFloat(
-    promotionCosts?.this_month_promotion.total_cost,
+    promotionCosts?.this_month_promotion?.total_cost,
   );
   const dailyPromotionCost = parseFloat(
-    promotionCosts?.today_promotion.total_cost,
+    promotionCosts?.today_promotion?.total_cost,
   );
   const monthlySpecialOrderCost = parseFloat(
-    specialOrderStats?.this_month_special_order.total_cost,
+    specialOrderStats?.this_month_special_order?.total_cost,
   );
   const dailySpecialOrderCost = parseFloat(
-    specialOrderStats?.today_special_order.total_cost,
+    specialOrderStats?.today_special_order?.total_cost,
   );
 
   const monthlyOtherCosts = parseFloat(otherCosts?.this_month?.total_cost);
@@ -243,6 +262,19 @@ function AllReport() {
     { name: "Achived", value: dailyOperationAchive },
   ];
 
+  const barChartProps = {
+    data:
+      mainFactorStatus === "Monthly" ? monthlyMainFactors : dailyMainFactors,
+    keys: ["value"],
+    indexBy: "name",
+    legent:
+      mainFactorStatus === "Monthly"
+        ? "Monthly Base Report"
+        : "Daily Base Report",
+  };
+
+  const pieChartProps = {};
+
   return (
     <section className="font-primary">
       <div className="py-5">
@@ -304,26 +336,57 @@ function AllReport() {
             </tr>
           </tbody>
         </table>
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-5">
+          <div className="bg-secondary/10 shadow-box-style shadow-primary/15 mt-14 cursor-pointer p-1">
+            <HiViewGridAdd className="h-6 w-6" />
+          </div>
+          <div className="bg-secondary/10 shadow-box-style shadow-primary/15 mt-14 cursor-pointer p-1">
+            <BiGridVertical className="h-6 w-6" />
+          </div>
+
           <StyledDropdown
             options={["Monthly", "Daily"]}
             onSelect={(value) => setMainFactorStatus(value)}
           />
         </div>
-        <MtsBarChart
-          data={
-            mainFactorStatus == "Monthly"
-              ? monthlyMainFactors
-              : dailyMainFactors
+        {/* <div className="my-12 flex flex-wrap gap-5">
+          <div className="bg-secondary/10 shadow-box-style shadow-primary/25 h-96 w-full p-2 md:flex-1">
+            <MtsBarChart
+              data={
+                mainFactorStatus === "Monthly"
+                  ? monthlyMainFactors
+                  : dailyMainFactors
+              }
+              keys={["value"]}
+              indexBy="name"
+              legent={
+                mainFactorStatus === "Monthly"
+                  ? "Monthly Base Report"
+                  : "Daily Base Report"
+              }
+            />
+          </div>
+          <div className="bg-secondary/10 shadow-box-style shadow-primary/25 h-96 w-full p-2 md:flex-1">
+            <MyPieChart />
+          </div>
+        </div> */}
+
+        <ChartToggleContainer
+          mainFactorStatus={mainFactorStatus}
+          setMainFactorStatus={setMainFactorStatus}
+          dropdownComponent={
+            <StyledDropdown
+              options={["Monthly", "Daily"]}
+              selected={mainFactorStatus}
+              onSelect={setMainFactorStatus}
+            />
           }
-          keys={["value"]}
-          indexBy="name"
-          legent={
-            mainFactorStatus == "Monthly"
-              ? "Monthy Base Report"
-              : "Daily Base Report"
-          }
+          charts={[
+            { component: MtsBarChart, props: barChartProps },
+            { component: MyPieChart, props: pieChartProps },
+          ]}
         />
+
         <MtsLineChart data={chartData} />
       </div>
       <div className="py-5">
@@ -473,20 +536,98 @@ function AllReport() {
           </tbody>
         </table>
         <div className="flex justify-end">
-          <StyledDropdown onSelect={(value) => setOperationStatus(value)} />
+          <StyledDropdown
+            onSelect={(value) => setOperationStatus(value)}
+            all="yes"
+          />
         </div>
-        <MtsBarChart
-          data={
-            operationStatus == "Monthly"
-              ? monthlyOperationFactors
-              : dailyOperationFactors
-          }
-          keys={["value"]}
-          indexBy="name"
-          legent={
-            status == "Monthly" ? "Monthy Base Report" : "Daily Base Report"
-          }
-        />
+
+        <div>
+          {operationStatus === "All Team" ? (
+            <MtsBarChart
+              data={
+                operationalPerformance?.achievements?.this_month?.team_breakdown
+              }
+              keys={["achievement"]}
+              indexBy="team_name"
+              legent="All Team Performance"
+            />
+          ) : ["Monthly", "Daily"].includes(operationStatus) ? (
+            <MtsBarChart
+              data={
+                operationStatus === "Monthly"
+                  ? monthlyOperationFactors
+                  : dailyOperationFactors
+              }
+              keys={["value"]}
+              indexBy="name"
+              legent={
+                operationStatus === "Monthly"
+                  ? "Monthly Base Report"
+                  : "Daily Base Report"
+              }
+            />
+          ) : (
+            <MtsBarChart
+              data={operationData}
+              keys={["target", "earned"]}
+              indexBy="memberName"
+              legent="Team Performance Report"
+            />
+          )}
+        </div>
+        <div>
+          <table className="border-primary text-accent font-primary text-md mt-5 w-full table-auto border text-center">
+            <thead className="bg-primary text-white">
+              <tr>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Team Name
+                </th>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Target
+                </th>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Achieve
+                </th>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Assigned
+                </th>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Need
+                </th>
+                <th className="border border-white px-4 py-2 text-[18px]">
+                  Project
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {operationalPerformance?.achievements?.this_month?.team_breakdown?.map(
+                (item) => (
+                  <tr className="odd:bg-secondary even:bg-background text-accent">
+                    <td className="border-primary border px-4 py-2">
+                      {item?.team_name}
+                    </td>
+                    <td className="border-primary border px-4 py-2">
+                      {item?.team_target}
+                    </td>
+                    <td className="border-primary border px-4 py-2">
+                      {item?.achievement}
+                    </td>
+                    <td className="border-primary border px-4 py-2">
+                      {item?.assign || 0}
+                    </td>
+                    <td className="border-primary border px-4 py-2">
+                      {item?.achievement - item?.team_target}
+                    </td>
+                    <td className="border-primary border px-4 py-2">
+                      {item?.project_count}
+                    </td>
+                  </tr>
+                ),
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );

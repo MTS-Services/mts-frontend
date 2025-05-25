@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   createUserWithEmailAndPassword,
@@ -9,7 +10,6 @@ import {
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import app from "../firebase/firebase.config";
-
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
 
@@ -61,6 +61,8 @@ const roleBaseHOD = [
 ];
 
 const AuthProvider = ({ children }) => {
+  const queryClient = useQueryClient();
+
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [dbUser, setDbUser] = useState(null);

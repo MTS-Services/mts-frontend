@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { useFetchData } from "../../hooks/useFetchData";
 
-function StyledDropdown({ options = [], onSelect }) {
+function StyledDropdown({ options = [], onSelect, all }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selected, setSelected] = useState("Select");
 
@@ -41,6 +41,14 @@ function StyledDropdown({ options = [], onSelect }) {
           {/* Extra Options Only for Dynamic */}
           {!isStatic && (
             <>
+              {all && (
+                <li
+                  onClick={() => handleSelect("All Team")}
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-700"
+                >
+                  All Team
+                </li>
+              )}
               <li
                 onClick={() => handleSelect("Monthly")}
                 className="cursor-pointer px-4 py-2 hover:bg-gray-700"

@@ -13,6 +13,8 @@ const MtsBarChart = ({
         padding: "1rem",
         background: "transparent", // ✅ chart container is transparent
         borderRadius: "10px",
+        height: "100%", // Ensures that the parent div doesn't extend beyond its container
+        boxSizing: "border-box", // Ensures padding is included in the height
       }}
     >
       {/* 🔥 Dynamic Legend */}
@@ -29,7 +31,7 @@ const MtsBarChart = ({
       </div>
 
       {/* 📊 Chart */}
-      <div style={{ height: 450 }}>
+      <div style={{ height: "100%" }}>
         <ResponsiveBar
           data={data}
           keys={keys}
