@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import { useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PrimaryButton from "../../components/Button/PrimaryButton";
 
 export default function QuotationPDFForm() {
   const pdfRef = useRef(null);
@@ -106,6 +107,7 @@ export default function QuotationPDFForm() {
       setLoading(false);
     }
   };
+  /// buttong part ----------------
 
   return (
     <div className="flex-1 p-6 bg-background min-h-screen flex justify-center items-center">
@@ -115,9 +117,9 @@ export default function QuotationPDFForm() {
           e.preventDefault();
           handleGeneratePDF();
         }}
-        className="mx-auto lg:w-[600px]   space-y-6 rounded-lg border border-gray-300 bg-background p-6 shadow-md"
+        className="mx-auto lg:w-[600px]   space-y-6 rounded-lg border border-primary bg-background p-6 shadow-md"
       >
-        <h2 className="text-center text-2xl font-bold  text-accent font-primary">Quotation PDF Generator ✨</h2>
+        <h2 className="text-center text-2xl font-bold  text-accent font-primary uppercase">Quotation PDF Generator</h2>
 
         <div>
           <label className="mb-2 block font-semibold text-accent font-primary">Prepared By</label>
@@ -126,30 +128,27 @@ export default function QuotationPDFForm() {
             placeholder="Your name"
             value={preparedBy}
             onChange={(e) => setPreparedBy(e.target.value)}
-            className="w-full rounded border border-gray-300 p-3 text-accent  font-primary"
+            className="w-full rounded border border-primary/60 p-3 text-accent  font-primary"
             required
           />
         </div>
 
         <div>
           <label className="mb-2 block font-semibold text-accent font-primary">Client Message</label>
-          <textarea
+          <textarea 
             rows={10}
-            placeholder="Paste client message (in Bengali shorthand)..."
+            placeholder="Paste client message ..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full rounded border border-gray-300 p-3  text-accent font-primary" 
+            className="w-full rounded border border-primary/60 p-2.5 text-accent font-primary" 
             required
           ></textarea>
         </div>
 
-        <button
-          type="submit"
+<PrimaryButton  type="submit"
           disabled={loading}
-          className="w-full rounded bg-blue-600 py-3 font-semibold text-accent transition hover:bg-blue-700"
-        >
-          {loading ? "Generating PDF..." : "Submit & Download PDF"}
-        </button>
+          className="" >{loading ? "Generating PDF..." : "Submit & Download PDF"}</PrimaryButton>
+        
       </form>
 
       <div
