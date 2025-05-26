@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { useTheme } from "../../../context/ThemeContext";
 
-// Register components
+// Register chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
 const MtsPIChart = ({ PiData = [] }) => {
@@ -25,19 +25,33 @@ const MtsPIChart = ({ PiData = [] }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 🎨 Generate dynamic color palette (fallback if more than 5)
+  const generateColors = (length) => {
+    const baseColors = [
+      "#00C49F",
+      "#8884D8",
+      "#FF8042",
+      "#F3C623",
+      "#FFB22C",
+      "#FF6384",
+      "#36A2EB",
+      "#FFCE56",
+      "#8BC34A",
+      "#FF9800",
+    ];
+    return Array.from({ length }, (_, i) => baseColors[i % baseColors.length]);
+  };
+
+  const labels = PiData.map((item) => item.label);
+  const values = PiData.map((item) => parseFloat(item.value));
+
   const data = {
-    labels: PiData.map((item) => item.label),
+    labels,
     datasets: [
       {
         label: "Team Stats (%)",
-        data: PiData.map((item) => parseFloat(item.value)),
-        backgroundColor: [
-          "#00C49F", // Delivery
-          "#8884D8", // Assigned
-          "#FF8042", // Cancelled
-          "#F3C623", // Submitted
-          "#FFB22C", // Carry
-        ],
+        data: values,
+        backgroundColor: generateColors(PiData.length),
         borderWidth: 2,
         borderColor: "#ffffff",
       },

@@ -16,6 +16,7 @@ import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import MainLayOut from "../MainLayOut";
+import AddOtherCost from "../pages/AddOtherCost/AddOtherCost";
 import AllReport from "../pages/AllReport/AllReport";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
@@ -99,7 +100,7 @@ const AppRoutes = createBrowserRouter([
               "operation_member",
               "operation_leader",
               "sales_leader",
-              "hod_mern"
+              "hod_mern",
             ]}
           >
             <AllProjects />
@@ -109,6 +110,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "quotation-pdf-form",
         element: <QuotationPDFForm />,
+      },
+      {
+        path: "add-other-cost",
+        element: <AddOtherCost />,
       },
       {
         path: "all-report",

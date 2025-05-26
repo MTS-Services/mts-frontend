@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useApiRequest } from "../../hooks/useApiRequest"; // make sure path is correct
+import { useApiRequest } from "../../hooks/useApiRequest";
 
 function SingleDistributionPage({
   item,
   teamMembers,
   refetch,
   roleBasePermissionThree,
+  index,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
-  // Initialize distribution amounts in the same order as teamMembers
   const initialValues = teamMembers.map((member) => {
     const dist = item.distributions.find((d) => d.team_member_id === member.id);
     return dist?.amount || 0;
@@ -20,7 +20,7 @@ function SingleDistributionPage({
 
   const handleChange = (index, value) => {
     const updated = [...localData];
-    updated[index] = Number(value); // Ensure it's a number
+    updated[index] = Number(value);
     setLocalData(updated);
   };
 
@@ -67,12 +67,16 @@ function SingleDistributionPage({
   };
 
   return (
-    <tr className="odd:bg-secondary even:bg-background text-accent">
-      <td className="border-primary border px-4 py-2">{item.client_name}</td>
-      <td className="border-primary border px-4 py-2">{item.amount}</td>
+    <tr
+      className={`${
+        index % 2 === 0 ? "bg-primary" : "bg-primary/70"
+      } border border-white text-white transition-all`}
+    >
+      <td className="border border-white px-4 py-3">{item.client_name}</td>
+      <td className="border border-white px-4 py-3">{item.amount}</td>
 
       {teamMembers.map((_, idx) => (
-        <td key={idx} className="border-primary border px-4 py-2">
+        <td key={idx} className="border border-white px-4 py-3">
           {isEditing ? (
             <input
               type="number"
@@ -87,8 +91,9 @@ function SingleDistributionPage({
           )}
         </td>
       ))}
+
       {roleBasePermissionThree && (
-        <td className="border-primary border px-4 py-2">
+        <td className="border border-white px-4 py-3">
           {isEditing ? (
             <button
               onClick={handleSubmit}
@@ -104,7 +109,7 @@ function SingleDistributionPage({
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+              className="bg-secondary hover:bg-secondary/70 rounded px-3 py-1 text-sm text-white transition-all"
             >
               Edit
             </button>

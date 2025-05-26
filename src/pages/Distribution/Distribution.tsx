@@ -24,44 +24,38 @@ function Distribution() {
   const teamMembers = Array.from(teamMembersMap.values());
 
   return (
-    <section className="bg-background font-primary min-h-screen p-4 md:p-8">
-      <div className="bg-secondary border-primary mx-auto w-full max-w-7xl rounded-lg border p-4 shadow-md md:p-6">
-        <h3 className="text-primary font-primary mb-4 text-center text-xl font-bold md:text-2xl">
-          Distribution List
-        </h3>
+    <section className="font-secondary mt-12 w-full overflow-x-hidden">
+      <div className="mx-auto w-full rounded-lg shadow-md">
         <div className="overflow-x-auto">
-          <table className="border-primary w-full table-auto border text-sm md:text-base">
-            <thead className="bg-primary text-white">
-              <tr>
-                <th className="border-primary border px-4 py-2 text-left">
-                  Client Name
-                </th>
-                <th className="border-primary border px-4 py-2 text-left">
-                  Project Price
-                </th>
+          <table className="w-full min-w-[1000px] border border-white text-left text-white">
+            <thead>
+              <tr className="bg-secondary border border-white text-[16px] font-bold">
+                <th className="border border-white px-4 py-3">Client Name</th>
+                <th className="border border-white px-4 py-3">Project Price</th>
                 {teamMembers.map((member) => (
                   <th
                     key={member.id}
-                    className="border-primary border px-4 py-2 text-left"
+                    className="border border-white px-4 py-3 text-left"
                   >
                     {member.first_name}
                   </th>
                 ))}
                 {roleBasePermissionThree && (
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border border-white px-4 py-3 text-left">
                     Action
                   </th>
                 )}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="border border-white">
               {distributions.map((item, index) => (
                 <SingleDistributionPage
                   key={index}
+                  index={index}
                   item={item}
                   roleBasePermissionThree={roleBasePermissionThree}
                   teamMembers={teamMembers}
-                  refetch={refetch} // ✅ important!
+                  refetch={refetch}
                 />
               ))}
             </tbody>
