@@ -11,7 +11,7 @@ const PrefetchWrapper = () => {
   useEffect(() => {
     if (isLoading) return;
 
-    const token = Cookies.get("core"); // ✅ Correct token source
+    const token = Cookies.get("core");
 
     if (!token || !user) {
       console.warn("⛔ Not logged in or token missing, skipping prefetch.");
@@ -50,6 +50,7 @@ const PrefetchWrapper = () => {
           console.log(`✅ Prefetched: ${url}`);
           return res.data;
         },
+        staleTime: Infinity,
       });
     });
   }, [queryClient, user, isLoading]);

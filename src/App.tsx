@@ -8,21 +8,21 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { store } from "./features/store";
 import PrefetchWrapper from "./pages/PrefetchWrapper";
 
-function App() {
-  const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
+function App() {
   return (
     <>
       <Provider store={store}>
         <ThemeProvider>
-          <AuthProvider>
-            <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
               <PrefetchWrapper />
               <SocketProvider>
                 <RouterProvider router={AppRoutes} />
               </SocketProvider>
-            </QueryClientProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </QueryClientProvider>
         </ThemeProvider>
       </Provider>
     </>
