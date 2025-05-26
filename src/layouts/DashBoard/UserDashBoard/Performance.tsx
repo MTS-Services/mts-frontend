@@ -119,7 +119,7 @@ const Performance = () => {
           />
         </div>
 
-        <div className="flex flex-wrap gap-5 border-b pb-12">
+        <div className="border-accent/30 mt-12 flex flex-wrap gap-5 border-b-1 pb-12">
           {teamCards.map((card, idx) => (
             <DisplayCard
               key={idx}
@@ -134,7 +134,7 @@ const Performance = () => {
       </div>
 
       <div className="my-12">
-        <div className="mb-4 flex items-center gap-4">
+        <div className="mb-12 flex items-center gap-4">
           <h2 className="text-accent text-4xl font-semibold">
             Quater Base Member Performance
           </h2>
@@ -151,14 +151,14 @@ const Performance = () => {
           />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px] border border-white text-white">
+        <div className="border-accent/30 mt-12 border-b-1 pb-12">
+          <table className="border-border-color w-full min-w-[1000px] border-2 text-white">
             <thead>
               <tr className="bg-secondary text-left text-white">
-                <th className="border border-white px-4 py-3">Member Name</th>
-                <th className="border border-white px-4 py-3">Target</th>
-                <th className="border border-white px-4 py-3">Achieve price</th>
-                <th className="border border-white px-4 py-3">+/-</th>
+                <th className="border border-white px-4 py-4">Member Name</th>
+                <th className="border border-white px-4 py-4">Target</th>
+                <th className="border border-white px-4 py-4">Achieve price</th>
+                <th className="border border-white px-4 py-4">+/-</th>
               </tr>
             </thead>
             <tbody>

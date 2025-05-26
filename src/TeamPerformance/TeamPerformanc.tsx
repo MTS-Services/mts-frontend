@@ -154,7 +154,7 @@ const TeamPerformance = () => {
         />
       </div>
 
-      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-14">
+      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-12">
         {lastQuarter.map((item, i) => (
           <DisplayCard
             key={i}
@@ -192,7 +192,7 @@ const TeamPerformance = () => {
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`border border-white px-4 py-4 ${i === 0 ? "border-x" : ""}`}
+                  className={`border-border-color border px-4 py-4 ${i === 0 ? "border-x" : ""}`}
                 >
                   {head}
                 </th>
