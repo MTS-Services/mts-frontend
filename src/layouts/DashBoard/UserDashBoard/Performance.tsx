@@ -166,18 +166,18 @@ const Performance = () => {
                 <tr
                   key={idx}
                   className={`border border-white ${
-                    idx % 2 === 0 ? "bg-primary/70" : "bg-primary"
+                    idx % 2 === 0 ? "bg-primary" : "bg-primary/70"
                   }`}
                 >
-                  <td className="px-4 py-2">{row.name}</td>
-                  <td className="px-4 py-2">$ {row.target}</td>
-                  <td className="px-4 py-2">$ {row.achieved}</td>
-                  <td className="px-4 py-2">$ {row.difference}</td>
+                  <td className="px-4 py-4">{row.name}</td>
+                  <td className="px-4 py-4">$ {row.achieved}</td>
+                  <td className="px-4 py-4">$ {row.target}</td>
+                  <td className="px-4 py-4">$ {row.difference}</td>
                 </tr>
               ))}
               {!memberMonthly?.length && (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center">
+                  <td colSpan={4} className="py-4 text-center text-red-500">
                     No data found.
                   </td>
                 </tr>

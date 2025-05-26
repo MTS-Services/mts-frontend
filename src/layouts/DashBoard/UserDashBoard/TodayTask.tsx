@@ -129,7 +129,7 @@ const TodayTask = () => {
   ];
 
   return (
-    <div className="font-secondary w-full overflow-x-auto p-4">
+    <div className="font-secondary w-full p-4">
       {/* ✅ Assign Team Form */}
       {roleBasePermissionThree && (
         <>
@@ -195,14 +195,14 @@ const TodayTask = () => {
 
       {/* ✅ Table Section */}
       <section className="my-12 w-full">
-        <div className="w-full overflow-x-auto">
-          <table className="w-full border-collapse">
+        <div className="w-full">
+          <table className="border-border-color w-full min-w-[1000px] border-2 text-left text-white">
             <thead className="font-primary sticky top-0 bg-gray-100">
               <tr>
                 {tableHeaders.map((item, index) => (
                   <th
                     key={index}
-                    className="bg-secondary text-md border px-4 py-5 text-left font-semibold whitespace-nowrap"
+                    className="bg-secondary text-md border px-4 py-4 text-left font-semibold whitespace-nowrap"
                   >
                     {item}
                   </th>

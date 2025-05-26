@@ -186,20 +186,20 @@ const TeamPerformance = () => {
       </div>
 
       <div className="border-accent/30 mt-12 border-b-1 pb-12">
-        <table className="w-full min-w-[1000px] text-left">
+        <table className="border-border-color w-full min-w-[1000px] border-2 text-left text-white">
           <thead>
-            <tr className="bg-secondary border-border-color border-2 text-white">
+            <tr className="bg-secondary text-left text-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
-                  className={`border-border-color border px-4 py-4 ${i === 0 ? "border-x" : ""}`}
+                  className={`border border-white px-4 py-4 ${i === 0 ? "border-x" : ""}`}
                 >
                   {head}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="border-border-color border-2">
+          <tbody className="border-border-color border">
             {filteredTableData.length > 0 ? (
               filteredTableData.map((row, i) => (
                 <tr
@@ -222,7 +222,7 @@ const TeamPerformance = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="py-4 text-center text-white">
+                <td colSpan={4} className="py-4 text-center text-red-500">
                   No data found.
                 </td>
               </tr>
