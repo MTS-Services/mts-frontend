@@ -133,7 +133,7 @@ const TeamPerformance = () => {
           );
           if (!monthData) return [];
 
-          return monthData.weeklyBreakdown.map((week) => ({
+          return (monthData.weeklyBreakdown || []).map((week) => ({
             week: week.week,
             target: week.target || 0,
             achieved: week.achieved || 0,
@@ -238,7 +238,7 @@ const TeamPerformance = () => {
             <MtsBarChar barData={revenueData} />
           </div>
           <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-            <MtsLineChart lineData={weeklyAchievementBreakdown} />
+            <MtsLineChart lineData={weeklyAchievementBreakdown || []} />
           </div>
         </div>
       </section>

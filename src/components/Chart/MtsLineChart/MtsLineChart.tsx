@@ -1,10 +1,13 @@
 import { ResponsiveLine } from "@nivo/line";
 
 const MtsLineChart = ({ data }) => {
+  // data যদি undefined/null হয়, তাহলে খালি array পাঠাও
+  const safeData = data || [];
+
   return (
     <div style={{ height: "450px", background: "transparent" }}>
       <ResponsiveLine
-        data={data}
+        data={safeData}
         margin={{ top: 40, right: 30, bottom: 70, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{
@@ -19,7 +22,7 @@ const MtsLineChart = ({ data }) => {
         axisBottom={{
           tickSize: 5,
           tickPadding: 5,
-          tickRotation: -45, // ⬅️ Rotates the date labels
+          tickRotation: -45,
           legend: "Date",
           legendOffset: 50,
           legendPosition: "middle",
