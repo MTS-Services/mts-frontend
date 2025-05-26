@@ -37,14 +37,6 @@ export const SocketProvider = ({ children }) => {
 
   const socket = socketRef.current;
 
-  // if (!socket || !isReady) {
-  //   return (
-  //     <div className="p-6 text-center text-sm text-gray-500">
-  //       🔄 Connecting to socket...
-  //     </div>
-  //   );
-  // }
-
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
