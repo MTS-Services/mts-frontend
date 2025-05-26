@@ -1,203 +1,197 @@
-import { useState } from "react";
-import { MdInfoOutline } from "react-icons/md";
+import { useEffect, useState } from "react";
+import DisplayCard from "../../../components/DisplayCard/DisplayCard";
+import CustomDropDown from "./CustomDropDown";
 import Distribution from "../../../pages/Distribution/Distribution";
+import { TbTargetArrow } from "react-icons/tb";
+import { GrAchievement } from "react-icons/gr";
+import { PiPlusMinusDuotone } from "react-icons/pi";
+import Cookies from "js-cookie";
 
 const Performance = () => {
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedQuater, setSelectedQuater] = useState("");
-  const [tableData, setTableData] = useState([]);
+  const [selectedQuarter, setSelectedQuarter] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [data, setData] = useState(null);
 
-  const lastQuarter = [
-    { title: "Individual target", amount: "$3000", note: "mr" },
-    { title: "Achieve", amount: "$2000", note: "mr" },
-    { title: "+/-", amount: "2", note: "mr" },
+  const quarterOptions = [
+    { label: "January-March", value: 1 },
+    { label: "April-June", value: 2 },
+    { label: "July-September", value: 3 },
+    { label: "October-December", value: 4 },
   ];
 
-  const currentMonth = [
-    { title: "Worked Amount", amount: "$3000", note: "mr" },
-    { title: "Worked Projects", amount: "$3000", note: "mr" },
-    { title: "Target", amount: "$3000", note: "mr" },
-    { title: "Achieve", amount: "$2000", note: "mr" },
+  const quarters = {
+    1: ["January", "February", "March"],
+    2: ["April", "May", "June"],
+    3: ["July", "August", "September"],
+    4: ["October", "November", "December"],
+  };
+
+  const getCurrentQuarter = () => Math.floor(new Date().getMonth() / 3) + 1;
+  const getCurrentYear = () => new Date().getFullYear();
+  const token = Cookies.get("core");
+
+  useEffect(() => {
+    if (!selectedQuarter) {
+      setData(null);
+      setSelectedMonth(null);
+      return;
+    }
+
+    // কোয়ার্টার সিলেক্ট হলে ঐ কোয়ার্টারের প্রথম মাস সিলেক্ট করা
+    const monthsForQuarter = quarters[selectedQuarter];
+    setSelectedMonth(monthsForQuarter ? monthsForQuarter[0] : null);
+
+    const fetchPerformance = async () => {
+      const year = getCurrentYear();
+      try {
+        const res = await fetch(
+          `https://mtsbackend20-production.up.railway.app/api/profile/quarterly-performance?quarter=${selectedQuarter}&year=${year}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setData(null);
+      }
+    };
+
+    fetchPerformance();
+  }, [selectedQuarter, token]);
+
+  const teamCards = [
+    {
+      title: "Target",
+      amount: data?.teamQuarterlyPerformance?.target || 0,
+      icon: TbTargetArrow,
+      message: "Team target for this quarter",
+    },
+    {
+      title: "Achieve",
+      amount: data?.teamQuarterlyPerformance?.achieved || 0,
+      icon: GrAchievement,
+      message: "Team achieved amount",
+    },
+    {
+      title: "+/-",
+      amount: data?.teamQuarterlyPerformance?.difference || 0,
+      icon: PiPlusMinusDuotone,
+      message: "Difference between target and achieved",
+    },
   ];
 
-  const tableHeaders = [
-    "Client Name",
-    "Project Price",
-    "Achive price",
-    "Leader comment",
-    "Your comments",
-  ];
+  // কোয়ার্টার অনুযায়ী মাস গুলো
+  const quarterMonths = selectedQuarter ? quarters[selectedQuarter] : [];
 
-  const monthName = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const quarterName = [
-    "1st January to 31st March",
-    "1st April to 30th June",
-    "1st July to 30th September",
-    "1st October to 31st December",
-  ];
+  // সদস্যদের ডাটা ফিল্টারিং (সিলেক্টেড মাস অনুযায়ী)
+  const memberMonthly = data?.teamMembersQuarterly?.map((member) => {
+    const monthData = member.monthlyBreakdown.find(
+      (m) => m.month === selectedMonth,
+    );
+    return {
+      name: member.team_member_name,
+      target: monthData?.target || 0,
+      achieved: monthData?.achieved || 0,
+      difference: monthData?.difference || 0,
+    };
+  });
 
   return (
-    <div className="bg-background min-h-screen w-full overflow-x-auto px-6 py-10 sm:px-4 md:px-10">
-      <div>
-        <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="my-5 text-4xl text-white">Last Quarter</h2>
-          <select
-            className="bg-background rounded px-4 py-1 text-white outline-none"
-            value={selectedQuater}
-            onChange={(e) => setSelectedQuater(e.target.value)}
-          >
-            {quarterName.map((quarter) => (
-              <option key={quarter} value={quarter}>
-                {quarter}
-              </option>
-            ))}
-          </select>
+    <div className="font-secondary w-full p-4">
+      <div className="mb-12">
+        <div className="mb-4 flex items-center gap-4">
+          <h2 className="text-accent text-4xl font-semibold">
+            Current Quarter
+          </h2>
+          <CustomDropDown
+            options={quarterOptions}
+            value={
+              quarterOptions.find((q) => q.value === selectedQuarter) || null
+            }
+            onChange={(selected) => setSelectedQuarter(selected?.value || null)}
+            placeholder="Select Quarter"
+          />
         </div>
 
-        <div className="flex flex-wrap items-start gap-2">
-          {lastQuarter.map(({ title, amount, note }, idx) => (
-            <div
+        <div className="flex flex-wrap gap-5 border-b pb-12">
+          {teamCards.map((card, idx) => (
+            <DisplayCard
               key={idx}
-              className="bg-primary relative w-full rounded-sm p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
-            >
-              <h2 className="text-sm md:text-xl">{title}</h2>
-              <h2 className="text-sm md:text-xl">{amount}</h2>
-              {note && (
-                <div className="group absolute top-2 right-2">
-                  <MdInfoOutline className="text-xl" />
-                  <div className="pointer-events-none absolute top-6 right-0 z-10 w-40 rounded bg-black p-2 text-xs text-white opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
-                    {note}
-                  </div>
-                </div>
-              )}
-            </div>
+              title={card.title}
+              amount={card.amount}
+              icon={card.icon}
+              message={card.message}
+              width="min-w-[260px]"
+            />
           ))}
         </div>
       </div>
 
-      <div>
-        <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="text-4xl text-white">Current Month</h2>
-          <select
-            className="bg-background rounded px-4 py-1 text-white outline-none"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {monthName.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
+      <div className="my-12">
+        <div className="mb-4 flex items-center gap-4">
+          <h2 className="text-accent text-4xl font-semibold">
+            Quater Base Member Performance
+          </h2>
+          <CustomDropDown
+            options={quarterMonths.map((m) => ({ label: m, value: m }))}
+            value={
+              selectedMonth
+                ? { label: selectedMonth, value: selectedMonth }
+                : null
+            }
+            onChange={(selected) => setSelectedMonth(selected?.value || null)}
+            placeholder="Select Month"
+            isDisabled={!selectedQuarter}
+          />
         </div>
 
-        <div className="flex flex-wrap items-start gap-2">
-          {currentMonth.map(({ title, amount, note }, idx) => (
-            <div
-              key={idx}
-              className="bg-primary relative w-full rounded-sm p-4 text-white md:w-[30%] lg:h-28 lg:w-[20%] xl:w-[14%]"
-            >
-              <h2 className="text-sm md:text-xl">{title}</h2>
-              <h2 className="text-sm md:text-xl">{amount}</h2>
-              {note && (
-                <div className="group absolute top-2 right-2">
-                  <MdInfoOutline className="text-xl" />
-                  <div className="pointer-events-none absolute top-6 right-0 z-10 w-40 rounded bg-black p-2 text-xs text-white opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100">
-                    {note}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <div className="mt-14 mb-5 flex items-center gap-4">
-          <h2 className="mb-5 text-4xl text-white">Monthly Destribution</h2>
-          <select
-            className="bg-background rounded px-4 py-1 text-white outline-none"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {monthName.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-        <Distribution />
-        <div className="mt-10 overflow-x-auto">
-          <table className="w-full min-w-[1000px] text-left">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1000px] border border-white text-white">
             <thead>
-              <tr className="bg-secondary border border-white text-[16px] text-white">
-                {tableHeaders.map((head, i) => (
-                  <th
-                    key={head}
-                    className={`border border-white px-2 py-3 ${
-                      i === 0 ? "border-x" : ""
-                    }`}
-                  >
-                    {head}
-                  </th>
-                ))}
+              <tr className="bg-secondary text-left text-white">
+                <th className="border border-white px-4 py-3">Member Name</th>
+                <th className="border border-white px-4 py-3">Target</th>
+                <th className="border border-white px-4 py-3">Achieve price</th>
+                <th className="border border-white px-4 py-3">+/-</th>
               </tr>
             </thead>
-
-            <tbody className="border-2 border-white">
-              {tableData.length > 0 ? (
-                tableData.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 transform text-sm text-white transition-all duration-300 ease-in-out"
-                  >
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row.clientName}
-                    </td>
-
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row?.after_fiverr_amount}
-                    </td>
-
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      {row?.status}
-                    </td>
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      ${Number(row?.after_fiverr_amount || 0).toFixed(2)}
-                    </td>
-                    <td className="border-secondary font-primary border-r px-2 py-3 font-normal">
-                      ${Number(row?.bonus || 0).toFixed(2)}
-                    </td>
-                  </tr>
-                ))
-              ) : (
+            <tbody>
+              {memberMonthly?.map((row, idx) => (
+                <tr
+                  key={idx}
+                  className={`border border-white ${
+                    idx % 2 === 0 ? "bg-primary/70" : "bg-primary"
+                  }`}
+                >
+                  <td className="px-4 py-2">{row.name}</td>
+                  <td className="px-4 py-2">$ {row.target}</td>
+                  <td className="px-4 py-2">$ {row.achieved}</td>
+                  <td className="px-4 py-2">$ {row.difference}</td>
+                </tr>
+              ))}
+              {!memberMonthly?.length && (
                 <tr>
-                  <td
-                    colSpan={tableHeaders.length}
-                    className="py-4 text-center"
-                  >
-                    No projects found.
+                  <td colSpan={4} className="py-4 text-center">
+                    No data found.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mt-12">
+        <h2 className="text-accent mb-4 text-4xl font-semibold">
+          Monthly Distribution
+        </h2>
+        <Distribution />
       </div>
     </div>
   );
