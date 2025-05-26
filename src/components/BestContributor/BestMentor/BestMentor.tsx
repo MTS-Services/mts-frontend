@@ -5,7 +5,7 @@ const contributors = [
   {
     name: "Toufiq Ahmed",
     position: "Manager,Sales & Business Development",
-    image: "public/developer zoon/Toufiq.jpg",
+    image: "/developer zoon/Toufiq.jpg",
     award_position: "Leadership Recognition",
     trophies: 3, // Number of trophies for this contributor
   },
@@ -14,7 +14,7 @@ const contributors = [
     position: "Manager, HR & Admin",
     award_position: "Workplace Happiness Ambassador",
     achievementAmount: "$4800",
-    image: "public/developer zoon/ma m.jpg",
+    image: "/developer zoon/ma m.jpg",
     trophies: 3, // Number of trophies for this contributor
   },
   {
@@ -23,7 +23,7 @@ const contributors = [
     team: "Joni Team",
     award_position: "Best Mentor",
     achievementAmount: "$4800",
-    image: "public/developer zoon/joni.jpg",
+    image: "/developer zoon/joni.jpg",
     trophies: 3, // Number of trophies for this contributor
   },
 
@@ -33,7 +33,7 @@ const contributors = [
     team: "Joni Team",
     award_position: "Creative Talent",
     achievementAmount: "$4800",
-    image: "public/developer zoon/Omor.jpg",
+    image: "/developer zoon/Omor.jpg",
     trophies: 3, // Number of trophies for this contributor
   },
 ];

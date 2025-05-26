@@ -3,7 +3,7 @@ import { FaHandHoldingDollar } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
 import { TbDevicesCancel, TbPointerDollar, TbUserDollar } from "react-icons/tb";
 
-import MtsBarChar from "../../../components/Chart/MtsBarChart/MtsBarChart";
+import MtsBarChart from "../../../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../../../components/Chart/MtsLineChart/MtsLineChart";
 import MtsPIChart from "../../../components/Chart/MtsPIChart/MtsPIChart";
 import MtsProgressBar from "../../../components/Chart/MtsProgressBar/MtsProgressBar";
@@ -98,7 +98,7 @@ function OverView() {
     },
   ];
 
-  console.log("📊 Fetched data:", data);
+  console.log("br", barChartCardData);
 
   return (
     <section className="pr-5">
@@ -118,7 +118,15 @@ function OverView() {
       {/* Charts Row 1 */}
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
         <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-          <MtsBarChar barData={barChartCardData} />
+          <MtsBarChart
+            data={barChartCardData}
+            keys={["target", "earned"]}
+            indexBy="memberName"
+            legendKeys={[
+              { key: "target", label: "Target", color: "#66c2a5" },
+              { key: "achieved", label: "Achieved", color: "#fc8d62" },
+            ]}
+          />
         </div>
         <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
           <MtsPIChart PiData={chartData} />

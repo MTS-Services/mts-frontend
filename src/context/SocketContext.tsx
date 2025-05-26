@@ -1,57 +1,41 @@
-import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
-// Context
 const SocketContext = createContext(null);
 
-// Custom hook
 export const useSocket = () => useContext(SocketContext);
 
-// Provider
 export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
-  const [connected, setConnected] = useState(false);
+  const socketRef = useRef(null); // ✅ Always single instance
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const token = Cookies.get("core");
+    // Prevent reinitializing
+    if (socketRef.current) return;
 
-    if (!token) {
-      console.warn("❌ No token found in cookies. Socket not initialized.");
-      return;
-    }
-
-    // Prevent multiple connections
-    if (socket) return;
-
-    const socketIo = io("https://mtsbackend20-production.up.railway.app/", {
-      auth: { token },
+    const socket = io("https://mtsbackend20-production.up.railway.app/", {
       transports: ["websocket"],
     });
 
-    socketIo.on("connect", () => {
-      console.log("✅ Socket connected:", socketIo.id);
-      setConnected(true);
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("✅ Socket connected:", socket.id);
+      setIsReady(true);
     });
 
-    socketIo.on("disconnect", () => {
+    socket.on("disconnect", () => {
       console.log("❌ Socket disconnected");
-      setConnected(false);
+      setIsReady(false);
     });
-
-    setSocket(socketIo);
 
     return () => {
-      socketIo.disconnect();
-      setSocket(null);
-      setConnected(false);
+      socket.disconnect();
+      socketRef.current = null;
     };
-  }, [Cookies.get("core")]); // depend on token changes
+  }, []);
 
-  // Optional: Show loader until socket ready
-  if (!socket || !connected) {
-    return <div className="p-4 text-center">🔄 Connecting to server...</div>;
-  }
+  const socket = socketRef.current;
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

@@ -7,7 +7,7 @@ const punctualityAwards = [
   {
     name: "Fatema akter ",
     position: "WEB DEVELOPER",
-    image: "public/developer zoon/fatema.JPG",
+    image: "/developer zoon/fatema.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
@@ -16,21 +16,14 @@ const punctualityAwards = [
   {
     name: "Md asif",
     position: "ACCOUNT MANAGER, SALES",
-    image: "public/developer zoon/asif.JPG",
+    image: "/developer zoon/asif.JPG",
     award: "Punctuality",
     bio: "Jane is a creative mind and an expert in designing intuitive interfaces.",
     experience: "4 years"
   },
 
 
-  {
-    name: "AFSANA AKTER NIPA",
-    position: "Jr. Web Developer",
-    image: "/developer zoon/ranar-bou.jpg",
-    award: "Punctuality",
-    bio: "Alex is known for delivering projects on time with great leadership skills.",
-    experience: "6 years"
-  }
+ 
 ];
 
 const TopPerformer = () => {
@@ -65,8 +58,8 @@ top performer
           alt={`Member ${index + 1}`}
           className="w-full h-full p-2 mb-4 rounded-full border-4 border-primary object-cover shadow-box-style"
         />
-        <h4 className="text-[24px] font-semibold mb-2 font-primary text-primary text-shadow-md transform transition-all duration-300">{member.name}</h4>
-        <p className="text-lg font-medium text-accent font-primary">{member.position}</p>
+        <h4 className="text-[24px] font-semibold mb-2 font-primary text-white text-shadow-md transform transition-all duration-300">{member.name}</h4>
+        <p className="text-lg font-medium text-white font-primary">{member.position}</p>
       </div>
     </div>
   ))}

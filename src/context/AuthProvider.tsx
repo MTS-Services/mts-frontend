@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   createUserWithEmailAndPassword,
@@ -9,10 +10,10 @@ import {
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import app from "../firebase/firebase.config";
-
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
 
+// ✅ Define role groups
 const roleBaseOne = [
   "operation_member",
   "operation_leader",
@@ -60,9 +61,12 @@ const roleBaseHOD = [
 ];
 
 const AuthProvider = ({ children }) => {
+  const queryClient = useQueryClient();
+
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [dbUser, setDbUser] = useState(null);
+
   const [roleBasePermissionOne, setRoleBasePermissionOne] = useState(null);
   const [roleBasePermissionTwo, setRoleBasePermissionTwo] = useState(null);
   const [roleBasePermissionThree, setRoleBasePermissionThree] = useState(null);
@@ -75,6 +79,7 @@ const AuthProvider = ({ children }) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  // 🔐 Auth methods
   const createUser = (email, password) => {
     setIsLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
@@ -88,15 +93,16 @@ const AuthProvider = ({ children }) => {
   const logOutUser = () => {
     setIsLoading(true);
     Cookies.remove("core");
+    queryClient.clear();
     setRole(null);
     return signOut(auth);
   };
 
+  // 🔄 onAuthStateChanged listener
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        console.log("User: ", currentUser);
         const userInfo = { email: currentUser.email };
 
         try {
@@ -105,41 +111,41 @@ const AuthProvider = ({ children }) => {
             userInfo,
           );
 
-          if (res.data.token) {
-            Cookies.set("core", res.data.token, { expires: 1 });
-            setRole(res.data?.teamMember?.role);
-            setDbUser(res.data?.teamMember);
+          const token = res.data?.token;
+          const teamMember = res.data?.teamMember;
 
-            setRoleBasePermissionOne(
-              roleBaseOne.includes(res.data?.teamMember?.role),
-            );
+          if (token && teamMember) {
+            Cookies.set("core", token, { expires: 1 });
+            setRole(teamMember.role);
+            setDbUser(teamMember);
 
-            setRoleBasePermissionThree(
-              roleBaseThree.includes(res.data?.teamMember?.role),
-            );
-            setRoleBasePermissionTwo(
-              roleBaseTwo.includes(res.data?.teamMember?.role),
-            );
+            setRoleBasePermissionOne(roleBaseOne.includes(teamMember.role));
+            setRoleBasePermissionTwo(roleBaseTwo.includes(teamMember.role));
+            setRoleBasePermissionThree(roleBaseThree.includes(teamMember.role));
             setOperationMemberPermission(
-              roleBaseOperationMember.includes(res.data?.teamMember?.role),
+              roleBaseOperationMember.includes(teamMember.role),
             );
             setSalesMemberPermission(
-              roleBaseSalesMember.includes(res.data?.teamMember?.role),
+              roleBaseSalesMember.includes(teamMember.role),
             );
             setBusinessDevelopmentPermission(
-              roleBaseBusinessDevelopment.includes(res.data?.teamMember?.role),
+              roleBaseBusinessDevelopment.includes(teamMember.role),
             );
-            setHodPermission(roleBaseHOD.includes(res.data?.teamMember?.role));
+            setHodPermission(roleBaseHOD.includes(teamMember.role));
           } else {
-            setRole(null);
-            Cookies.remove("core");
+            console.warn("⚠️ Login succeeded, but token or role missing.");
           }
         } catch (error) {
-          setRole(null);
-          Cookies.remove("core");
-          console.error("Login fetch failed:", error);
+          const status = error?.response?.status;
+          console.error("❌ Login fetch failed:", error);
+
+          if (status === 401 || status === 403) {
+            Cookies.remove("core");
+            setRole(null);
+          }
         }
       } else {
+        // ❌ User not logged in
         setUser(null);
         setRole(null);
         Cookies.remove("core");
@@ -151,15 +157,16 @@ const AuthProvider = ({ children }) => {
     return () => unSubscribe();
   }, []);
 
+  // ✅ Context value
   const authInfo = {
     user,
     role,
-    setIsLoading,
+    dbUser,
     isLoading,
+    setIsLoading,
     createUser,
     signInUser,
     logOutUser,
-    dbUser,
     roleBasePermissionOne,
     roleBasePermissionTwo,
     roleBasePermissionThree,

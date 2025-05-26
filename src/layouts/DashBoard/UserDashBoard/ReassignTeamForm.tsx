@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PrimaryButton from "../../../components/Button/PrimaryButton";
 import CustomSelect from "./CustomSelect";
+import { toast } from "react-toastify";
 
 const ReassignTeamForm = ({
   data,
@@ -12,8 +13,9 @@ const ReassignTeamForm = ({
   const [selectedProject, setSelectedProject] = useState(null);
   const [assignedList, setAssignedList] = useState([]);
   const [reassignList, setReassignList] = useState([]);
+  const [removedIds, setRemovedIds] = useState([]); // NEW ✅
 
-  // ✅ Load assigned members (email based)
+  // ✅ Load assigned members on project select
   useEffect(() => {
     if (!selectedProject) {
       setAssignedList([]);
@@ -46,14 +48,35 @@ const ReassignTeamForm = ({
 
     setAssignedList(unique);
     setReassignList([]);
-  }, [selectedProject]);
+    setRemovedIds([]); // clear old removed IDs
+  }, [selectedProject, tasks]);
 
-  // ✅ Remove assigned member from UI
-  const handleRemoveAssigned = (id) => {
-    setAssignedList((prev) => prev.filter((m) => m.id !== id));
+  // ✅ Track removed members and update assigned list
+  const handleAssignedChange = (selectedOptions) => {
+    const updated = selectedOptions.map((opt) => ({
+      id: opt.value,
+      first_name: opt.label,
+    }));
+
+    const removed = assignedList.filter(
+      (old) => !updated.find((u) => u.id === old.id),
+    );
+    setRemovedIds(removed.map((r) => r.id));
+    setAssignedList(updated);
   };
 
-  // ✅ Get available members (not assigned)
+  // ✅ Build old → new reassignment map
+  const handleReassignSelect = (selected) => {
+    const selectedIds = selected.map((opt) => parseInt(opt.value));
+
+    const updated = selectedIds.map((newId, index) => ({
+      old_member_id: removedIds[index],
+      new_member_id: newId,
+    }));
+
+    setReassignList(updated);
+  };
+
   const getUnassignedTeamMembers = () => {
     const assignedIds = new Set(assignedList.map((m) => m.id));
     return teamMembers
@@ -64,24 +87,14 @@ const ReassignTeamForm = ({
       }));
   };
 
-  // ✅ Handle selection
-  const handleReassignSelect = (selected) => {
-    const selectedIds = selected.map((opt) => parseInt(opt.value));
-    const updated = selectedIds.map((newId, index) => ({
-      old_member_id: assignedList[index]?.id,
-      new_member_id: newId,
-    }));
-    setReassignList(updated);
-  };
-
-  // ✅ Submit reassignment
+  // ✅ Submit reassignment (backend update)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let result = { message: "" };
     for (const item of reassignList) {
       if (!item.old_member_id || !item.new_member_id) continue;
-      console.log(`Reassigning ${item.old_member_id} to ${item.new_member_id}`);
       try {
-        await fetch(
+        const response = await fetch(
           "https://mtsbackend20-production.up.railway.app/api/today-task/replace",
           {
             method: "POST",
@@ -96,19 +109,21 @@ const ReassignTeamForm = ({
             }),
           },
         );
-      } catch (err) {
-        console.error("❌ Failed:", err);
+        result = await response.json();
+      } catch (error) {
+        console.error("Failed to Reassigned", error);
+        toast.error("Failed to Reassigned");
       }
     }
 
-    alert("✅ Reassigned successfully!");
+    toast.success(result.message || "Team Members Reassigned Successfully!");
     setSelectedProject(null);
     setAssignedList([]);
     setReassignList([]);
+    setRemovedIds([]);
     refreshTasks();
   };
 
-  // ✅ Project dropdown
   const projectOptions = data.map((item) => ({
     value: item.project_id,
     label: `${item.project_id} - ${item.client_name}`,
@@ -119,7 +134,8 @@ const ReassignTeamForm = ({
       <h1 className="text-accent mb-4 text-4xl font-semibold">
         Reassign Team Members
       </h1>
-      {/*  Project Select */}
+
+      {/* Project Select */}
       <label className="text-accent mb-2 block text-lg font-medium">
         Select Project
       </label>
@@ -139,7 +155,8 @@ const ReassignTeamForm = ({
         }}
         placeholder="Search and select a project..."
       />
-      {/*  Assigned Members -  */}
+
+      {/* Assigned Members */}
       {selectedProject && (
         <div className="mt-5">
           <label className="text-accent mb-2 block text-lg font-medium">
@@ -155,13 +172,7 @@ const ReassignTeamForm = ({
               value: m.id,
               label: m.first_name,
             }))}
-            onChange={(selectedOptions) => {
-              const updated = selectedOptions.map((opt) => ({
-                id: opt.value,
-                first_name: opt.label,
-              }));
-              setAssignedList(updated);
-            }}
+            onChange={handleAssignedChange}
             placeholder={
               assignedList.length > 0
                 ? "Assigned team members"
@@ -170,7 +181,8 @@ const ReassignTeamForm = ({
           />
         </div>
       )}
-      {/*  Reassigned Team Members */}
+
+      {/* Reassigned Team Members */}
       {selectedProject && (
         <div className="mt-6">
           <label className="text-accent mb-2 block text-lg font-medium">
@@ -184,6 +196,7 @@ const ReassignTeamForm = ({
           />
         </div>
       )}
+
       {/* Submit Button */}
       {selectedProject && (
         <div className="mt-4 flex items-start">

@@ -1,60 +1,328 @@
-import Tippy from "@tippyjs/react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "tippy.js/dist/tippy.css";
-import Loading from "../../../components/Loading/Loading";
-import { useFetchData } from "../../../hooks/useFetchData";
-const ProjectsDetail = () => {
-  const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(null);
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthProvider";
 
-  const { data, loading: fetchLoading } = useFetchData(
-    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`,
+import { FaStar } from "react-icons/fa";
+import "react-toastify/dist/ReactToastify.css";
+
+// Interface Definitions
+interface Department {
+  id: number;
+  department_name: string;
+  created_date: string;
+  department_target: number | null;
+}
+
+interface Team {
+  team_name?: string;
+}
+
+interface Project {
+  id: number;
+  created_date: string;
+  profile_name: string;
+  order_amount: number | null;
+  bonus_amount: number | null;
+  order_count: number | null;
+  rank: number | null;
+  cancel_count: number | null;
+  complete_count: number | null;
+  no_rating: number | null;
+  profile_target: number | null;
+  department_id: number | null;
+  repeat_order: number | null;
+  total_rating: number | null;
+  project_name: string;
+  revision: number | null;
+  order_id: string;
+  sheet_link: string;
+  bonus: number | null;
+  rating: number | null;
+  date: string;
+  ops_status: string;
+  deli_last_date: string;
+  after_fiverr_amount: number | null;
+  after_Fiverr_bonus: number | null;
+  project_requirements: string | number;
+  client_login_info_link: string | null;
+  client_login_info_username: string | null;
+  client_login_info_password: string | null;
+  user_login_info_link: string | null;
+  user_login_info_username: string | null;
+  user_login_info_password: string | null;
+  cpanel_link: string | null;
+  cpanel_username: string | null;
+  cpanel_password: string | null;
+  branch: string | null;
+  department?: Department[];
+  team?: Team;
+}
+
+// Info Component (Memoized for performance)
+const Info = React.memo(({ label, field, value, source, editable = false, onChange }: {
+  label?: string;
+  field: string;
+  value: any;
+  source: string;
+  editable?: boolean;
+  onChange: (field: string, value: string | number, source: string) => void;
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Effect to focus input when it becomes editable
+  useEffect(() => {
+    if (editable && inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select(); // Selects all text for easy editing
+    }
+  }, [editable, field]); // Dependency on 'field' to re-focus if field changes
+
+  let content;
+  let inputType = "text";
+
+  // Determine input type based on field name
+  if (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision")) {
+    inputType = "number";
+  } else if (field.includes("date")) {
+    inputType = "date";
+  }
+
+  if (editable) {
+    // Render an input field when editable
+    content = (
+      <input
+        ref={inputRef}
+        type={inputType}
+        value={value ?? ""} // Use nullish coalescing for empty string if value is null/undefined
+        step={field === "rating" ? "0.1" : (inputType === "number" ? "1" : undefined)} // Step for rating (0.1) or other numbers (1)
+        min={field === "rating" ? "0" : undefined}
+        max={field === "rating" ? "5" : undefined}
+        onChange={(e) => onChange(field, e.target.value, source)}
+        className="font-secondary text-accent w-full rounded border p-2 sm:w-auto"
+      />
+    );
+  } else if (field.includes("_link") && value) {
+    // Render a clickable link for fields ending with '_link'
+    // Ensure the URL has a protocol (http/https) for proper linking
+    const formattedValue = (value.startsWith('http://') || value.startsWith('https://')) ? value : `http://${value}`;
+    
+    content = (
+      <a 
+        href={formattedValue} // Use the formatted value for the href
+        target="_blank" // Open in a new tab
+        rel="noopener noreferrer" // Security best practice for target="_blank"
+        title={value} // Show full URL on hover
+        className="font-secondary break-words text-blue-500 underline cursor-pointer"
+      >
+        {value.length > 30 ? `${value.substring(0, 30)}...` : value} {/* Truncate long URLs */}
+      </a>
+    );
+  } else if (field === "project_requirements" && value) {
+    // Special handling for project_requirements (truncation only)
+    content = (
+      <span title={value} className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
+        {value.length > 30 ? `${value.substring(0, 30)}...` : value}
+      </span>
+    );
+  } else {
+    // Default display for non-editable, non-link fields
+    content = (
+      <span title={value || "-"} className="text-accent font-secondary text-base break-words">
+        {value && value.length > 30 ? `${value.substring(0, 30)}...` : value || "-"}
+      </span>
+    );
+  }
+
+  return (
+    <div className="border-accent/40 mb-2 flex flex-wrap items-center gap-x-2 border-b pb-2">
+      {label && (
+        <strong className="text-accent font-secondary text-base whitespace-nowrap">
+          {label}:
+        </strong>
+      )}
+      {content}
+    </div>
+  );
+});
+
+// Loading Component
+const LoadingComponent = () => (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <p className="ml-4 text-gray-500">Loading...</p>
+    </div>
+);
+
+// Custom Hook for Data Fetching with react-query
+export function useFetchData(url: string, method = "GET", body: object | null = null, options = {}) {
+  const { isLoading: authLoading } = useContext(AuthContext);
+  const token = Cookies.get("core");
+
+  const isTokenAvailable = !!token && !authLoading;
+
+  const fetchData = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+
+    try {
+      const response = await axios(url, {
+        method,
+        headers,
+        ...(body && { data: body }),
+      });
+
+      return response.data;
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message || "Something went wrong";
+
+      if (status === 401 || status === 403) {
+        toast.warning(
+          "⚠️ Session expired or unauthorized. Please login again.",
+        );
+      } else if (status === 404) {
+        toast.info("Project not found or an error occurred while fetching.");
+        return { project: null }; // Return null project for 404 to indicate not found, but don't re-throw as an error for useQuery
+      } else {
+        toast.error(message);
+      }
+      
+      // Re-throw the error so react-query can catch it and set the query state to 'error'
+      // This is crucial for proper error handling with react-query's `error` property.
+      throw new Error(message); 
+    }
+  };
+
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [url, method, body], // Unique key for the query
+    queryFn: fetchData, // Function to fetch data
+    enabled: isTokenAvailable, // Only fetch if token is available
+    refetchOnWindowFocus: false, // Prevent refetching on window focus
+    retry: false, // Disable automatic retries on query failure
+    ...options, // Allow overriding default options
+  });
+
+  return {
+    data,
+    loading,
+    error: error?.message || null,
+    refetch,
+  };
+}
+
+// ProjectsDetail Component
+const ProjectsDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const [user, setUser] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(false); // For local loading states (save operations)
+  
+  // Use useFetchData hook to fetch project data
+  const { data: fetchedData, loading: fetchLoading, refetch: refetchProject } = useFetchData(
+    `https://mtsbackend20-production.up.railway.app/api/project/getall/${id}`
   );
 
+  // State to manage which section is actively being edited
+  const [activeEditSection, setActiveEditSection] = useState<'main' | 'client' | 'user' | 'cpanel' | null>(null);
+
+  // State to hold the edited data (a copy of 'user' data for editing)
+  const [editedUser, setEditedUser] = useState<Project | null>(null);
+
+  // Define editable fields for login sections
+  const loginEditableFields = {
+    client: ["client_login_info_link", "client_login_info_username", "client_login_info_password"],
+    user: ["user_login_info_link", "user_login_info_username", "user_login_info_password"],
+    cpanel: ["cpanel_link", "cpanel_username", "cpanel_password"],
+  };
+
+  // Initialize user and editedUser states when data is fetched
   useEffect(() => {
-    if (data?.project) {
-      const fixedData = {
-        ...data.project,
-        rating: parseFloat(parseFloat(data.project.rating ?? 0).toFixed(1)),
+    if (fetchedData?.project) {
+      const fixedData: Project = {
+        ...fetchedData.project,
+        rating: parseFloat(parseFloat(fetchedData.project.rating ?? 0).toFixed(1)),
+        project_requirements: fetchedData.project.project_requirements ?? ""
       };
       setUser(fixedData);
       setEditedUser(fixedData);
+    } else if (fetchedData && fetchedData.project === null) { 
+        setUser(null);
+        setEditedUser(null);
+        // Toast for "Project not found" is already handled in useFetchData for 404.
     }
-  }, [data]);
+  }, [fetchedData]);
 
-  const handleInputChange = (field, value, source) => {
-    if (!editedUser || source !== "user") return;
-    const parsedValue =
-      field === "rating" ? Math.min(5, parseFloat(value || 0)) : value;
+  // Callback for handling input changes in editable fields
+  const handleInputChange = useCallback((field: keyof Project | keyof Department | keyof Team, value: string | number, source: string) => {
+    setEditedUser((prev) => {
+      if (!prev) {
+        return null;
+      }
 
-    setEditedUser((prev) => ({
-      ...prev,
-      [field]: parsedValue,
-    }));
-  };
+      const newEditedUser = { ...prev };
 
+      if (source === "department") {
+        if (newEditedUser.department && newEditedUser.department.length > 0) {
+          newEditedUser.department = [{ ...newEditedUser.department[0], [field]: value }];
+        } else {
+          newEditedUser.department = [{ id: 0, department_name: value as string, created_date: "", department_target: null }];
+        }
+      } else if (source === "team") {
+        newEditedUser.team = { ...newEditedUser.team, [field]: value };
+      } else {
+        if (typeof value === 'string' && (field === "rating" || field.includes("amount") || field.includes("bonus") || field.includes("revision"))) {
+            // Convert empty string to null for number fields, parse float otherwise
+            newEditedUser[field as keyof Project] = value === "" ? null : (field === "rating" ? Math.min(5, parseFloat(value || "0")) : parseFloat(value || "0"));
+        } else if (field === "project_requirements") {
+            newEditedUser[field as keyof Project] = value;
+        }
+        else {
+            newEditedUser[field as keyof Project] = value;
+        }
+      }
+      return newEditedUser;
+    });
+  }, []);
+
+  // Function to handle saving main project details
   const handleSave = async () => {
     try {
       setLoading(true);
       const token = Cookies.get("core");
-      const updatedData = {};
-      allFields.forEach(({ field, source }) => {
-        if (source === "user" && editableFields.includes(field)) {
-          updatedData[field] =
-            field === "rating"
-              ? parseFloat(parseFloat(editedUser?.[field] ?? 0).toFixed(1))
-              : editedUser?.[field];
+      const updatedData: Partial<Project> = {};
+
+      // Collect only the changed editable fields for the update payload
+      editableFields.forEach((field) => {
+        if (editedUser && Object.prototype.hasOwnProperty.call(editedUser, field)) {
+          if (field === 'department_name') {
+            if (editedUser.department?.[0]?.department_name !== user?.department?.[0]?.department_name) {
+                updatedData.department_name = editedUser.department?.[0]?.department_name;
+            }
+          } else if (field === 'team_name') {
+            if (editedUser.team?.team_name !== user?.team?.team_name) {
+                updatedData.team_name = editedUser.team?.team_name;
+            }
+          } else {
+            updatedData[field] =
+              field === "rating"
+                ? parseFloat(parseFloat(editedUser[field] as string ?? "0").toFixed(1))
+                : editedUser[field];
+          }
         }
       });
+      
+      console.log("Sending update request for main section with data:", updatedData);
       await axios.put(
         `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
         updatedData,
@@ -63,95 +331,91 @@ const ProjectsDetail = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-      setUser((prev) => ({ ...prev, ...updatedData }));
-      setIsEditing(false);
-      toast.success("Project updated successfully!");
+      refetchProject(); // Refetch data after successful update
+      setActiveEditSection(null); // Exit editing mode
+      toast.success("Project updated successfully!"); // Success toast
+      console.log("Main project updated successfully.");
     } catch (error) {
-      console.error("Update error:", error);
-      toast.error("Failed to update project. Try again.");
+      console.error("Update error for main section:", error);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Failed to update project. Try again.");
+      } else {
+        toast.error("Failed to update project. Try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // const Info = ({ label, field, value, source, editable = false, onChange }) => (
-  //   <div className="flex break-words whitespace-normal max-w-full border-b border-accent/40 pb-2 items-center mb-4">
-  //     <strong className="text-sm pr-2 break-words whitespace-normal max-w-full text-accent">{label} :</strong>
-  //     {editable ? (
-  //       <input
-  //         type={field === "rating" ? "number" : "text"}
-  //         value={value ?? ""}
-  //         step="0.1"
-  //         min="0"
-  //         max="5"
-  //         onChange={(e) => onChange(field, e.target.value, source)}
-  //         className="border p-2 rounded w-full break-words whitespace-normal max-w-full text-accent"
-  //       />
-  //     ) : (
-  //       <span className="text-accent break-words whitespace-normal max-w-full">{value ?? "-"}</span>
-  //     )}
-  //   </div>
-  // );
+  // Function to handle saving login section details (Client, User, cPanel)
+  const handleSectionSave = async (section: 'client' | 'user' | 'cpanel') => {
+    try {
+      setLoading(true);
+      const token = Cookies.get("core");
+      const updatedData: Partial<Project> = {};
 
-  const Info = ({
-    label,
-    field,
-    value,
-    source,
-    editable = false,
-    onChange,
-  }) => (
-    <div className="border-accent/40 mb-2 flex flex-wrap items-center gap-x-2 border-b pb-2">
-      <strong className="text-accent font-secondary text-base whitespace-nowrap">
-        {label}:
-      </strong>
+      // Collect relevant fields for the specific login section
+      loginEditableFields[section].forEach((field) => {
+        if (editedUser && Object.prototype.hasOwnProperty.call(editedUser, field)) {
+          updatedData[field as keyof Project] = editedUser[field as keyof Project];
+        }
+      });
 
-      {editable ? (
-        <input
-          type={field === "rating" ? "number" : "text"}
-          value={value ?? ""}
-          step="0.1"
-          min="0"
-          max="5"
-          onChange={(e) => onChange(field, e.target.value, source)}
-          className="font-secondary text-accent w-full rounded border p-2 sm:w-auto"
-        />
-      ) : field === "sheet_link" && value ? (
-        <a
-          href={value}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-secondary break-words text-blue-500 underline"
-        >
-          Click to view
-        </a>
-      ) : field === "project_requirements" && value ? (
-        <Tippy content={value} placement="bottom">
-          <span className="font-secondary text-accent max-w-[200px] cursor-pointer truncate text-base">
-            {value}
-          </span>
-        </Tippy>
-      ) : (
-        <span className="text-accent font-secondary text-base break-words">
-          {value ?? "-"}
-        </span>
-      )}
-    </div>
-  );
+      console.log(`Sending update request for ${section} section with data:`, updatedData);
+      await axios.put(
+        `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  if (fetchLoading || loading || !user) return <Loading />;
+      refetchProject(); // Refetch data after successful update
+      setActiveEditSection(null); // Exit editing mode for this section
+      toast.success(`${section === 'client' ? 'Client' : section === 'user' ? 'User' : 'cPanel'} info updated successfully!`); // Success toast
+      console.log(`${section} section updated successfully.`);
+    } catch (err) {
+      console.error(`Section Update Error for ${section}:`, err);
+      if (axios.isAxiosError(err)) {
+        toast.error(err.response?.data?.message || "Update failed!");
+      } else {
+        toast.error("Update failed!");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const editableFields = [
-    "project_name",
-    "order_id",
-    "sheet_link",
-    "order_amount",
-    "bonus",
-    "rating",
+  // Conditional rendering for loading or if project not found
+  if (fetchLoading || loading || !user) {
+    if (!fetchLoading && !loading && !user) {
+      // If fetching is complete and no user data, it means project not found.
+      // A toast.info is already shown in useFetchData for this case.
+      return (
+        <div className="flex justify-center items-center h-screen">
+          <p className="text-xl text-gray-600">Project not found or an error occurred.</p>
+        </div>
+      );
+    }
+    return <LoadingComponent />;
+  }
+
+  // Define fields that can be edited in the main 'Edit Info' section
+  const editableFields: string[] = [ 
+    "project_name", 
+    "bonus", 
+    "rating", 
+    "order_id", 
+    "sheet_link", 
+    "order_amount"
   ];
-
+  
+  // All fields definition, including their source (user, department, team)
   const allFields = [
     { label: "Project Name", field: "project_name", source: "user" },
     { label: "Total Revision", field: "revision", source: "user" },
@@ -163,118 +427,311 @@ const ProjectsDetail = () => {
     { label: "Date", field: "date", source: "user" },
     { label: "Ops Status", field: "ops_status", source: "user" },
     { label: "Delivery Last Date", field: "deli_last_date", source: "user" },
-    {
-      label: "After Fiverr Amount",
-      field: "after_fiverr_amount",
-      source: "user",
-    },
-    {
-      label: "After Fiverr Bonus",
-      field: "after_Fiverr_bonus",
-      source: "user",
-    },
-    {
-      label: "Department Name",
-      field: "department_name",
-      source: "department",
-    },
-    {
-      label: "Project Requirements",
-      field: "project_requirements",
-      source: "department",
-    },
+    { label: "After Fiverr Amount", field: "after_fiverr_amount", source: "user" },
+    { label: "After Fiverr Bonus", field: "after_Fiverr_bonus", source: "user" },
+    { label: "Department Name", field: "department_name", source: "department" },
+    { label: "Project Requirements", field: "project_requirements", source: "user" },
     { label: "Team Name", field: "team_name", source: "team" },
   ];
 
+  // Group fields for layout purposes
   const groupedFields = [
     allFields.slice(0, 5),
     allFields.slice(5, 10),
-    allFields.slice(10, 17),
+    allFields.slice(10, 15)
   ];
 
   return (
-    <section className="py-6 sm:py-8 md:py-12">
-      <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8">
-        <div className="flex flex-col flex-wrap sm:flex-row sm:items-center sm:justify-between">
-          <div className="mb-6 sm:mb-0">
-            <h2 className="font-primary text-primary py-2 text-xl font-bold sm:text-2xl md:text-3xl">
-              {user.project_name}
-            </h2>
-            <p className="text-accent font-secondary pb-2 text-sm">
-              {user.order_id}
-            </p>
+    <div className="bg-background min-h-screen">
+      {/* ToastContainer for displaying notifications */}
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+      />
 
-            {/* ✅ Partial Gradient Rating Stars */}
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, index) => {
-                const fillPercent = Math.min(
-                  100,
-                  Math.max(0, (user.rating - index) * 100),
-                );
-                return (
-                  <div key={index} className="relative h-4 w-4 text-base">
-                    <FaStar className="absolute inset-0 text-gray-300" />
-                    <FaStar
-                      className="absolute inset-0 text-yellow-400"
-                      style={{
-                        clipPath: `inset(0 ${100 - fillPercent}% 0 0)`,
-                      }}
-                    />
-                  </div>
-                );
-              })}
-              <span className="text-accent font-secondary ml-2 text-sm">
-                ({parseFloat(user.rating).toFixed(1)})
-              </span>
+      {/* Top Project Info Section */}
+      <section className="py-6 sm:py-8 md:py-12">
+        <div className="max-w-9xl bg-card shadow-primary mx-auto w-full rounded-xl p-4 shadow-md sm:p-6 md:p-8">
+          <div className="flex flex-col flex-wrap sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-6 sm:mb-0">
+              <h2 className="font-primary text-primary py-2 text-xl font-bold sm:text-2xl md:text-3xl">
+                {user.project_name}
+              </h2>
+              <p className="text-accent font-secondary pb-2 text-sm">
+                {user.order_id}
+              </p>
+
+              {/* Rating Display using FaStar icons */}
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, index) => {
+                  const currentRating = user.rating !== null && user.rating !== undefined ? user.rating : 0;
+                  const fillPercent = Math.min(100, Math.max(0, (currentRating - index) * 100));
+                  return (
+                    <div key={index} className="relative h-4 w-4 text-base">
+                      <FaStar className="absolute inset-0 text-gray-300" />
+                      <FaStar
+                        className="absolute inset-0 text-yellow-400 overflow-hidden"
+                        style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
+                      />
+                    </div>
+                  );
+                })}
+                <span className="text-accent font-secondary ml-2 text-sm">
+                  ({parseFloat(user.rating !== null && user.rating !== undefined ? user.rating.toString() : "0").toFixed(1)})
+                </span>
+              </div>
+            </div>
+
+            {/* Edit Controls for main section */}
+            <div className="flex flex-col flex-wrap items-center gap-4 sm:flex-row">
+              <button
+                onClick={() => setActiveEditSection(activeEditSection === 'main' ? null : 'main')}
+                className="px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-colors"
+              >
+                {activeEditSection === 'main' ? "Cancel" : "Edit Info"}
+              </button>
+              {activeEditSection === 'main' && (
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2 bg-green-600 text-white rounded-full font-bold hover:bg-green-700 transition-colors"
+                >
+                  Save Changes
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col flex-wrap items-center gap-4 sm:flex-row">
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="text-background bg-primary relative flex items-center overflow-hidden rounded-full px-6 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:text-white hover:shadow-lg hover:before:left-0 active:scale-90 sm:px-8 sm:text-lg md:px-10 lg:px-12"
-            >
-              {isEditing ? "Cancel" : "Edit Info"}
-            </button>
-            {isEditing && (
+          {/* Project Details Display/Edit */}
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {groupedFields.map((group, colIdx) => (
+              <div key={`group-${colIdx}`}>
+                {group.map(({ label, field, source }) => {
+                  let value;
+                  if (source === "user") {
+                    value = editedUser?.[field as keyof Project];
+                  } else if (source === "department") {
+                    value = editedUser?.department?.[0]?.[field as keyof Department];
+                  } else if (source === "team") {
+                    value = editedUser?.team?.[field as keyof Team];
+                  }
+
+                  // Determine if the current field is editable based on activeEditSection and editableFields
+                  const isFieldEditable = activeEditSection === 'main' && editableFields.includes(field);
+
+                  const infoProps = {
+                    label: label,
+                    field: field,
+                    source: source,
+                    value: value,
+                    editable: isFieldEditable,
+                    onChange: handleInputChange
+                  };
+
+                  return (
+                    <Info
+                      key={field} // Key prop on the Info component for list rendering
+                      {...infoProps}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Login Sections (Client, User, cPanel) */}
+      <div className="max-w-9xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+          {/* Client Login Section */}
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">👤 Client Login Info</h3>
               <button
-                onClick={handleSave}
-                className="text-background bg-primary relative flex items-center overflow-hidden rounded-full px-6 py-2 text-base font-bold shadow-md transition-all duration-400 ease-in-out before:absolute before:top-0 before:-left-full before:z-[-1] before:h-full before:w-full before:rounded-full before:bg-gradient-to-r before:from-blue-800 before:to-blue-300 before:transition-all before:duration-800 before:ease-in-out hover:scale-105 hover:text-white hover:shadow-lg hover:before:left-0 active:scale-90 sm:px-8 sm:text-lg md:px-10 lg:px-12"
+                onClick={() => setActiveEditSection(activeEditSection === 'client' ? null : 'client')}
+                className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
               >
-                Save Changes
+                {activeEditSection === 'client' ? "Cancel" : "Edit"}
               </button>
+            </div>
+
+            <div className="space-y-4">
+              {(() => { // Using an IIFE to define props object
+                const infoProps = {
+                  label: "Login URL",
+                  field: "client_login_info_link",
+                  source: "user",
+                  value: editedUser?.client_login_info_link,
+                  editable: activeEditSection === 'client',
+                  onChange: handleInputChange
+                };
+                return <Info key="client_login_info_link" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Username",
+                  field: "client_login_info_username",
+                  source: "user",
+                  value: editedUser?.client_login_info_username,
+                  editable: activeEditSection === 'client',
+                  onChange: handleInputChange
+                };
+                return <Info key="client_login_info_username" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Password",
+                  field: "client_login_info_password",
+                  source: "user",
+                  value: editedUser?.client_login_info_password,
+                  editable: activeEditSection === 'client',
+                  onChange: handleInputChange
+                };
+                return <Info key="client_login_info_password" {...infoProps} />;
+              })()}
+            </div>
+
+            {activeEditSection === 'client' && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => handleSectionSave('client')}
+                  className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
+                >
+                  Save Client Info
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* User Login Section */}
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent">🔧 Our/User Login Info</h3>
+              <button
+                onClick={() => setActiveEditSection(activeEditSection === 'user' ? null : 'user')}
+                className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
+              >
+                {activeEditSection === 'user' ? "Cancel" : "Edit"}
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {(() => {
+                const infoProps = {
+                  label: "Login URL",
+                  field: "user_login_info_link",
+                  source: "user",
+                  value: editedUser?.user_login_info_link,
+                  editable: activeEditSection === 'user',
+                  onChange: handleInputChange
+                };
+                return <Info key="user_login_info_link" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Username",
+                  field: "user_login_info_username",
+                  source: "user",
+                  value: editedUser?.user_login_info_username,
+                  editable: activeEditSection === 'user',
+                  onChange: handleInputChange
+                };
+                return <Info key="user_login_info_username" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Password",
+                  field: "user_login_info_password",
+                  source: "user",
+                  value: editedUser?.user_login_info_password,
+                  editable: activeEditSection === 'user',
+                  onChange: handleInputChange
+                };
+                return <Info key="user_login_info_password" {...infoProps} />;
+              })()}
+            </div>
+
+            {activeEditSection === 'user' && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => handleSectionSave('user')}
+                  className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
+                >
+                  Save User Info
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* cPanel Section */}
+          <div className="bg-background rounded-lg p-4 shadow-md border border-accent/30 min-h-[250px]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg sm:text-xl font-bold font-primary text-accent ">📦 cPanel/Hosting Info</h3>
+              <button
+                onClick={() => setActiveEditSection(activeEditSection === 'cpanel' ? null : 'cpanel')}
+                className="px-3 py-1 bg-primary text-white rounded text-sm font-bold hover:bg-primary/90 transition-colors"
+              >
+                {activeEditSection === 'cpanel' ? "Cancel" : "Edit"}
+              </button>
+            </div>
+
+            <div className="space-y-4 text-accent">
+              {(() => {
+                const infoProps = {
+                  label: "C/H URL",
+                  field: "cpanel_link",
+                  source: "user",
+                  value: editedUser?.cpanel_link,
+                  editable: activeEditSection === 'cpanel',
+                  onChange: handleInputChange
+                };
+                return <Info key="cpanel_link" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Username",
+                  field: "cpanel_username",
+                  source: "user",
+                  value: editedUser?.cpanel_username,
+                  editable: activeEditSection === 'cpanel',
+                  onChange: handleInputChange
+                };
+                return <Info key="cpanel_username" {...infoProps} />;
+              })()}
+              {(() => {
+                const infoProps = {
+                  label: "Password",
+                  field: "cpanel_password",
+                  source: "user",
+                  value: editedUser?.cpanel_password,
+                  editable: activeEditSection === 'cpanel',
+                  onChange: handleInputChange
+                };
+                return <Info key="cpanel_password" {...infoProps} />;
+              })()}
+            </div>
+
+            {activeEditSection === 'cpanel' && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => handleSectionSave('cpanel')}
+                  className="px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition-colors"
+                >
+                  Save cPanel Info
+                </button>
+              </div>
             )}
           </div>
         </div>
-
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-10">
-          {groupedFields.map((group, colIdx) => (
-            <div key={colIdx}>
-              {group.map(({ label, field, source }) => {
-                const value =
-                  source === "user"
-                    ? editedUser?.[field]
-                    : source === "department"
-                      ? editedUser?.department?.[field]
-                      : editedUser?.team?.[field];
-
-                return (
-                  <Info
-                    key={field}
-                    label={label}
-                    field={field}
-                    source={source}
-                    value={value}
-                    editable={isEditing && editableFields.includes(field)}
-                    onChange={handleInputChange}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

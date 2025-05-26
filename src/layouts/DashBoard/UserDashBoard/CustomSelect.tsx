@@ -1,6 +1,6 @@
 import Select from "react-select";
 
-const CustomSelect = ({
+const CustomDropDown = ({
   options,
   value,
   onChange,
@@ -10,40 +10,43 @@ const CustomSelect = ({
   const customStyles = {
     control: (base) => ({
       ...base,
-      minHeight: "60px", // 👈 increase height here (default is ~38px)
+      minHeight: "50px",
       borderRadius: "6px",
       backgroundColor: "#ffffff",
-      borderColor: "#e5e7eb",
-      padding: "4px", // optional for internal spacing
+      borderColor: "#19B3E7",
+      padding: "4px",
+      cursor: "pointer",
     }),
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? "#1D4ED8"
+        ? "#19B3E7"
         : state.isFocused
-          ? "#F87171"
-          : "#111827",
-      color: state.isSelected || state.isFocused ? "#FFFFFF" : "#FBBF24",
+          ? "#19B3E7"
+          : "#11284A",
+      color: "#ffffff",
       cursor: "pointer",
     }),
     menu: (base) => ({
       ...base,
       zIndex: 9999,
-      backgroundColor: "#000000",
+      backgroundColor: "#1E293B",
     }),
   };
 
   return (
-    <Select
-      isMulti={isMulti}
-      options={options}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="mb-4 w-150"
-      styles={customStyles}
-    />
+    <div className="border-border-color text-accent flex cursor-pointer rounded">
+      <Select
+        isMulti={isMulti}
+        options={options}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-115"
+        styles={customStyles}
+      />
+    </div>
   );
 };
 
-export default CustomSelect;
+export default CustomDropDown;

@@ -1,22 +1,25 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import BestContributorsForm from "../components/common/BestContributorsfrom/BestContributorsfrom";
+import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPlaceProfile";
 import Profile from "../components/common/Profile/Profile";
 import DashboardLayout from "../DashboardLayout";
+import AttendacnePage from "../layouts/DashBoard/AttendancePage/AttendancePage";
 import ProjectsDetails from "../layouts/DashBoard/ProjectgsDetails/ProjectsDetails";
 import TeamDistribution from "../layouts/DashBoard/TeamDistribution/TeamDistribution";
 import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
-// import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
+import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
+import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
 import Performance from "../layouts/DashBoard/UserDashBoard/Performance";
-import Projects from "../layouts/DashBoard/UserDashBoard/Projects";
 import TeamPerformancePage from "../layouts/DashBoard/UserDashBoard/TeamPerformancePage";
 import SalesProject from "../layouts/DashBoard/UserDashBoard/TodayTask";
 import UserListPage from "../layouts/DashBoard/UserDashBoard/userListpage/UserListPage";
 import UserDetails from "../layouts/DashBoard/userDetails/UserDetails";
 import MainLayOut from "../MainLayOut";
+import AddOtherCost from "../pages/AddOtherCost/AddOtherCost";
+import AllReport from "../pages/AllReport/AllReport";
 import LoginForm from "../pages/Auth/LoginForm";
 import RegisterForm from "../pages/Auth/RegisterForm";
-import RegisterView from "../pages/auth/RegisterView";
 import RoleProtectedRoute from "../pages/Auth/RoleProtectedRoute";
 import BestContributors from "../pages/bestContributor/BestContributors";
 import CelebrationCurtain from "../pages/CelebrationCurtain/CelebrationCurtain";
@@ -28,19 +31,11 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import ProfileRankingPage from "../pages/ProfileRankigPage/ProfileRankingPage";
 import Promotion from "../pages/Promotion/Promotion";
+import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
+import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
 import SpecialOrderPage from "../pages/SpecialOrderPage/SpecialOrderPage";
 import UpdateMessage from "../pages/UpdateMessage/UpdateMessage";
 import UserProfilePage from "../pages/UserProfilePage";
-// import CreateDepartment from "../layouts/DashBoard/UserDashBoard/CreateDepartment/CreateDepartment";
-import MarketPlaceProfile from "../components/common/MarketPlaceProfile/MarketPlaceProfile";
-import { SocketProvider } from "../context/SocketContext";
-import CreateProfile from "../layouts/DashBoard/UserDashBoard/CreatProfile/CreateProfile";
-import PromotionSummary from "../pages/PromotionSummary/PromotionSummary";
-import QuotationPDFForm from "../pages/QuotationPDF/QuotationPDFForm";
-import AttendacnePage from "../layouts/DashBoard/AttendancePage/AttendancePage";
-import OperationPage from "../layouts/DashBoard/UserDashBoard/OperationPage";
-
-// const Home = lazy(() => import("../pages/Home/Home"));
 
 const Home = lazy(() => import("../pages/Home/Home"));
 
@@ -68,10 +63,7 @@ const AppRoutes = createBrowserRouter([
         path: "/register",
         element: <RegisterForm />,
       },
-      {
-        path: "/register-2",
-        element: <RegisterView />,
-      },
+
       {
         path: "/contact",
         element: <Contact />,
@@ -92,11 +84,7 @@ const AppRoutes = createBrowserRouter([
   // DashBoard Route
   {
     path: "dashboard",
-    element: (
-      <SocketProvider>
-        <DashboardLayout />
-      </SocketProvider>
-    ),
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
@@ -112,6 +100,7 @@ const AppRoutes = createBrowserRouter([
               "operation_member",
               "operation_leader",
               "sales_leader",
+              "hod_mern",
             ]}
           >
             <AllProjects />
@@ -119,12 +108,16 @@ const AppRoutes = createBrowserRouter([
         ),
       },
       {
-        path: "projects-old",
-        element: <Projects />,
-      },
-      {
         path: "quotation-pdf-form",
         element: <QuotationPDFForm />,
+      },
+      {
+        path: "add-other-cost",
+        element: <AddOtherCost />,
+      },
+      {
+        path: "all-report",
+        element: <AllReport />,
       },
       {
         path: "distribution",
@@ -167,11 +160,6 @@ const AppRoutes = createBrowserRouter([
         path: "update-message",
         element: <UpdateMessage />,
       },
-
-      // {
-      //   path: "profile-datails",
-      //   element: <Profile />,
-      // },
       {
         path: "profile/:id",
         element: <Profile />,
@@ -226,10 +214,6 @@ const AppRoutes = createBrowserRouter([
         path: "teamperformance",
         element: <TeamPerformancePage />,
       },
-      // {
-      //   path: "userdetails/:id", // <-- :id is dynamic
-      //   element: <UserDetails />,
-      // },
       {
         path: "bestcontributors",
         element: <BestContributorsForm />,
@@ -241,7 +225,7 @@ const AppRoutes = createBrowserRouter([
       },
 
       {
-        path: "userdetails/:id", // <-- :id is dynamic
+        path: "userdetails/:id",
         element: <UserDetails />,
       },
     ],
