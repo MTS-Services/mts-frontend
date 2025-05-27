@@ -3,7 +3,7 @@ import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import CustomDropDown from "./CustomDropDown";
 import Distribution from "../../../pages/Distribution/Distribution";
 import { TbTargetArrow } from "react-icons/tb";
-import { GrAchievement } from "react-icons/gr";
+import { GiStairsGoal } from "react-icons/gi";
 import { PiPlusMinusDuotone } from "react-icons/pi";
 import Cookies from "js-cookie";
 
@@ -75,7 +75,7 @@ const Performance = () => {
     {
       title: "Achieve",
       amount: data?.teamQuarterlyPerformance?.achieved || 0,
-      icon: GrAchievement,
+      icon: GiStairsGoal,
       message: "Team achieved amount",
     },
     {
@@ -119,7 +119,7 @@ const Performance = () => {
           />
         </div>
 
-        <div className="flex flex-wrap gap-5 border-b pb-12">
+        <div className="border-accent/30 mt-12 flex flex-wrap gap-5 border-b-1 pb-12">
           {teamCards.map((card, idx) => (
             <DisplayCard
               key={idx}
@@ -134,7 +134,7 @@ const Performance = () => {
       </div>
 
       <div className="my-12">
-        <div className="mb-4 flex items-center gap-4">
+        <div className="mb-12 flex items-center gap-4">
           <h2 className="text-accent text-4xl font-semibold">
             Quater Base Member Performance
           </h2>
@@ -151,14 +151,14 @@ const Performance = () => {
           />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px] border border-white text-white">
+        <div className="border-accent/30 mt-12 border-b-1 pb-12">
+          <table className="border-border-color w-full min-w-[1000px] border-2 text-white">
             <thead>
               <tr className="bg-secondary text-left text-white">
-                <th className="border border-white px-4 py-3">Member Name</th>
-                <th className="border border-white px-4 py-3">Target</th>
-                <th className="border border-white px-4 py-3">Achieve price</th>
-                <th className="border border-white px-4 py-3">+/-</th>
+                <th className="border border-white px-4 py-4">Member Name</th>
+                <th className="border border-white px-4 py-4">Target</th>
+                <th className="border border-white px-4 py-4">Achieve price</th>
+                <th className="border border-white px-4 py-4">+/-</th>
               </tr>
             </thead>
             <tbody>
@@ -166,18 +166,18 @@ const Performance = () => {
                 <tr
                   key={idx}
                   className={`border border-white ${
-                    idx % 2 === 0 ? "bg-primary/70" : "bg-primary"
+                    idx % 2 === 0 ? "bg-primary" : "bg-primary/70"
                   }`}
                 >
-                  <td className="px-4 py-2">{row.name}</td>
-                  <td className="px-4 py-2">$ {row.target}</td>
-                  <td className="px-4 py-2">$ {row.achieved}</td>
-                  <td className="px-4 py-2">$ {row.difference}</td>
+                  <td className="px-4 py-4">{row.name}</td>
+                  <td className="px-4 py-4">$ {row.achieved}</td>
+                  <td className="px-4 py-4">$ {row.target}</td>
+                  <td className="px-4 py-4">$ {row.difference}</td>
                 </tr>
               ))}
               {!memberMonthly?.length && (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center">
+                  <td colSpan={4} className="py-4 text-center text-red-500">
                     No data found.
                   </td>
                 </tr>

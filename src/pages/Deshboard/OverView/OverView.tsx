@@ -70,8 +70,6 @@ function OverView() {
     },
   ];
 
-  console.log("cardData", cardData);
-
   const barChartCardData = data?.memberTarget;
   const weeklyAchievementBreakdown = data?.weeklyAchievementBreakdown;
 
@@ -97,11 +95,26 @@ function OverView() {
       value: (((data?.teamTotalCarry || 0) / base) * 100).toFixed(2),
     },
   ];
-
-  console.log("br", barChartCardData);
+  // charts
+  const weeklyLineChartData = [
+    {
+      id: "Target",
+      data: weeklyAchievementBreakdown.map((item) => ({
+        x: item.week,
+        y: item.target,
+      })),
+    },
+    {
+      id: "Achieved",
+      data: weeklyAchievementBreakdown.map((item) => ({
+        x: item.week,
+        y: item.amount,
+      })),
+    },
+  ];
 
   return (
-    <section className="pr-5">
+    <section className="p-4 pr-5">
       {/* Cards */}
       <div className="flex flex-wrap gap-5">
         {cardData.map((item, index) => (
@@ -136,7 +149,10 @@ function OverView() {
       {/* Charts Row 2 */}
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
         <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-          <MtsLineChart lineData={weeklyAchievementBreakdown} />
+          <MtsLineChart
+            data={weeklyLineChartData}
+            title="📈 Weekly Achievement vs Target"
+          />
         </div>
         <div className="bg-background border-primary font-primary rounded border-2 p-5 shadow-lg">
           <MtsProgressBar

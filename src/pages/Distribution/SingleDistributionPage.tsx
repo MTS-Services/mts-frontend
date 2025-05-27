@@ -98,9 +98,9 @@ function SingleDistributionPage({
             <button
               onClick={handleSubmit}
               disabled={!matches}
-              className={`rounded px-3 py-1 text-sm text-white ${
+              className={`text-accent rounded px-3 py-1 text-sm ${
                 matches
-                  ? "bg-green-600 hover:bg-green-700"
+                  ? "bg-secondary hover:bg-secondary/70 transition-all"
                   : "cursor-not-allowed bg-gray-400"
               }`}
             >
@@ -109,7 +109,7 @@ function SingleDistributionPage({
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-secondary hover:bg-secondary/70 rounded px-3 py-1 text-sm text-white transition-all"
+              className="bg-secondary hover:bg-secondary/70 text-accent rounded px-3 py-1 text-sm transition-all"
             >
               Edit
             </button>

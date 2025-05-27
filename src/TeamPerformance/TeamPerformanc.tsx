@@ -133,7 +133,7 @@ const TeamPerformance = () => {
           );
           if (!monthData) return [];
 
-          return monthData.weeklyBreakdown.map((week) => ({
+          return (monthData.weeklyBreakdown || []).map((week) => ({
             week: week.week,
             target: week.target || 0,
             achieved: week.achieved || 0,
@@ -154,7 +154,7 @@ const TeamPerformance = () => {
         />
       </div>
 
-      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-14">
+      <div className="border-accent/30 flex flex-wrap gap-5 border-b-1 pb-12">
         {lastQuarter.map((item, i) => (
           <DisplayCard
             key={i}
@@ -186,9 +186,9 @@ const TeamPerformance = () => {
       </div>
 
       <div className="border-accent/30 mt-12 border-b-1 pb-12">
-        <table className="w-full min-w-[1000px] text-left">
+        <table className="border-border-color w-full min-w-[1000px] border-2 text-left text-white">
           <thead>
-            <tr className="bg-secondary border-border-color border-2 text-white">
+            <tr className="bg-secondary text-left text-white">
               {tableHeaders.map((head, i) => (
                 <th
                   key={head}
@@ -199,7 +199,7 @@ const TeamPerformance = () => {
               ))}
             </tr>
           </thead>
-          <tbody className="border-border-color border-2">
+          <tbody className="border-border-color border">
             {filteredTableData.length > 0 ? (
               filteredTableData.map((row, i) => (
                 <tr
@@ -222,7 +222,7 @@ const TeamPerformance = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="py-4 text-center text-white">
+                <td colSpan={4} className="py-4 text-center text-red-500">
                   No data found.
                 </td>
               </tr>
@@ -238,7 +238,7 @@ const TeamPerformance = () => {
             <MtsBarChar barData={revenueData} />
           </div>
           <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-            <MtsLineChart lineData={weeklyAchievementBreakdown} />
+            <MtsLineChart lineData={weeklyAchievementBreakdown || []} />
           </div>
         </div>
       </section>

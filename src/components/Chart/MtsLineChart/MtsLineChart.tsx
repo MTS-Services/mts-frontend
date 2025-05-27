@@ -1,36 +1,22 @@
 import { ResponsiveLine } from "@nivo/line";
 
-const MtsLineChart = ({
-  data = [],
-  customColors = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"],
-  showArea = true,
-}) => {
-  const fallbackColors = [
-    "#FF9B45",
-    "#ff7f0e",
-    "#2ca02c",
-    "#d62728",
-    "#9467bd",
-    "#8c564b",
-    "#e377c2",
-    "#7f7f7f",
-    "#bcbd22",
-    "#17becf",
-  ];
-
-  const getLineColor = (index) =>
-    index < customColors.length
-      ? customColors[index]
-      : fallbackColors[index % fallbackColors.length];
+const MtsLineChart = ({ data }) => {
+  // data যদি undefined/null হয়, তাহলে খালি array পাঠাও
+  const safeData = data || [];
 
   return (
-    <div style={{ height: 400 }}>
+    <div style={{ height: "450px", background: "transparent" }}>
       <ResponsiveLine
-        data={data}
-        margin={{ top: 50, right: 120, bottom: 50, left: 60 }}
+        data={safeData}
+        margin={{ top: 40, right: 30, bottom: 70, left: 60 }}
         xScale={{ type: "point" }}
-        yScale={{ type: "linear", stacked: false, min: "auto", max: "auto" }}
-        curve="monotoneX"
+        yScale={{
+          type: "linear",
+          min: 0,
+          max: "auto",
+          stacked: false,
+          reverse: false,
+        }}
         axisTop={null}
         axisRight={null}
         axisBottom={{
@@ -38,7 +24,7 @@ const MtsLineChart = ({
           tickPadding: 5,
           tickRotation: -45,
           legend: "Date",
-          legendOffset: 36,
+          legendOffset: 50,
           legendPosition: "middle",
         }}
         axisLeft={{
@@ -48,54 +34,44 @@ const MtsLineChart = ({
           legendOffset: -50,
           legendPosition: "middle",
         }}
-        enablePoints={true}
         pointSize={8}
         pointColor={{ theme: "background" }}
         pointBorderWidth={2}
         pointBorderColor={{ from: "serieColor" }}
-        enableArea={showArea}
-        areaOpacity={0.2}
+        pointLabelYOffset={-12}
         useMesh={true}
-        colors={({ index }) => getLineColor(index)}
-        tooltip={({ point }) => (
-          <div
-            style={{
-              background: "#000",
-              color: "#fff",
-              padding: "6px 12px",
-              border: `1px solid ${point.serieColor}`,
-              borderRadius: "4px",
-            }}
-          >
-            <strong>{point.serieId}:</strong> {point.data.yFormatted}
-          </div>
-        )}
         theme={{
+          background: "transparent",
+          textColor: "#ffffff",
           axis: {
-            domain: { line: { stroke: "#ffffff" } },
             ticks: {
-              line: { stroke: "#ffffff" },
-              text: { fill: "#ffffff" },
+              text: {
+                fill: "#ffffff",
+              },
             },
             legend: {
-              text: { fill: "#ffffff" },
+              text: {
+                fill: "#ffffff",
+              },
             },
           },
           grid: {
             line: {
-              stroke: "#444",
+              stroke: "#444444",
               strokeDasharray: "4 4",
             },
           },
           tooltip: {
             container: {
-              background: "#000",
-              color: "#fff",
+              background: "#000000",
+              color: "#ffffff",
               borderRadius: "4px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+              fontSize: "14px",
             },
           },
         }}
+        colors={{ scheme: "nivo" }}
+        enableSlices="x"
       />
     </div>
   );

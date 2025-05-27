@@ -74,7 +74,7 @@ const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
   }));
 
   return (
-    <form onSubmit={handleAssign} className="mb-6">
+    <form onSubmit={handleAssign} className="mb-12">
       <h1 className="text-accent mb-4 text-4xl font-semibold">
         Assign Team Members
       </h1>
@@ -107,7 +107,7 @@ const AssignTeamForm = ({ data, token, tasks, teamMembers, refreshTasks }) => {
       {/* ✅ Select Team Members */}
       {selectedProject && (
         <>
-          <label className="text-accent mt-4 mb-2 block text-lg font-medium">
+          <label className="text-accent mt-4 mb-4 block text-lg font-medium">
             Select Team Members
           </label>
 
