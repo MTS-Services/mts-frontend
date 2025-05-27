@@ -3,7 +3,7 @@ import DisplayCard from "../../../components/DisplayCard/DisplayCard";
 import CustomDropDown from "./CustomDropDown";
 import Distribution from "../../../pages/Distribution/Distribution";
 import { TbTargetArrow } from "react-icons/tb";
-import { GrAchievement } from "react-icons/gr";
+import { GiStairsGoal } from "react-icons/gi";
 import { PiPlusMinusDuotone } from "react-icons/pi";
 import Cookies from "js-cookie";
 
@@ -75,7 +75,7 @@ const Performance = () => {
     {
       title: "Achieve",
       amount: data?.teamQuarterlyPerformance?.achieved || 0,
-      icon: GrAchievement,
+      icon: GiStairsGoal,
       message: "Team achieved amount",
     },
     {
