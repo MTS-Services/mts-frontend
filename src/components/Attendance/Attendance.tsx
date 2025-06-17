@@ -30,17 +30,17 @@ function Attendance() {
   const tableHeaders = ["Date", "Check In", "Check Out"];
 
   return (
-    <div className="mx-auto max-w-4xl p-4">
-      <h2 className="text-accent mb-4 text-2xl font-bold">
+    <div className="font-secondary w-full p-4">
+      <h2 className="text-accent mb-6 text-4xl font-bold">
         Attendance History : {employee?.first_name} {employee?.last_name}
       </h2>
 
-      <div className="bg-primary w-full rounded shadow">
-        <table className="w-full border-collapse text-sm">
-          <thead className="font-primary sticky top-0">
+      <div className="bg-primary">
+        <table className="border-border-color w-full min-w-[1000px] border-2 text-white">
+          <thead className="bg-secondary text-left text-white">
             <tr className="bg-secondary border border-white text-[16px] text-white">
               {tableHeaders.map((head) => (
-                <th key={head} className="border border-white px-2 py-3">
+                <th key={head} className="border border-white px-4 py-4">
                   {head}
                 </th>
               ))}
@@ -54,7 +54,7 @@ function Attendance() {
                   className="odd:bg-primary even:bg-primary/70 hover:bg-primary/80 text-white transition-all"
                 >
                   {/* Date */}
-                  <td className="border-secondary border-r px-2 py-3">
+                  <td className="border-secondary border-r px-4 py-4">
                     {new Date(entry.date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
@@ -85,7 +85,7 @@ function Attendance() {
                   </td>
 
                   {/* Check Out */}
-                  <td className="border-secondary border-r px-2 py-3">
+                  <td className="border-secondary border-r px-4 py-4">
                     {entry.lastPunchAfter530Time
                       ? new Date(
                           entry.lastPunchAfter530Time,
@@ -100,7 +100,7 @@ function Attendance() {
               ))
             ) : (
               <tr>
-                <td colSpan={3} className="py-4 text-center text-white">
+                <td colSpan={3} className="py-4 text-center text-red-500">
                   No attendance records found.
                 </td>
               </tr>
