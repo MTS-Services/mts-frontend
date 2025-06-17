@@ -72,23 +72,23 @@ function EditablePromotionRow({ item, refetch }) {
 
   return (
     <tr className="odd:bg-secondary even:bg-background text-accent">
-      <td className="border-primary border px-4 py-2">
+      <td className="border-primary border px-4 py-2 font-primary">
         {formatDate(item.created_date)}
       </td>
-      <td className="border-primary border px-4 py-2">
+      <td className="border-primary font-primary border px-4 py-2">
         {formatDate(item.update_at)}
       </td>
-      <td className="border-primary border px-4 py-2">
+      <td className="border-primary font-primary border px-4 py-2">
         {item.profile?.profile_name}
       </td>
 
-      <td className="border-primary border px-4 py-2">
+      <td className="border-primary font-primary border px-4 py-2">
         {isEditing ? (
           <input
             type="number"
             value={localData.impressions}
             onChange={(e) => handleChange("impressions", e.target.value)}
-            className="w-20 rounded border border-gray-300 px-2 py-1"
+            className="w-20 rounded font-primary border border-gray-300 px-2 py-1"
           />
         ) : (
           item.impressions
@@ -101,7 +101,7 @@ function EditablePromotionRow({ item, refetch }) {
             type="number"
             value={localData.clicks}
             onChange={(e) => handleChange("clicks", e.target.value)}
-            className="w-20 rounded border border-gray-300 px-2 py-1"
+            className="w-20 rounded border  font-primary border-gray-300 px-2 py-1"
           />
         ) : (
           item.clicks
@@ -115,7 +115,7 @@ function EditablePromotionRow({ item, refetch }) {
             step="0.01"
             value={localData.promotion_amount}
             onChange={(e) => handleChange("promotion_amount", e.target.value)}
-            className="w-24 rounded border border-gray-300 px-2 py-1"
+            className="w-24 rounded border border-gray-300 px-2 py-1 font-primary"
           />
         ) : (
           item.promotion_amount
@@ -131,13 +131,13 @@ function EditablePromotionRow({ item, refetch }) {
           <>
             <button
               onClick={handleSave}
-              className="rounded bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700"
+              className="bg-primary hover:bg-primary/70 rounded px-3 py-1 text-sm text-white transition-all font-primary"
             >
               Save
             </button>
             <button
               onClick={handleCancel}
-              className="rounded bg-gray-500 px-3 py-1 text-sm text-white hover:bg-gray-600"
+              className="rounded bg-primary px-3 py-1 text-sm text-white hover:bg-primary/70 font-primary"
             >
               Cancel
             </button>
@@ -145,7 +145,7 @@ function EditablePromotionRow({ item, refetch }) {
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+            className="bg-primary hover:bg-primary/70 rounded px-3 py-1 text-sm text-white transition-all font-primary"
           >
             Edit
           </button>
