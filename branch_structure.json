@@ -1,0 +1,39 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "Masud-Rana",
+    "Nayem",
+    "copy_kamrul",
+    "development",
+    "joni",
+    "kamrul",
+    "main",
+    "munshi",
+    "nayem_to_nayem",
+    "sanny"
+  ],
+  "parent": {
+    "Masud-Rana": "main",
+    "Nayem": "main",
+    "copy_kamrul": "main",
+    "development": "main",
+    "joni": "main",
+    "kamrul": "main",
+    "main": null,
+    "munshi": "main",
+    "nayem_to_nayem": "main",
+    "sanny": "main"
+  },
+  "order": [
+    "main",
+    "Masud-Rana",
+    "Nayem",
+    "copy_kamrul",
+    "development",
+    "joni",
+    "kamrul",
+    "munshi",
+    "nayem_to_nayem",
+    "sanny"
+  ]
+}
