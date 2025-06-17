@@ -7,6 +7,9 @@ import MtsBarChar from "../components/Chart/MtsBarChart/MtsBarChart";
 import MtsLineChart from "../components/Chart/MtsLineChart/MtsLineChart";
 import DisplayCard from "../components/DisplayCard/DisplayCard";
 import CustomDropDown from "../layouts/DashBoard/UserDashBoard/CustomDropDown";
+import MtsBarChart from "../components/Chart/MtsBarChart/MtsBarChart";
+import MtsPIChart from "../components/Chart/MtsPIChart/MtsPIChart";
+import MtsProgressBar from "../components/Chart/MtsProgressBar/MtsProgressBar";
 
 const TeamPerformance = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
@@ -231,17 +234,30 @@ const TeamPerformance = () => {
         </table>
       </div>
 
-      {/* Charts */}
-      <section className="pr-5">
-        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
-          <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-            <MtsBarChar barData={revenueData} />
-          </div>
-          <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
-            <MtsLineChart lineData={weeklyAchievementBreakdown || []} />
-          </div>
+      {/* Charts Row 1 */}
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+          <MtsBarChart
+            data={barChartCardData}
+            keys={["target", "earned"]}
+            indexBy="memberName"
+            legendKeys={[
+              { key: "target", label: "Target", color: "#66c2a5" },
+              { key: "achieved", label: "Achieved", color: "#fc8d62" },
+            ]}
+          />
         </div>
-      </section>
+      </div>
+
+      {/* Charts Row 2 */}
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="bg-background border-primary font-primary min-h-96 rounded border-2 p-5 shadow-lg">
+          <MtsLineChart
+            data={weeklyLineChartData}
+            title="📈 Weekly Achievement vs Target"
+          />
+        </div>
+      </div>
     </div>
   );
 };

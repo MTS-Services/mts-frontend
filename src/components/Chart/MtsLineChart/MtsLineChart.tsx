@@ -1,7 +1,6 @@
 import { ResponsiveLine } from "@nivo/line";
 
 const MtsLineChart = ({ data }) => {
-  // data যদি undefined/null হয়, তাহলে খালি array পাঠাও
   const safeData = data || [];
 
   return (
