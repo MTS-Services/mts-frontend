@@ -130,7 +130,7 @@ const ReassignTeamForm = ({
   }));
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
+    <form onSubmit={handleSubmit} className="border-accent/30 border-b-1 pb-12">
       <h1 className="text-accent mb-4 text-4xl font-semibold">
         Reassign Team Members
       </h1>
