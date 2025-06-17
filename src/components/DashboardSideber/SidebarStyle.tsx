@@ -5,7 +5,7 @@ import {
   BsFileEarmarkBarGraph,
   BsFillFileEarmarkPdfFill,
 } from "react-icons/bs";
-import { FaPeopleCarry, FaProjectDiagram, FaUser } from "react-icons/fa";
+import { FaCrown, FaPeopleCarry, FaProjectDiagram, FaUser } from "react-icons/fa";
 import { FaAward, FaPersonArrowUpFromLine } from "react-icons/fa6";
 import { FiExternalLink, FiLogOut } from "react-icons/fi";
 import { GiTakeMyMoney } from "react-icons/gi";
@@ -48,7 +48,7 @@ const SidebarStyle = () => {
   const getLinkClass = (path) => {
     const currentRoute = location.pathname.split("/").pop();
     return `group relative my-2 flex cursor-pointer items-center rounded-lg p-2 text-xl ${
-      currentRoute === path ? "bg-primary" : "bg-background"
+      currentRoute === path ? "bg-[#19B3E7]" : "bg-background"
     } hover:bg-primary transform transition-all duration-300 ease-in-out hover:scale-105 hover:text-white hover:shadow-lg`;
   };
 
@@ -61,7 +61,7 @@ const SidebarStyle = () => {
             {item.label}
           </h2>
           {!isOpen && (
-            <span className="bg-primary will-change-opacity pointer-events-none absolute left-12 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap text-white opacity-0 transition-all duration-300 will-change-transform group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+            <span className="bg-primary will-change-opacity pointer-events-none absolute left-12 translate-y-2 scale-95 rounded-sm px-2 py-2 text-sm whitespace-nowrap text-red opacity-0 transition-all duration-300 will-change-transform group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
               {item.label}
             </span>
           )}
@@ -89,6 +89,7 @@ const SidebarStyle = () => {
           },
         ]
       : []),
+      
     { icon: <TbMessage2Check />, label: "Update", path: "update-message" },
     { icon: <FaAward />, label: "Awards", path: "best_performance" },
   ];
@@ -137,6 +138,8 @@ const SidebarStyle = () => {
 
   const sidebarItemsHOD = [
     { icon: <FiExternalLink />, label: "Over View", path: "over-view" },
+    { icon: <FaCrown />, label: "Best Contributors", path: "bestcontributors" },
+
     { icon: <FaProjectDiagram />, label: "Projects", path: "projects" },
     { icon: <MdSafetyDivider />, label: "Distribution", path: "distribution" },
     { icon: <FaUser />, label: "User List", path: "userlist" },
@@ -179,7 +182,7 @@ const SidebarStyle = () => {
         />
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
-            <IoMdArrowDropleftCircle className="text-xl" />
+            <IoMdArrowDropleftCircle className="text-5xl" />
           ) : (
             <IoMdArrowDroprightCircle className="text-[20px]" />
           )}
