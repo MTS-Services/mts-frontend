@@ -7,6 +7,8 @@ import { useSocket } from "../../context/SocketContext";
 import { useFetchData } from "../../hooks/useFetchData";
 import { useProfileNames } from "../../hooks/useSocketDataUtils";
 import EditablePromotionRow from "./EditablePromotionRow";
+import PrimaryButton from "../../components/Button/PrimaryButton";
+import Loading from "../../components/Loading/Loading";
 
 function Promotion() {
   const socket = useSocket();
@@ -92,9 +94,9 @@ function Promotion() {
   console.log("Socket connected?", socket?.connected);
 
   return (
-    <div className="bg-background flex min-h-screen flex-col items-center justify-start p-6">
+    <div className="bg-background flex min-h-screen flex-col items-center justify-start p-6 font-primary">
       <div className="bg-background border-primary w-full max-w-3xl rounded-lg border p-8 shadow-lg">
-        <h2 className="text-accent font-primary mb-6 text-center text-3xl font-bold">
+        <h2 className="text-accent font-primary mb-6 text-center text-3xl font-bold ">
           Promotion Setup
         </h2>
 
@@ -168,12 +170,12 @@ function Promotion() {
             />
           </div>
 
-          <button
+          <PrimaryButton
             type="submit"
-            className="w-full cursor-pointer rounded-md bg-blue-600 py-3 font-semibold text-white transition duration-200 hover:scale-95 hover:bg-blue-700"
+            className=""
           >
             Submit Promotion Info
-          </button>
+          </PrimaryButton>
         </form>
       </div>
 
@@ -184,36 +186,36 @@ function Promotion() {
         </h3>
 
         {loading ? (
-          <p className="text-center text-gray-400">Loading...</p>
+        <Loading></Loading>
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : data?.data?.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="border-primary text-accent w-full table-auto border text-sm">
-              <thead className="bg-primary text-white">
+          <div className="overflow-x-auto font-primary">
+            <table className="border-primary text-accent w-full table-auto border font-primary text-sm">
+              <thead className="bg-primary text-white font-primary">
                 <tr>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Created Date
                   </th>
                   <th className="border-primary border px-4 py-2 text-left">
                     Update Date
                   </th>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Profile Name
                   </th>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Impressions
                   </th>
                   <th className="border-primary border px-4 py-2 text-left">
                     Clicks
                   </th>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Promo Amount
                   </th>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Actual Amount
                   </th>
-                  <th className="border-primary border px-4 py-2 text-left">
+                  <th className="border-primary border px-4 py-2 text-left ">
                     Action
                   </th>
                 </tr>
