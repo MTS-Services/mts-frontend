@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 // তাহলে পাথটি "../../hooks/useFetchData" হবে।
 // আপনার প্রোজেক্ট স্ট্রাকচার অনুযায়ী এটি পরিবর্তন করুন।
 import { useFetchData } from "../../hooks/useFetchData"; 
+import PrimaryButton from "../../components/Button/PrimaryButton";
 
 export default function UpdateMessage() {
   const [profile, setProfile] = useState("");
@@ -261,13 +262,13 @@ ${message}
           ></textarea>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading || profilesLoading} 
-          className="w-full rounded bg-blue-600 py-3 font-semibold text-white transition hover:scale-95 hover:bg-blue-700"
-        >
-          {loading ? "Generatings..." : "Submit"}
-        </button>
+
+ 
+
+
+<PrimaryButton   type="submit"
+          disabled={loading || profilesLoading} >  {loading ? "Generatings..." : "Submit"}</PrimaryButton>
+
       </form>
 
       {/* Popup for Formatted Message */}
@@ -329,10 +330,13 @@ ${message}
                 }}
               >
                 <svg className="w-4 h-4 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
                 Close
               </button>
+
             </div>
 
             {/* Popup Content Area */}
