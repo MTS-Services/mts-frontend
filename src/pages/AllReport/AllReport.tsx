@@ -50,7 +50,6 @@ function AllReport() {
     promotionCosts,
     salesPerformance,
     specialOrderStats,
-    todaysDeliveries,
     todaysOrders,
     projectsNeedingAssignment,
     totalMonthlyCancellations,
