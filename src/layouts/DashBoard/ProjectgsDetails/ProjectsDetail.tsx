@@ -9,6 +9,7 @@ import { AuthContext } from "../../../context/AuthProvider";
 
 import { FaStar } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
+import PrimaryButton from "../../../components/Button/PrimaryButton";
 
 // Interface Definitions
 interface Department {
@@ -441,6 +442,38 @@ const ProjectsDetail = () => {
     allFields.slice(10, 15)
   ];
 
+  // ✅ Delete Project Function
+const handleDeleteProject = async () => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this project?");
+  if (!confirmDelete) return;
+
+  try {
+    const token = Cookies.get("core");
+
+    await axios.delete(
+      `https://mtsbackend20-production.up.railway.app/api/project/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("✅ Project deleted successfully!");
+    // Optional: Redirect or update UI
+    window.location.href = "/dashboard/projects"; // redirect after deletion
+  } catch (error) {
+    console.error("Delete error:", error);
+    if (axios.isAxiosError(error)) {
+      toast.error(error.response?.data?.message || "❌ Unable to delete project. This project has already been delivered and cannot be removed");
+    } else {
+      toast.error("Something went wrong while deleting.");
+    }
+  }
+};
+
+
   return (
     <div className="bg-background min-h-screen">
       {/* ToastContainer for displaying notifications */}
@@ -491,21 +524,31 @@ const ProjectsDetail = () => {
 
             {/* Edit Controls for main section */}
             <div className="flex flex-col flex-wrap items-center gap-4 sm:flex-row">
-              <button
+              <PrimaryButton
                 onClick={() => setActiveEditSection(activeEditSection === 'main' ? null : 'main')}
-                className="px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-colors"
+                className=""
               >
                 {activeEditSection === 'main' ? "Cancel" : "Edit Info"}
-              </button>
+              </PrimaryButton>
+              
               {activeEditSection === 'main' && (
-                <button
+                <PrimaryButton
                   onClick={handleSave}
-                  className="px-6 py-2 bg-green-600 text-white rounded-full font-bold hover:bg-green-700 transition-colors"
+                  className="s"
                 >
                   Save Changes
-                </button>
+                </PrimaryButton>
               )}
+
+{/* // delete part in   */}
+ <PrimaryButton
+onClick={handleDeleteProject}
+className="">
+Delete Project
+</PrimaryButton>
             </div>
+
+
           </div>
 
           {/* Project Details Display/Edit */}

@@ -114,7 +114,7 @@ function OverView() {
   ];
 
   return (
-    <section className="pr-5">
+    <section className="p-4 pr-5">
       {/* Cards */}
       <div className="flex flex-wrap gap-5">
         {cardData.map((item, index) => (
